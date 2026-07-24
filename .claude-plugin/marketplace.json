@@ -1,0 +1,14 @@
+{
+  "name": "edea",
+  "owner": {
+    "name": "E.D.E.A"
+  },
+  "plugins": [
+    {
+      "name": "edea-linear",
+      "source": "./plugins/edea-linear",
+      "description": "Shared E.D.E.A workflows for Linear: creating and updating issues in house format.",
+      "category": "productivity"
+    }
+  ]
+}
