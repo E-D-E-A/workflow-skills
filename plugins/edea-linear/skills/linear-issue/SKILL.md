@@ -38,9 +38,9 @@ Imperative and specific — the next action, not a topic.
 Pick by team (confirm exact names via `list_issue_statuses`; pick the closest if names drift):
 
 **ENG:** `Backlog` → `Todo` → `In Progress` → `In Review` → `Done` / `Canceled`
-**BIZ:** `Idea` → `Todo` → `In Progress` → `Waiting` → `Done` / `Dropped`
+**BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Dropped`
 
-- Unformed / someday → `Backlog` (ENG) or `Idea` (BIZ).
+- Unformed / someday → `Backlog`.
 - Committed, queued, not started → `Todo`. On BIZ this is the real "what's next",
   since there are no cycles to define "now".
 - `Waiting` (BIZ only) means blocked on someone else — investor, lawyer, customer, vendor,
@@ -86,7 +86,7 @@ GitHub branch/PR, Confluence docs, related issues.
 
 ## Step 6 — Assignee
 
-- Leave **unassigned** while in `Backlog` / `Idea`.
+- Leave **unassigned** while in `Backlog`.
 - Assign from `Todo` / `To do` onward to whoever owns the next action.
 - Keep an assignee on `Waiting` items — it's the person who picks it back up when the other
   party replies, not a sign they're actively working it.

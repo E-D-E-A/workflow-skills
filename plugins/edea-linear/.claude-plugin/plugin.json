@@ -1,7 +1,7 @@
 {
   "name": "edea-linear",
   "description": "Shared E.D.E.A workflows for Linear: creating and updating issues in house format.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "E.D.E.A"
   }

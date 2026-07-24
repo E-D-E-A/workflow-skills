@@ -17,7 +17,7 @@ GitHub automation moves most of this for you: opening a PR that references the i
 it, and a closing magic word (`Fixes ENG-123`) marks it `Done` on merge. Prefer letting the
 integration drive ENG status over manual moves.
 
-**BIZ:** `Idea` → `Todo` → `In Progress` → `Waiting` → `Done` / `Dropped`
+**BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Dropped`
 - Move to `In Progress` when someone is actively working it (a call, a deck, a filing).
 - Move to `Waiting` the moment the ball is in someone else's court — outreach sent, contract
   out for review, investor deciding. `Waiting` ⇄ `In Progress` loops as often as needed; going
