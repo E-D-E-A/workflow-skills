@@ -5,71 +5,82 @@ description: Update an existing Linear issue in E.D.E.A house format — transit
 
 # Update a Linear issue (E.D.E.A house format)
 
-Companion to `linear-issue` (creation). Always **load the current issue first** with
-`get_issue` so you transition from the real state, then write with `save_issue`. Statuses and
-labels are team-scoped — resolve names with `list_issue_statuses` / `list_issue_labels` for
-*that issue's team* before setting them.
+This is the companion to `linear-issue` (which covers creating them). Always **load the issue
+first** with `get_issue`, so you change it from its real current state, then save your changes
+with `save_issue`. Each team has its own statuses and labels, so look up the names with
+`list_issue_statuses` / `list_issue_labels` for **that issue's team** before you set them.
 
-## Status transitions
+## Before you change anything — is the intent clear?
+
+Load the issue and compare what you're being asked to do against its current state. If the
+request is ambiguous — which status to move to, who to assign, or close vs. cancel vs. delete —
+**ask a specific follow-up question first, and suggest the likely options** so the user can
+just pick. For example: "Move this to `Waiting` or `Done`?" or "Do you want to cancel it, or
+delete it for good?" Make the change only once the intent is clear. Don't guess at intent on an
+issue that already exists.
+
+## Moving between statuses
 
 **ENG:** `Backlog` → `Todo` → `In Progress` → `In Review` → `Done` / `Canceled`
-GitHub automation moves most of this for you: opening a PR that references the issue advances
-it, and a closing magic word (`Fixes ENG-123`) marks it `Done` on merge. Prefer letting the
-integration drive ENG status over manual moves.
+GitHub does most of this for you: opening a pull request that mentions the issue moves it
+along, and a magic word like `Fixes ENG-123` marks it `Done` when the PR merges. Let the
+GitHub link move ENG issues instead of moving them by hand.
 
 **BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Canceled`
-- Move to `In Progress` when someone is actively working it (a call, a deck, a filing).
-- Move to `Waiting` the moment the ball is in someone else's court — outreach sent, contract
-  out for review, investor deciding. `Waiting` ⇄ `In Progress` loops as often as needed; going
-  backward is expected here.
-- `Done` = the outcome was reached (decision made, deal signed, artifact produced).
-- `Canceled` = decided not to pursue / it died. A lost deal or rejected grant is `Canceled`,
-  not `Done`.
+- `In Progress` — someone is actively working on it right now (a call, a deck, a filing).
+- `Waiting` — the ball is in someone else's court: outreach sent, a contract out for review, an
+  investor deciding. It's normal to bounce between `Waiting` and `In Progress` many times, and
+  to move backward.
+- `Done` — you got the result (decision made, deal signed, document produced).
+- `Canceled` — you decided not to pursue it, or it died. A lost deal or a rejected grant is
+  `Canceled`, not `Done`.
 
-When you move an issue to `Waiting`, make sure `## Next action` says what unblocks it and who
-resumes — that's the whole point of the status.
+Whenever you move an issue to `Waiting`, make sure the **Next action** in the description says
+what it's waiting on and who picks it back up — that's the whole point of the status.
 
-## Reassign
+## Reassigning
 
-Set the assignee to whoever owns the *next* action. On a `Waiting` item, that's the person who
-picks it up when the other party responds — keep it assigned, don't clear it.
+Set the assignee to whoever owns the **next** step. On a `Waiting` issue, that's the person who
+will pick it up when the other side replies — keep it assigned to them, don't clear it.
 
 ## Labels
 
-Same one-axis type labels as creation (`product`, `design`, `research`, `fundraising`,
-`finance`, `legal`, `ops` on BIZ; existing labels on ENG). Relabel if the nature of the work
-changed; don't stack multiple type labels to hedge — pick the primary one.
+Use the same type labels as when creating (`product`, `design`, `research`, `fundraising`,
+`finance`, `legal`, `ops` on BIZ; the existing labels on ENG). Change the label if the kind of
+work changed. Don't pile on several labels to be safe — pick the main one.
 
-## Link a PR, branch, or doc to an existing issue
+## Linking a PR, branch, or document to an existing issue
 
-- **GitHub:** the cleanest path is editing the PR — add the issue ID and a magic word to its
-  title/description (`Fixes ENG-123` to auto-close on merge; `ref ENG-123` to link only).
-  If you only have the URL and are working over MCP, attach it with `create_attachment`.
-- **Confluence / Google Docs / Figma:** attach the URL with `create_attachment` (give it a
-  clear title), or paste it into the description where it unfurls.
-- Linking is never destructive — no confirmation needed.
+- **GitHub:** the cleanest way is to edit the pull request — add the issue ID and a magic word
+  to its title or description (`Fixes ENG-123` to close the issue when it merges; `ref ENG-123`
+  to link only). If you just have the link and are working through the Linear tools, attach it
+  with `create_attachment`.
+- **Confluence / Google Docs / Figma:** attach the link with `create_attachment` and give it a
+  clear title, or paste it into the description, where Linear shows it as a preview.
+- Linking never removes anything, so there's no need to ask first.
 
-## Closing
+## Closing an issue
 
-Prefer a **terminal status** over deletion — it preserves history and is reversible:
-- Finished successfully → `Done`.
-- Won't do / died → `Canceled`.
-- It's a duplicate → use Linear's **mark as duplicate** so the canonical issue absorbs it,
-  rather than deleting.
+Prefer an **end status** over deleting — it keeps the history and can be undone:
+- Finished → `Done`.
+- Won't do, or it died → `Canceled`.
+- It's a duplicate → use Linear's **mark as duplicate**, so the main issue keeps the link,
+  instead of deleting.
 
-## Deleting — hard stop
+## Deleting — stop and check first
 
-Deletion is destructive and almost never the right move. **Before deleting, confirm with the
-user explicitly**, and only for:
-- a genuine mistake (issue created in error, test/junk, spam), or
+Deleting removes the issue for good and is almost never the right move. **Ask the user before
+deleting**, and only do it for:
+- a genuine mistake (created by accident, a test, junk, or spam), or
 - something with no history worth keeping.
 
-If it has any activity, comments, or links, close it (`Canceled`) or mark-duplicate
-instead. Never delete to "clean up" a real-but-stale issue — that's what `Canceled` is for.
+If it has any activity, comments, or links, close it (`Canceled`) or mark it as a duplicate
+instead. Don't delete just to tidy up a real-but-old issue — that's what `Canceled` is for.
 
-## Guardrails
+## A few rules to keep
 
-- Don't change an issue's team as a shortcut — if work genuinely moved function (BIZ decided,
-  now ENG builds), create a linked ENG issue instead of moving the BIZ one.
-- Never write target verticals, customer names, pricing, or strategy into this skill file
-  (public repo). Issue content in Linear is fine.
+- Don't switch an issue's team as a shortcut. If the work really moved from business to
+  engineering (BIZ decided, now ENG builds), make a new linked ENG issue instead of moving the
+  BIZ one.
+- Never write target markets, customer names, pricing, or strategy into this skill file — it's
+  in a public repo. What's inside a Linear issue is fine.
