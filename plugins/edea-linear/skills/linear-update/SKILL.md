@@ -1,6 +1,6 @@
 ---
 name: linear-update
-description: Update an existing Linear issue in E.D.E.A house format — transition status (including the Business Waiting/Done/Dropped flow), reassign, add or edit labels, attach a GitHub PR/branch or Confluence doc after the fact, and close, cancel, or (rarely) delete. Use when the user wants to move, transition, close, reassign, relabel, link, or delete a Linear issue/ticket that already exists.
+description: Update an existing Linear issue in E.D.E.A house format — transition status (including the Business Waiting/Done/Canceled flow), reassign, add or edit labels, attach a GitHub PR/branch or Confluence doc after the fact, and close, cancel, or (rarely) delete. Use when the user wants to move, transition, close, reassign, relabel, link, or delete a Linear issue/ticket that already exists.
 ---
 
 # Update a Linear issue (E.D.E.A house format)
@@ -17,13 +17,13 @@ GitHub automation moves most of this for you: opening a PR that references the i
 it, and a closing magic word (`Fixes ENG-123`) marks it `Done` on merge. Prefer letting the
 integration drive ENG status over manual moves.
 
-**BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Dropped`
+**BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Canceled`
 - Move to `In Progress` when someone is actively working it (a call, a deck, a filing).
 - Move to `Waiting` the moment the ball is in someone else's court — outreach sent, contract
   out for review, investor deciding. `Waiting` ⇄ `In Progress` loops as often as needed; going
   backward is expected here.
 - `Done` = the outcome was reached (decision made, deal signed, artifact produced).
-- `Dropped` = decided not to pursue / it died. A lost deal or rejected grant is `Dropped`,
+- `Canceled` = decided not to pursue / it died. A lost deal or rejected grant is `Canceled`,
   not `Done`.
 
 When you move an issue to `Waiting`, make sure `## Next action` says what unblocks it and who
@@ -53,7 +53,7 @@ changed; don't stack multiple type labels to hedge — pick the primary one.
 
 Prefer a **terminal status** over deletion — it preserves history and is reversible:
 - Finished successfully → `Done`.
-- Won't do / died → `Canceled` (ENG) or `Dropped` (BIZ).
+- Won't do / died → `Canceled`.
 - It's a duplicate → use Linear's **mark as duplicate** so the canonical issue absorbs it,
   rather than deleting.
 
@@ -64,8 +64,8 @@ user explicitly**, and only for:
 - a genuine mistake (issue created in error, test/junk, spam), or
 - something with no history worth keeping.
 
-If it has any activity, comments, or links, close it (`Canceled`/`Dropped`) or mark-duplicate
-instead. Never delete to "clean up" a real-but-stale issue — that's what `Dropped` is for.
+If it has any activity, comments, or links, close it (`Canceled`) or mark-duplicate
+instead. Never delete to "clean up" a real-but-stale issue — that's what `Canceled` is for.
 
 ## Guardrails
 

@@ -38,7 +38,7 @@ Imperative and specific — the next action, not a topic.
 Pick by team (confirm exact names via `list_issue_statuses`; pick the closest if names drift):
 
 **ENG:** `Backlog` → `Todo` → `In Progress` → `In Review` → `Done` / `Canceled`
-**BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Dropped`
+**BIZ:** `Backlog` → `Todo` → `In Progress` → `Waiting` → `Done` / `Canceled`
 
 - Unformed / someday → `Backlog`.
 - Committed, queued, not started → `Todo`. On BIZ this is the real "what's next",
