@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Working in Linear — E.D.E.A</title>
+<style>
+  /* Dark only, on purpose — the palette does not follow the OS or a theme toggle. */
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --ground: #0E1116;
+    --raised: #161B23;
+    --ink: #E8ECF1;
+    --ink-soft: #BAC3CE;
+    --muted: #8B96A3;
+    --rule: #232A33;
+    --rule-strong: #364049;
+    --eng: #7CA0F5;
+    --biz: #E0A356;
+    --biz-soft: #2A1F0F;
+    --warn-bg: #241B0B;
+    --warn-ink: #E5BE7C;
+    --warn-rule: #4A3818;
+
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 62ch;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px 88px; }
+
+  .masthead { padding: 60px 0 32px; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 16px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 42px); line-height: 1.06; letter-spacing: -0.028em;
+    font-weight: 680; margin: 0 0 14px; text-wrap: balance;
+  }
+  .standfirst { font-size: 18px; line-height: 1.5; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto; padding: 11px 28px;
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+  }
+  nav a {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    text-decoration: none; padding: 2px 0; border-bottom: 1.5px solid transparent;
+  }
+  nav a:hover { color: var(--ink); border-bottom-color: var(--rule-strong); }
+  nav a:focus-visible { outline: 2px solid var(--eng); outline-offset: 3px; }
+
+  section { padding: 46px 0 6px; }
+  section + section { border-top: 1px solid var(--rule); }
+
+  h2 {
+    font-size: 24px; line-height: 1.18; letter-spacing: -0.02em;
+    font-weight: 660; margin: 0 0 6px; text-wrap: balance;
+  }
+  .sec-note { color: var(--muted); font-size: 15px; margin: 0 0 26px; max-width: var(--measure); }
+  h3 { font-size: 16px; font-weight: 640; letter-spacing: -0.008em; margin: 28px 0 8px; }
+  p { max-width: var(--measure); margin: 0 0 12px; }
+  ul { max-width: var(--measure); margin: 0 0 12px; padding-left: 19px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 620; }
+  a { color: var(--eng); text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--mono); font-size: 0.875em;
+    background: var(--raised); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
+
+  .rule-box {
+    background: var(--raised); border: 1px solid var(--rule-strong);
+    border-radius: 3px; padding: 20px 22px; margin: 0 0 30px; max-width: var(--measure);
+  }
+  .rule-box p { margin: 0; font-size: 17px; line-height: 1.5; }
+  .rule-box .k { font-weight: 660; }
+  .rule-box .eng-k { color: var(--eng); }
+  .rule-box .biz-k { color: var(--biz); }
+
+  .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px; }
+  .team {
+    background: var(--raised); border: 1px solid var(--rule);
+    border-top: 2px solid var(--tint); border-radius: 2px; padding: 20px 20px 6px;
+  }
+  .team.is-eng { --tint: var(--eng); }
+  .team.is-biz { --tint: var(--biz); }
+  .team-id {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--tint); margin: 0 0 4px; font-weight: 600;
+  }
+  .team h3 { margin: 0 0 6px; font-size: 17px; }
+  .team p { font-size: 14.5px; color: var(--muted); max-width: none; margin-bottom: 10px; }
+  .team ul { font-size: 14.5px; max-width: none; margin-bottom: 14px; }
+
+  .flow-label {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin: 24px 0 9px;
+  }
+  .flow-scroll { overflow-x: auto; padding-bottom: 6px; }
+  .flow { display: flex; align-items: center; gap: 7px; min-width: max-content; }
+  .chip {
+    font-family: var(--mono); font-size: 12.5px; padding: 5px 11px;
+    border: 1px solid var(--rule-strong); border-radius: 2px;
+    background: var(--raised); white-space: nowrap;
+  }
+  .chip.term-good { border-color: #3E8F65; color: #6DCB99; }
+  .chip.term-bad { border-color: var(--rule-strong); color: var(--muted); }
+  .chip.hi { border-color: var(--biz); color: var(--biz); background: var(--biz-soft); font-weight: 600; }
+  .arrow { color: var(--rule-strong); font-size: 13px; }
+  .slash { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+  .t-scroll { overflow-x: auto; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 400px; }
+  th {
+    text-align: left; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    font-weight: 500; padding: 0 14px 8px 0; border-bottom: 1px solid var(--rule-strong);
+  }
+  td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-soft); }
+  td:first-child { color: var(--ink); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .dim { color: var(--muted); }
+
+  .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; }
+  .lbl { font-family: var(--mono); font-size: 13px; }
+
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; max-width: none; }
+  ol.steps > li {
+    counter-increment: s; display: grid; grid-template-columns: 30px 1fr;
+    gap: 0 14px; padding: 15px 0; border-top: 1px solid var(--rule); margin: 0;
+  }
+  ol.steps > li:first-child { border-top: none; padding-top: 2px; }
+  ol.steps > li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    padding-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  ol.steps h3 { margin: 0 0 4px; font-size: 15.5px; }
+  ol.steps p, ol.steps ul { margin-bottom: 6px; }
+  ol.steps p:last-child, ol.steps ul:last-child { margin-bottom: 0; }
+  ol.steps ul { padding-left: 17px; }
+
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--raised); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 15px 17px; overflow-x: auto; margin: 0 0 16px; max-width: var(--measure);
+  }
+  pre code { background: none; border: none; padding: 0; white-space: pre; font-size: inherit; }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-rule);
+    border-radius: 3px; padding: 16px 18px; margin: 22px 0 4px; max-width: var(--measure);
+  }
+  .notice-head {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--warn-ink); margin: 0 0 7px; font-weight: 600;
+  }
+  .notice p { color: var(--warn-ink); margin: 0; font-size: 14.5px; }
+  .notice ul { color: var(--warn-ink); font-size: 14.5px; margin: 6px 0 0; max-width: none; }
+  .notice code {
+    background: color-mix(in srgb, var(--warn-ink) 10%, transparent);
+    border-color: var(--warn-rule); color: inherit;
+  }
+
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13.5px;
+  }
+  footer p { max-width: var(--measure); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#teams">Teams</a>
+    <a href="#statuses">Statuses</a>
+    <a href="#labels">Labels</a>
+    <a href="#writing">Writing an issue</a>
+    <a href="#linking">GitHub &amp; docs</a>
+    <a href="#skills">Skills</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">E.D.E.A · Internal handbook</p>
+    <h1>Working in Linear</h1>
+    <p class="standfirst">Which team an issue goes to, what each status means, which label to use, and how to write one somebody else can pick up.</p>
+  </header>
+
+  <section id="teams">
+    <h2>Two teams, permanently</h2>
+    <p class="sec-note">Teams are <em>how</em> work gets done. Projects are <em>what</em> we're building. A new venture is a new Project — never a new team.</p>
+
+    <div class="rule-box">
+      <p>Next thing to do is <span class="k eng-k">write code</span> → Engineering.<br>
+      Next thing to do is <span class="k biz-k">talk to a person</span> → Business.</p>
+    </div>
+
+    <div class="teams">
+      <div class="team is-eng">
+        <p class="team-id">ENG</p>
+        <h3>Engineering</h3>
+        <p>Everything that ships. Runs in fixed cycles.</p>
+        <ul>
+          <li>Features and bugs</li>
+          <li>Cleanups and refactors</li>
+          <li>Releases, servers, setup</li>
+          <li>Throwaway coding tests</li>
+          <li>Developer tooling</li>
+        </ul>
+      </div>
+
+      <div class="team is-biz">
+        <p class="team-id">BIZ</p>
+        <h3>Business</h3>
+        <p>Decides what to build and who pays. No cycles.</p>
+        <ul>
+          <li>Customers and validation</li>
+          <li>Pricing and partnerships</li>
+          <li>Legal, fundraising, finance</li>
+          <li>Product and design calls</li>
+          <li>Operations and admin</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>When it looks like both</h3>
+    <p>Split it. A coding test to see if an outside service works is ENG; deciding whether a customer will pay is BIZ. One issue, one team — when business work leads to building, open a linked ENG issue rather than moving the original.</p>
+  </section>
+
+  <section id="statuses">
+    <h2>Statuses</h2>
+    <p class="sec-note">Each team has its own. They say where the work is, not how far along it feels.</p>
+
+    <p class="flow-label">Engineering</p>
+    <div class="flow-scroll">
+      <div class="flow">
+        <span class="chip">Backlog</span><span class="arrow">→</span>
+        <span class="chip">Todo</span><span class="arrow">→</span>
+        <span class="chip">In Progress</span><span class="arrow">→</span>
+        <span class="chip">In Review</span><span class="arrow">→</span>
+        <span class="chip term-good">Done</span><span class="slash">/</span><span class="chip term-bad">Canceled</span>
+      </div>
+    </div>
+
+    <p class="flow-label">Business</p>
+    <div class="flow-scroll">
+      <div class="flow">
+        <span class="chip">Backlog</span><span class="arrow">→</span>
+        <span class="chip">Todo</span><span class="arrow">→</span>
+        <span class="chip">In Progress</span><span class="arrow">⇄</span>
+        <span class="chip hi">Waiting</span><span class="arrow">→</span>
+        <span class="chip term-good">Done</span><span class="slash">/</span><span class="chip term-bad">Canceled</span>
+      </div>
+    </div>
+
+    <div class="t-scroll" style="margin-top:24px">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">Backlog</span></td><td>Not shaped yet, or maybe-someday. Leave unassigned.</td></tr>
+          <tr><td><span class="lbl">Todo</span></td><td>Decided and queued. On BIZ this is the "what's next" list.</td></tr>
+          <tr><td><span class="lbl">In Progress</span></td><td>Someone is on it right now.</td></tr>
+          <tr><td><span class="lbl">In Review</span> <span class="dim">ENG</span></td><td>Pull request open. GitHub moves this for you.</td></tr>
+          <tr><td><span class="lbl">Waiting</span> <span class="dim">BIZ</span></td><td>Blocked on someone else — investor, lawyer, customer, teammate.</td></tr>
+          <tr><td><span class="lbl">Done</span></td><td>Shipped, decided, signed, produced.</td></tr>
+          <tr><td><span class="lbl">Canceled</span></td><td>Dropped or died. A lost deal is Canceled, not Done.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Why Waiting exists</h3>
+    <p>It answers the only question the board needs to answer: what needs me, versus what am I blocked on.</p>
+    <ul>
+      <li>Keeps In Progress honest — parked work stops looking active.</li>
+      <li>Makes idle time normal. Two weeks on an investor isn't neglect.</li>
+      <li>Doubles as the follow-up list: Waiting + untouched for a week.</li>
+    </ul>
+    <p>When you move something here, make sure <strong>Next action</strong> says what unblocks it and who resumes.</p>
+
+    <div class="notice">
+      <p class="notice-head">Setup still pending</p>
+      <p>Business isn't switched over yet. In <strong>Business → Team settings</strong>:</p>
+      <ul>
+        <li>Add <code>Waiting</code> — type: started, after In Progress</li>
+        <li>Delete <code>In Review</code> — no meaning for business work</li>
+        <li>Confirm Cycles are off</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="labels">
+    <h2>Labels</h2>
+    <p class="sec-note">One label, for the type of work. Unsure? Leave it off rather than guess. Never stack several to hedge.</p>
+
+    <h3>Business</h3>
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="swatch" style="background:#5E6AD2"></span><span class="lbl">product</span></td><td>Specs, roadmap, what to build</td></tr>
+          <tr><td><span class="swatch" style="background:#EB5CC8"></span><span class="lbl">design</span></td><td>UI, UX, wireframes, prototypes</td></tr>
+          <tr><td><span class="swatch" style="background:#4EA7FC"></span><span class="lbl">research</span></td><td>Competitors, market, regulation, discovery</td></tr>
+          <tr><td><span class="swatch" style="background:#4CB782"></span><span class="lbl">fundraising</span></td><td>Investors, pitch, grants</td></tr>
+          <tr><td><span class="swatch" style="background:#F2C94C"></span><span class="lbl">finance</span></td><td>Runway, bookkeeping, invoicing, payroll</td></tr>
+          <tr><td><span class="swatch" style="background:#95A2B3"></span><span class="lbl">legal</span></td><td>Incorporation, contracts, compliance</td></tr>
+          <tr><td><span class="swatch" style="background:#F2994A"></span><span class="lbl">ops</span></td><td>Tools, hiring, suppliers, admin</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Engineering</h3>
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="swatch" style="background:#EB5757"></span><span class="lbl">Bug</span></td><td>Something's broken — use the bug format</td></tr>
+          <tr><td><span class="swatch" style="background:#BB87FC"></span><span class="lbl">Feature</span></td><td>New capability</td></tr>
+          <tr><td><span class="swatch" style="background:#4EA7FC"></span><span class="lbl">Improvement</span></td><td>Making something existing better</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="font-size:14.5px">No label for market or industry — the Project already says which venture. Setup work often fits none of these; unlabelled is fine. Labels belong to a team, so ENG and BIZ labels are separate even when named alike.</p>
+  </section>
+
+  <section id="writing">
+    <h2>Writing an issue</h2>
+    <p class="sec-note">In this order.</p>
+
+    <div class="rule-box">
+      <p>Anyone should be able to open it and start work <span class="k">without asking you what you meant</span>.</p>
+    </div>
+
+    <p>That's the bar for how much to write. Simple task, a line or two. Fuzzy or big, more. Read it back as if someone else wrote it — if you'd have to ask a question to start, answer it in the issue.</p>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Team</h3>
+        <p>Code → ENG. Person → BIZ.</p>
+      </div></li>
+      <li><div>
+        <h3>Title</h3>
+        <p>Verb first, specific. The thing to do, not the topic. <em>Add invoice export to settings</em> · <em>Decide pilot pricing</em></p>
+      </div></li>
+      <li><div>
+        <h3>Status</h3>
+        <p>Backlog if it's not shaped. Todo if it's decided and queued.</p>
+      </div></li>
+      <li><div>
+        <h3>Label</h3>
+        <p>One, for the type of work.</p>
+      </div></li>
+      <li><div>
+        <h3>Description</h3>
+        <p><strong>Outcome, always</strong> — what done actually looks like. ENG: a checklist. BIZ: the decision or thing you'll have in hand.</p>
+        <p>Then, whenever they help:</p>
+        <ul>
+          <li><strong>Context</strong> — why it matters, constraints, decisions already made</li>
+          <li><strong>Next action</strong> — the single next step. Essential if it'll sit in Waiting</li>
+          <li><strong>Links</strong> — pull request, documents, related issues</li>
+        </ul>
+      </div></li>
+      <li><div>
+        <h3>Assignee</h3>
+        <p>Unassigned in Backlog. From Todo on, whoever owns the next step. Keep it assigned in Waiting — that's who picks it back up.</p>
+      </div></li>
+    </ol>
+
+    <h3>Bugs use a fixed format</h3>
+    <p>A bug can't be worked without enough to reproduce it:</p>
+    <pre><code>## Steps to reproduce
+1. …
+
+## Expected
+what should happen
+
+## Actual
+what actually happens
+
+## Environment
+browser / OS / version / URL</code></pre>
+  </section>
+
+  <section id="linking">
+    <h2>GitHub &amp; docs</h2>
+    <p class="sec-note">Name things so Linear can see the connection, and it moves issues for you.</p>
+
+    <h3>GitHub</h3>
+    <p>Linear links a branch or pull request whenever the issue ID appears in it.</p>
+    <ul>
+      <li><strong>Branch</strong> — <code>eng-123-invoice-export</code>. Linear's <em>Copy git branch name</em> gives the exact format.</li>
+      <li><strong>PR title or description</strong> — the ID plus a keyword below.</li>
+    </ul>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Keyword</th><th>On merge</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="lbl">Fixes · Closes · Resolves<br>Completes · Implements</span></td>
+            <td>Issue moves to Done. <code>Fixes ENG-123</code>, or <code>Fixes ENG-12, ENG-34</code>.</td>
+          </tr>
+          <tr>
+            <td><span class="lbl">ref · related to · part of<br>contributes to · towards</span></td>
+            <td>Links only, doesn't close. For partial work.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Let GitHub move ENG statuses instead of dragging cards.</p>
+
+    <h3>Documents</h3>
+    <p>Paste the link in the description — Linear previews it — or attach it with a clear title. Same for Confluence, Drive and Figma.</p>
+  </section>
+
+  <section id="skills">
+    <h2>The shared skills</h2>
+    <p class="sec-note">All of this is written up as skills, so Claude creates and updates issues in our format without anyone remembering the rules.</p>
+
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">linear-issue</span></td><td>Creates an issue in our format. Asks follow-up questions when something's missing.</td></tr>
+          <tr><td><span class="lbl">linear-update</span></td><td>Moves, reassigns, relabels, links, closes. Checks before deleting.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Install once</h3>
+    <pre><code>/plugin marketplace add E-D-E-A/workflow-skills
+/plugin install edea-linear@edea</code></pre>
+    <p>Then <code>/plugin</code> → Marketplaces → turn on auto-update, so you don't drift onto an old version.</p>
+
+    <h3>Changes</h3>
+    <p>The two developers maintain them. If something here is wrong, tell one of them — no need to file anything.</p>
+
+    <div class="notice">
+      <p class="notice-head">Keep in mind</p>
+      <p>The skills repo is public. It describes how we work, which is fine to share. Never put target markets, customer names, pricing or strategy in it. What you write inside a Linear issue is private.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>If the way we work changes, this page and the skills change with it. When they disagree, the skills are what's actually running.</p>
+  </footer>
+
+</div>
+</body>
+</html>
