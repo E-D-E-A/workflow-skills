@@ -21,7 +21,7 @@ plugins/
       <skill-name>/
         SKILL.md
 docs/
-  linear-guide.html             # team-facing handbook for our Linear setup
+  <tool>-guide.html             # team-facing handbook — one per plugin
 ```
 
 ## Why one plugin per tool
@@ -78,7 +78,9 @@ Worked example for Confluence:
    }
    ```
 
-6. **Validate, then push** — see below.
+6. **Write the docs page** — `docs/confluence-guide.html`. See "Docs for every plugin" below.
+
+7. **Validate, then push** — see below.
 
 ## Version discipline
 
@@ -98,6 +100,36 @@ claude plugin validate .
 
 It checks `marketplace.json`, every `plugin.json`, and skill frontmatter, and gives far
 better errors than a sync failure does. It should pass with no warnings.
+
+## Docs for every plugin
+
+Every plugin gets a team-facing handbook page in `docs/`, named `<tool>-guide.html`.
+`docs/linear-guide.html` is the reference — **copy it as the starting point** for a new one
+and swap the content, so the pages read as one family rather than several unrelated designs.
+
+The skills tell Claude how to work. The docs page tells **people** how to work, including
+the two who aren't developers. Both have to exist, and they have to agree.
+
+What a page covers:
+
+- The tool's structure and the concepts specific to how we use it
+- Our conventions, laid out so they can be scanned — the statuses, labels, or equivalents
+- How to do the most common task, step by step
+- How it connects to our other tools
+- The skills that automate it, and the install commands
+- Anything set up but not yet finished, in a clearly marked notice
+
+How to build it:
+
+- **One self-contained HTML file.** All CSS inline, no external fonts, scripts, or images.
+  It has to work opened from disk, emailed, or pasted into Confluence.
+- **Dark only.** A deliberate single palette — don't follow the OS theme, or it renders
+  white for whoever is in light mode.
+- **Short.** Fragments and tables beat paragraphs. This is a page people scan to answer one
+  question, not read start to finish. Cut words wherever the meaning survives.
+- **Plain language**, same as the skills.
+
+If a page and a skill ever disagree, the skill is what's actually running — fix the page.
 
 ## Writing skills
 
@@ -156,7 +188,8 @@ explicit decision.
 The two developers author and update skills. Everyone else is a consumer — they report
 problems informally and a developer makes the edit. The whole loop is:
 
-**edit the skill → bump `version` in `plugin.json` → push.**
+**edit the skill → update the docs page if the change is visible to people → bump `version`
+in `plugin.json` → push.**
 
 Everyone else has it next session, assuming auto-update is on.
 
