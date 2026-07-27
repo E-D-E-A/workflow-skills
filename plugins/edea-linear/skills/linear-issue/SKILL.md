@@ -12,9 +12,13 @@ belongs to exactly one team.
 
 Before you write, check the real names in the workspace instead of guessing — list the teams
 (`list_teams`), the statuses for the team (`list_issue_statuses`), and its labels
-(`list_issue_labels`). Then create the issue with `save_issue`. Each team has its **own**
-separate statuses and labels, so an ENG label and a BIZ label are different things even when
-they share a name.
+(`list_issue_labels`). Then create the issue with `save_issue`.
+
+**Statuses belong to a team**, so ENG and BIZ have separate ones even where the names match.
+**Labels are mixed:** some belong to a team, and some are workspace-level and show up on every
+team's list. `list_issue_labels` returns both together, so check whether a label really belongs
+to the team before treating it as team-specific — a workspace-level label can be applied to any
+issue, which is not always what you want.
 
 ## Before you create — do you have enough to write a good issue?
 
@@ -87,8 +91,12 @@ out of this public repo.
 - `legal` — incorporation, contracts, compliance
 - `ops` — tools, hiring, suppliers, admin
 
-**ENG labels:** use whatever labels already exist on the ENG team (for example `bug`,
-`feature`, `chore`). Don't invent new ones here — list what's there and reuse it.
+**ENG labels:** `Bug`, `Feature`, `Improvement`. Don't invent new ones — list what's there and
+reuse it.
+
+These three are currently **workspace-level**, not owned by Engineering, so they also appear
+when you list Business labels. They still mean engineering work: don't put `Bug` on a BIZ
+issue just because Linear offers it.
 
 Add one label when the type is obvious; if you're not sure, leave it off rather than guess.
 
