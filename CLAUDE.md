@@ -4,8 +4,9 @@ E.D.E.A's shared skills, published as a Claude Code plugin marketplace. This rep
 house conventions for the tools we run on, so everyone works the same way without having to
 remember the rules.
 
-The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear` today,
-`edea-confluence` and others later.
+The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear` and
+`edea-confluence` today, others later — plus `edea-craft` for the skills that aren't about
+any tool.
 
 ## Layout
 
@@ -20,15 +21,25 @@ plugins/
     skills/
       <skill-name>/
         SKILL.md
+  edea-craft/                   # the one plugin with no tool and no .mcp.json
 docs/
-  <tool>-guide.html             # team-facing handbook — one per plugin
+  <plugin>-guide.html           # team-facing handbook — one per plugin
+ATTRIBUTION.md                  # what we adapted from other people's public skills
 ```
 
 ## Why one plugin per tool
 
 Each tool's MCP connector ships inside its own plugin. That way installing
-`edea-confluence` later doesn't force a Confluence connector onto someone who only needs
-Linear. Don't merge tools into one large plugin.
+`edea-confluence` doesn't force a Confluence connector onto someone who only needs Linear.
+Don't merge tools into one large plugin.
+
+**`edea-craft` is the exception**, and only because it proves the rule: it holds skills about
+how we work rather than what we work in — stress-testing an idea, writing skills — so it ships
+no connector and there's nothing to force on anyone. Everything else about it is normal: its
+own `plugin.json`, its own version, its own docs page.
+
+Put a skill there only when it's genuinely tool-independent. A skill that spends most of its
+words on one tool belongs in that tool's plugin, even if it reads like general advice.
 
 ## Adding a new plugin
 
@@ -103,7 +114,8 @@ better errors than a sync failure does. It should pass with no warnings.
 
 ## Docs for every plugin
 
-Every plugin gets a team-facing handbook page in `docs/`, named `<tool>-guide.html`.
+Every plugin gets a team-facing handbook page in `docs/`, named for the plugin with the
+`edea-` prefix dropped — `linear-guide.html`, `confluence-guide.html`, `craft-guide.html`.
 `docs/linear-guide.html` is the reference — **copy it as the starting point** for a new one
 and swap the content, so the pages read as one family rather than several unrelated designs.
 
@@ -162,6 +174,17 @@ House conventions for the body:
 Skill folder names are kebab-case and match the `name` in the frontmatter. Any commands a
 plugin ships are namespaced on install, appearing as `/edea-<tool>:<name>`.
 
+The `skill-writing` skill in `edea-craft` carries these conventions in a form Claude can
+apply. If you change the rules here, change it too — otherwise the skill keeps teaching the
+old ones.
+
+### Adapting someone else's skill
+
+Fine to do, and often better than starting blank. Check the source repo's licence first,
+rewrite it in our voice against our conventions rather than pasting it in, and record what
+came from where in `ATTRIBUTION.md` — including the licence text and what you deliberately
+didn't take.
+
 ## What may go in this repo
 
 **This repo is public.** Skills describe **how** we work, never **what** we're building.
@@ -200,7 +223,12 @@ Once per person:
 ```
 /plugin marketplace add E-D-E-A/workflow-skills
 /plugin install edea-linear@edea
+/plugin install edea-confluence@edea
+/plugin install edea-craft@edea
 ```
+
+`edea-linear` and `edea-confluence` each prompt for a sign-in the first time they're used.
+`edea-craft` ships no connector, so it doesn't.
 
 Then `/plugin` → Marketplaces → enable auto-update. Without that, people silently drift
 onto different skill versions.
