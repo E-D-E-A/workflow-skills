@@ -283,9 +283,9 @@
       <p>A venture gets its own space once its Linear Project is <span class="k eng-k">actually started</span>. Until then it's an idea, and lives in the house space.</p>
     </div>
 
-    <pre><code>EDEA        E.D.E.A (house)        IDEASCOUT   Ideascout
+    <pre><code>EDEA        E.D.E.A (house)       ACME        Acme
 ├── Ideas/                        ├── Decisions/
-│   └── Ideascout/   ← today      ├── Specs/
+│   └── Acme/   ← an idea         ├── Specs/
 │       ├── Decisions/            ├── Research/
 │       └── Research/             ├── Runbooks/
 ├── Decisions/                    └── Meetings/
@@ -299,7 +299,7 @@
         <tbody>
           <tr><td><span class="lbl">Backlog</span> · <span class="lbl">Planned</span></td><td>House space, under <code>Ideas/&lt;Venture&gt;/</code></td></tr>
           <tr><td><span class="lbl">In Progress</span></td><td>Its own space</td></tr>
-          <tr><td><span class="lbl">Done</span> · <span class="lbl">Canceled</span></td><td>Left where they are, archived in place</td></tr>
+          <tr><td><span class="lbl">Done</span> · <span class="lbl">Canceled</span></td><td>Left where they are</td></tr>
         </tbody>
       </table>
     </div>
@@ -307,7 +307,7 @@
 
     <h3>The same five trees everywhere</h3>
     <p><code>Decisions/</code> <code>Specs/</code> <code>Research/</code> <code>Runbooks/</code> <code>Meetings/</code> — in the house space, in each venture space, and inside each idea. Pick the type and the location follows; there's no judgement call.</p>
-    <p><strong>Page titles are unique per space.</strong> Confluence silently renames a duplicate to <code>Decisions (2)</code> without warning, so inside <code>Ideas/</code> the trees carry the venture name — <code>Ideascout — Decisions</code>. It reads better anyway: search shows a title without its parent.</p>
+    <p><strong>Page titles are unique per space.</strong> Confluence silently renames a duplicate to <code>Decisions (2)</code> without warning, so inside <code>Ideas/</code> the trees carry the venture name — <code>Acme — Decisions</code>. It reads better anyway: search shows a title without its parent.</p>
 
     <h3>Subject goes in a Topics line</h3>
     <p>Near the top of every page: <code>Topics: pricing, fundraising</code>. Words come from the <strong>Topics</strong> page in the space — the same seven used on Business issues in Linear, plus whatever it's actually about. One vocabulary across both tools beats two.</p>
@@ -318,7 +318,7 @@
 
     <div class="notice">
       <p class="notice-head">Two rules that keep it working</p>
-      <p><strong>Link by the exact page title.</strong> Write <code>[Charge per seat, not per invoice]</code>, never <code>[see the pricing decision]</code>. Finding what points at a page is done by searching its title — a link in different words is invisible, and that's how gaps appear.</p>
+      <p><strong>Link by the exact page title, and make it a real link.</strong> Use the page's own title as the link text — never <code>see the review decision</code>. Finding what points at a page is done by searching its title, so a link in different words is invisible, and that's how gaps appear. Typing brackets with no link behind them looks right and points nowhere.</p>
       <p><strong>Nothing is deleted.</strong> Superseded pages stay, marked and linked to what replaced them. The connector has no delete tool at all, so this one enforces itself.</p>
     </div>
   </section>
@@ -336,7 +336,7 @@
         <h3>Title it for search</h3>
         <p>People type what they want to know, not what you called it.</p>
         <ul>
-          <li><strong>Decisions state the decision</strong> — <em>Charge per seat, not per invoice</em>, not <em>Pricing model</em>. The title alone should answer it.</li>
+          <li><strong>Decisions state the decision</strong> — <em>Run the weekly review on Thursday, not Monday</em>, not <em>Meeting times</em>. The title alone should answer it.</li>
           <li><strong>Date anything that's a snapshot</strong> — notes, research. Never "current" or "latest"; both are wrong within the month.</li>
           <li>Subject, not ceremony. <em>Meeting notes 3</em> tells nobody anything.</li>
         </ul>
@@ -390,8 +390,8 @@
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">Out of date</span></td><td>Archive it, or mark it superseded and link what replaced it</td></tr>
-          <tr><td><span class="lbl">Junk</span></td><td>Accident, test page, empty draft — delete it</td></tr>
+          <tr><td><span class="lbl">Out of date</span></td><td>Mark it superseded and link what replaced it — Claude does this, and repairs the pages pointing at it</td></tr>
+          <tr><td><span class="lbl">Junk</span></td><td>Accident, test page, empty draft — delete it yourself in Confluence. Claude has no delete tool</td></tr>
         </tbody>
       </table>
     </div>

@@ -5,7 +5,8 @@ description: Retire a Confluence page that is no longer the answer — marking i
 
 # Retire a page, and repair what pointed at it
 
-**Read `BRAIN.md` at the root of this plugin first.**
+**Read `../../BRAIN.md` first** — it sits at the root of this plugin, two levels up from this
+file.
 
 Retiring is not deleting. The connector cannot delete anything, and that matches the design:
 the paths we rejected are part of what the Brain knows. What retiring means is **this page is
@@ -47,7 +48,7 @@ searchConfluenceUsingCql: type = page AND text ~ "<the exact page title>"
 Search the house space and every venture space — references cross spaces.
 
 **Report the count before changing anything**, and be honest about the limit: this finds links
-written with the page's real title. Anything linked as "see the pricing decision" is invisible
+written with the page's real title. Anything linked as "see the review decision" is invisible
 here, and there is no way to find it. Say that rather than implying the sweep was complete.
 
 ## Step 4 — Mark the page itself
@@ -55,7 +56,8 @@ here, and there is no way to find it. Say that rather than implying the sweep wa
 Update the retired page with a notice at the very top, above everything:
 
 ```
-> **Superseded** by [New page title] on <date>. Kept for the record — don't act on this.
+> **Superseded** by [New page title](https://…/pages/123/…) on <date>. Kept for the record —
+> don't act on this.
 ```
 
 With no replacement:
@@ -70,12 +72,15 @@ destroys the thing worth keeping. Only the notice goes on.
 ## Step 5 — Repair the pointers
 
 For each page found in Step 3, update its `## Related` (or wherever the reference sits) to point
-at the replacement instead, keeping the exact-title rule:
+at the replacement instead, keeping the exact-title-plus-URL rule:
 
 ```
-- [Flat pricing — Jan 2026] (Decision)          ← before
-- [Charge per seat, not per invoice] (Decision)  ← after
+- [Monday reviews — Jan 2026](https://…/pages/789/…) (Decision)                          ← before
+- [Run the weekly review on Thursday, not Monday](https://…/pages/123/…) (Decision)      ← after
 ```
+
+If the old reference is bare text with no URL, write the replacement as a real link — that's
+the form the next repair pass can find.
 
 Where the old reference is historically meaningful — a Decision citing the Research that
 informed it — **keep it and add the replacement** rather than swapping. Losing why a decision
@@ -100,7 +105,7 @@ are still under `Ideas/<Venture>/`, it has graduated and nobody has moved it.
    matching the Linear Project and a key that's the name uppercased. Wait for it.
 2. **Move the tree.** `updateConfluencePage` with the new `spaceId` and `parentId`, walking the
    tree from `getConfluencePageDescendants` so nothing is orphaned.
-3. **Drop the prefix.** `Ideascout — Decisions` becomes `Decisions` — the space carries the
+3. **Drop the prefix.** `Acme — Decisions` becomes `Decisions` — the space carries the
    venture name now. Titles are unique per space, so check the target space doesn't already
    have that title before renaming.
 4. **Re-point the links.** Page URLs change on a move. Find pages referencing the moved ones

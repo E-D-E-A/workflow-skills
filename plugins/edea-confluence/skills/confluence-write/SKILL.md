@@ -5,7 +5,8 @@ description: Write a page into E.D.E.A's Confluence Brain, or update an existing
 
 # Write a page into the Brain
 
-**Read `BRAIN.md` at the root of this plugin first.** It holds the structure, the five page
+**Read `../../BRAIN.md` first** — it sits at the root of this plugin, two levels up from this
+file. It holds the structure, the five page
 types, the linking rules, and what the connector can and can't do. Everything below assumes it.
 
 Creating and updating are one skill because they're one judgement: you can't know which you're
@@ -59,7 +60,7 @@ The five types are in `BRAIN.md`. Pick one and the location follows:
 
 1. **Which space?** House space unless it's about a venture whose Linear Project has started.
 2. **Which tree?** The type tree — `Decisions/`, `Specs/`, `Research/`, `Runbooks/`, `Meetings/`.
-3. **Inside `Ideas/`?** The tree is prefixed: `Ideascout — Decisions`.
+3. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
 
 Resolve the parent page by title with `searchConfluenceUsingCql` or
 `getPagesInConfluenceSpace`; don't assume an id.
@@ -83,20 +84,16 @@ Topics: <words from the Topics page>
 <the type's sections — see BRAIN.md>
 
 ## Related
-- [Exact page title] (type)
+- [Exact page title](page URL) (type)
 ```
 
 Write with `contentFormat: "markdown"`. Plain language, short sections, tables over prose —
 these pages get scanned for one answer, not read start to finish.
 
-**Every link in `## Related` uses the target's exact title.** If you're linking to a page you
-just found in search, copy its title verbatim. This is what makes the page findable when
-something later needs to know what points at it.
-
-**Write it as a real markdown link with the page URL** — `[Exact title](https://…/pages/123/…)`.
-Confluence turns that into a native page link that stores the title, so it survives the page
-being moved or renamed. Writing `[Exact title]` with no URL leaves plain text that looks right
-and links to nothing; get the URL from the search result rather than omitting it.
+**Every link in `## Related` is a real markdown link — the target's exact title, and its URL**
+— `[Exact title](https://…/pages/123/…)`. Copy both verbatim from the search result that found
+the page. Confluence turns that into a native page link, which is what keeps the page findable
+when something later needs to know what points at it. `BRAIN.md` has the reasoning.
 
 Don't pad a short page to fill the shape, and don't compress a complicated one to look tidy.
 

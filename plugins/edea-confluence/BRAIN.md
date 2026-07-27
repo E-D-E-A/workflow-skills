@@ -69,8 +69,8 @@ Pick the type and the location follows. There's no judgement call once the type 
 `Ideas/`, type trees carry the venture name:
 
 ```
-Ideascout — Decisions      Ideascout — Specs      Ideascout — Research
-Ideascout — Runbooks       Ideascout — Meetings
+Acme — Decisions      Acme — Specs      Acme — Research
+Acme — Runbooks       Acme — Meetings
 ```
 
 In a venture's own space the prefix is redundant — the space carries it — so it's dropped
@@ -97,8 +97,9 @@ different. When the answer changes, write a new page and supersede the old one.
 ## What every page carries
 
 **A title written for the person searching in six months**, who types what they want to know
-rather than what you called it. A Decision's title states the decision — `Charge per seat, not
-per invoice`, not `Pricing model`. Date anything that's a snapshot; never `current` or `latest`.
+rather than what you called it. A Decision's title states the decision — `Run the weekly review
+on Thursday, not Monday`, not `Meeting times`. Date anything that's a snapshot; never `current`
+or `latest`.
 
 **One or two opening lines** saying what it's for and who it's for.
 
@@ -116,30 +117,34 @@ would have to fix the page, not whoever wrote it. Review dates go about three mo
 
 `## Related` at the end of every page, holding real Confluence links.
 
-**Link text must be the target page's exact title.** This is a hard rule, not a style
-preference:
+**Link text must be the target page's exact title, and the link must carry the page's URL.**
+Both halves are hard rules, not style preferences:
 
 ```
 ## Related
-- [Charge per seat, not per invoice] (Decision)
-- [Pricing research — Mar 2026] (Research)
+- [Run the weekly review on Thursday, not Monday](https://…/pages/123/…) (Decision)
+- [Meeting cadence — Mar 2026](https://…/pages/456/…) (Research)
 ```
+
+Get the URL from the search result that found the page. `[Exact title]` on its own is plain
+text: it looks like a link, points nowhere, and the repair pass in `confluence-retire` has
+nothing to update.
 
 Above it, a typed line only where the relationship carries meaning that would otherwise be lost:
 
 ```
-Supersedes: [Flat pricing — Jan 2026]
-Implements: [Invoice export spec]
+Supersedes: [Monday reviews — Jan 2026](https://…/pages/789/…)
+Implements: [Onboarding checklist spec](https://…/pages/321/…)
 ```
 
 **Why exact titles matter.** The connector has no backlink API and CQL has no "what links here"
 operator. The only way to find pages pointing at a page is to search for its title:
 
 ```
-searchConfluenceUsingCql: text ~ "Charge per seat, not per invoice"
+searchConfluenceUsingCql: text ~ "Run the weekly review on Thursday, not Monday"
 ```
 
-A link written as `[see the pricing decision]` is invisible to that search. It becomes a hole
+A link written as `[see the review decision]` is invisible to that search. It becomes a hole
 in the Brain that nothing will ever report — the exact failure the Brain exists to prevent. If
 you find a vague link while working on a page, fix it.
 

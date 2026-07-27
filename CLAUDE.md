@@ -224,6 +224,16 @@ scoring, or anything about a specific venture. If a skill genuinely needs that c
 that's the signal to start a **second, private marketplace** — one public repo for craft,
 one private for strategy. Don't smuggle it in here.
 
+**Examples count.** A real venture name in a worked example publishes that venture as surely
+as a sentence about it would, and nobody thinks to check an example. Invent the specifics and
+make them obviously invented — `<Venture>` in a path, a plainly fictional name where the shape
+needs a real-looking word, made-up figures and titles in sample pages. This covers every file
+that ships: `SKILL.md`, reference files like `BRAIN.md`, the `description` fields in
+`plugin.json` and `marketplace.json`, the `docs/` pages, and commit messages.
+
+Before pushing, read the diff once looking only for real names. It's a separate pass from
+reading it for correctness, and it's the one that catches this.
+
 A public repo's git history is effectively permanent. Flipping to private later does not
 unpublish what forks and caches already hold.
 

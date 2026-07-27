@@ -1,6 +1,6 @@
 {
   "name": "edea",
-  "description": "E.D.E.A shared workflow skills — house conventions for the tools we run on, starting with Linear.",
+  "description": "E.D.E.A shared workflow skills — house conventions for the tools we run on, one plugin per tool.",
   "owner": {
     "name": "E.D.E.A"
   },

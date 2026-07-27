@@ -5,7 +5,8 @@ description: Answer a question from E.D.E.A's Confluence Brain — searching our
 
 # Answer from the Brain
 
-**Read `BRAIN.md` at the root of this plugin first.** It holds the structure, the page types,
+**Read `../../BRAIN.md` first** — it sits at the root of this plugin, two levels up from this
+file. It holds the structure, the page types,
 and the linking rules this skill searches against.
 
 The job is an **answer**, not a list of search results — but an answer that can be checked,
@@ -62,9 +63,9 @@ a page behind it is you reasoning, not the Brain telling you — and the user ca
 difference unless you mark it.
 
 ```
-We charge per seat, decided March 2026.
-  → Charge per seat, not per invoice (Decision)
-  → supersedes Flat pricing — Jan 2026
+The weekly review runs on Thursday, decided March 2026.
+  → Run the weekly review on Thursday, not Monday (Decision)
+  → supersedes Monday reviews — Jan 2026
 
 ⚠ Deploy runbook — review date passed 2026-04-01, may be out of date.
 ```
@@ -78,8 +79,8 @@ Decision cites Research, say what the Decision was and what evidence sat behind 
 
 **The most valuable thing this skill does.** If nothing covers the question, say so plainly:
 
-> Nothing in the Brain covers the refund policy. The closest is *Charge per seat, not per
-> invoice*, which sets pricing but says nothing about refunds.
+> Nothing in the Brain covers who runs the weekly review. The closest is *Run the weekly review
+> on Thursday, not Monday*, which sets the day but says nothing about who runs it.
 
 Then offer the useful next move: write it up with `confluence-write` once they've decided, or —
 if it isn't decided yet — work the question out with them first, one question at a time with

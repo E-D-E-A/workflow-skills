@@ -169,6 +169,27 @@ signal to start a second, private marketplace, not to phrase it carefully.
 What someone writes inside a Linear issue or a Confluence page is private and fine. This file
 is not.
 
+### Make every example up
+
+The rule covers examples, not just statements. A real venture name in a worked example, a real
+number in a sample page, a real customer in a "for instance" — each publishes the thing itself,
+and reads as more reliable than a claim because nobody thinks to check an example.
+
+So **invent the specifics, and make them obviously invented.** A venture is `<Venture>` in a
+path and something plainly fictional where the shape needs a real-looking word. Names, figures,
+dates and page titles in a sample are made up. If an example only works with the real value in
+it, the surrounding text is the problem — rewrite it so the shape is what's being shown.
+
+This applies to **everything that ships**, which is more files than people remember:
+
+- `SKILL.md` and any reference file beside it, like `BRAIN.md`
+- `description` in `plugin.json` and in `marketplace.json`
+- the `docs/` page — it's in the same public repo as the skills
+- commit messages, which are the part nobody edits and nobody can take back
+
+Before you push, read the diff for real names rather than for correctness. It's a different
+pass, and it's the only one that catches this.
+
 ---
 
 Adapted from [`writing-great-skills`](https://github.com/mattpocock/skills) by Matt Pocock,
