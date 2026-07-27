@@ -8,9 +8,12 @@ came from where.
 <https://github.com/mattpocock/skills> — "Skills for Real Engineers", by Matt Pocock. MIT
 licensed.
 
+Both live in `.claude/skills/` — they're about building this marketplace, so they're never
+published.
+
 | Ours | Where | Theirs | What changed |
 | --- | --- | --- | --- |
-| `grilling` | `edea-craft` | `productivity/grilling` | Rewritten in house voice, tied to our gates — the Linear issue `Outcome`, ENG/BIZ routing, and the Confluence write gate. |
+| `grilling` | `.claude/skills/` | `productivity/grilling` | Rewritten in house voice and aimed at one job: working out what a new plugin or skill is for before it's written. Kept the method — one question at a time, recommend an answer, look facts up rather than asking. |
 | `skill-writing` | `.claude/skills/` | `productivity/writing-great-skills` | Substantially rewritten. Kept the underlying ideas — predictability, the description does the firing, steps vs reference, checkable completion, pruning no-ops, positive phrasing, consistent vocabulary. Dropped the coined vocabulary, which conflicts with our plain-language rule. Added our own process: which plugin a skill belongs to, the four house rules, docs page, version bump, `claude plugin validate`, and the public-repo limit. |
 
 We deliberately did not adopt the rest of that repo. Most of it is engineering-craft work tied

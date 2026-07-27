@@ -14,13 +14,7 @@
     {
       "name": "edea-confluence",
       "source": "./plugins/edea-confluence",
-      "description": "Shared E.D.E.A workflows for Confluence: writing and organising docs in house format, and keeping them tied to the Linear work they came from.",
-      "category": "productivity"
-    },
-    {
-      "name": "edea-craft",
-      "source": "./plugins/edea-craft",
-      "description": "Shared E.D.E.A working practice that isn't tied to one tool: stress-testing a plan or a decision before you commit to it.",
+      "description": "E.D.E.A's Confluence Brain: writing, reading and retiring pages in house format, keeping them connected to each other and to the Linear work they came from.",
       "category": "productivity"
     }
   ]

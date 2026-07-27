@@ -21,15 +21,15 @@ process; this skill is how to write the words inside.
 One plugin per tool, because each tool's MCP connector ships inside its own plugin. A skill
 about Linear goes in `edea-linear`. A skill about Confluence goes in `edea-confluence`.
 
-A skill that isn't about any one tool — how we think, how we work — goes in `edea-craft`,
-which ships no connector.
-
 If the skill would need a new tool's connector, you're adding a plugin, not a skill. Follow
 the "Adding a new plugin" steps in `CLAUDE.md` instead.
 
 **If the skill is about this repo itself**, it belongs in `.claude/skills/` alongside this one
-— not in a plugin. Plugins install for the user and load in every repo, so a skill that only
-makes sense here would fire in someone's product repo and give confidently wrong instructions.
+— not in a plugin, and not published. Plugins install for the user and load in every repo, so
+a skill that only makes sense here would fire in someone's product repo and give confidently
+wrong instructions. The test: would this skill's instructions be wrong there?
+
+Everything published is a tool plugin. There is no plugin for general craft.
 
 ## Step 2 — Write the description
 

@@ -1,8 +1,0 @@
-{
-  "name": "edea-craft",
-  "description": "Shared E.D.E.A working practice that isn't tied to one tool: stress-testing a plan or a decision before you commit to it.",
-  "version": "0.4.0",
-  "author": {
-    "name": "E.D.E.A"
-  }
-}

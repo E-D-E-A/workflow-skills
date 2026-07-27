@@ -5,8 +5,10 @@ house conventions for the tools we run on, so everyone works the same way withou
 remember the rules.
 
 The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear` and
-`edea-confluence` today, others later — plus `edea-craft` for the skills that aren't about
-any tool.
+`edea-confluence` today, others later. Nothing else is published.
+
+The skills for *building* those plugins — grilling out what a new one is for, then writing it
+— live in `.claude/skills/` and are never published. They only make sense in this repo.
 
 ## Layout
 
@@ -23,7 +25,6 @@ plugins/
     skills/
       <skill-name>/
         SKILL.md
-  edea-craft/                   # the one plugin with no tool and no .mcp.json
 docs/
   <plugin>-guide.html           # team-facing handbook — one per plugin
 ATTRIBUTION.md                  # what we adapted from other people's public skills
@@ -35,13 +36,8 @@ Each tool's MCP connector ships inside its own plugin. That way installing
 `edea-confluence` doesn't force a Confluence connector onto someone who only needs Linear.
 Don't merge tools into one large plugin.
 
-**`edea-craft` is the exception**, and only because it proves the rule: it holds skills about
-how we work rather than what we work in — stress-testing an idea, writing skills — so it ships
-no connector and there's nothing to force on anyone. Everything else about it is normal: its
-own `plugin.json`, its own version, its own docs page.
-
-Put a skill there only when it's genuinely tool-independent. A skill that spends most of its
-words on one tool belongs in that tool's plugin, even if it reads like general advice.
+Every plugin here wraps a tool. If a skill isn't about a tool the whole team uses, it doesn't
+belong in a plugin at all — see "Plugin skill, or repo skill?" below.
 
 ## Adding a new plugin
 
@@ -117,7 +113,7 @@ better errors than a sync failure does. It should pass with no warnings.
 ## Docs for every plugin
 
 Every plugin gets a team-facing handbook page in `docs/`, named for the plugin with the
-`edea-` prefix dropped — `linear-guide.html`, `confluence-guide.html`, `craft-guide.html`.
+`edea-` prefix dropped — `linear-guide.html`, `confluence-guide.html`.
 `docs/linear-guide.html` is the reference — **copy it as the starting point** for a new one
 and swap the content, so the pages read as one family rather than several unrelated designs.
 
@@ -176,20 +172,31 @@ House conventions for the body:
 Skill folder names are kebab-case and match the `name` in the frontmatter. Any commands a
 plugin ships are namespaced on install, appearing as `/edea-<tool>:<name>`.
 
-The `skill-writing` skill in `.claude/skills/` carries these conventions in a form Claude can
-apply. If you change the rules here, change it too — otherwise the skill keeps teaching the
-old ones.
+### The two skills that build the others
+
+Both live in `.claude/skills/`, and both run in this order when a new plugin or skill is needed:
+
+1. **`grilling`** — interviews you, one question at a time, about what the thing is actually
+   for: the job, the words that should trigger it, who relies on it, what it replaces, how it
+   fails. A skill built on a fuzzy purpose fires on the wrong things and teaches four people
+   the wrong process.
+2. **`skill-writing`** — turns that understanding into a skill that follows the rules above.
+
+If you change the conventions in this file, change `skill-writing` too, or it keeps teaching
+the old ones.
 
 ### Plugin skill, or repo skill?
 
-**Plugins install for the user, not the project**, so a plugin's skills load in every repo
-that person opens. That's right for skills about a shared tool — Linear and Confluence are the
-same everywhere.
+**Plugins install for the user, not the project**, so a plugin's skills load in every repo that
+person opens. That's right for a shared tool — Linear and Confluence are the same everywhere.
 
 It's wrong for skills about **this repo**. `skill-writing` tells you to pick a plugin, bump
 `plugin.json`, update a docs page and mind the public-repo rule — all meaningless in a product
-repo, and stated confidently enough to be believed. So it lives in `.claude/skills/`, which is
-committed here and loads nowhere else. No install step, no version, no way for it to leak.
+repo, and stated confidently enough to be believed. `grilling` is the same: it grills the
+purpose of a *plugin*, which is a question that only arises here.
+
+So both live in `.claude/skills/` — committed with the repo, loaded nowhere else. No install
+step, no version, no way to leak.
 
 The test: **would this skill's instructions be wrong in someone's product repo?** If yes, it's
 a repo skill.
@@ -240,11 +247,10 @@ Once per person:
 /plugin marketplace add E-D-E-A/workflow-skills
 /plugin install edea-linear@edea
 /plugin install edea-confluence@edea
-/plugin install edea-craft@edea
 ```
 
-`edea-linear` and `edea-confluence` each prompt for a sign-in the first time they're used.
-`edea-craft` ships no connector, so it doesn't.
+Each prompts for a sign-in the first time it's used — Linear and Atlassian respectively. No
+credentials live in this repo.
 
 Then `/plugin` → Marketplaces → enable auto-update. Without that, people silently drift
 onto different skill versions.
