@@ -1,0 +1,8 @@
+{
+  "name": "edea-confluence",
+  "description": "Shared E.D.E.A workflows for Confluence: writing and organising docs in house format, and keeping them tied to the Linear work they came from.",
+  "version": "0.2.0",
+  "author": {
+    "name": "E.D.E.A"
+  }
+}
