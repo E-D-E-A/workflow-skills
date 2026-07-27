@@ -14,11 +14,10 @@ Before you write, check the real names in the workspace instead of guessing — 
 (`list_teams`), the statuses for the team (`list_issue_statuses`), and its labels
 (`list_issue_labels`). Then create the issue with `save_issue`.
 
-**Statuses belong to a team**, so ENG and BIZ have separate ones even where the names match.
-**Labels are mixed:** some belong to a team, and some are workspace-level and show up on every
-team's list. `list_issue_labels` returns both together, so check whether a label really belongs
-to the team before treating it as team-specific — a workspace-level label can be applied to any
-issue, which is not always what you want.
+**Statuses and labels both belong to a team**, so ENG and BIZ have separate ones even where the
+names match. `list_issue_labels` for a team returns only that team's labels, so what it gives
+you is already the valid set for the issue you're writing — there's no workspace-wide label
+that shows up everywhere.
 
 ## Before you create — do you have enough to write a good issue?
 
@@ -94,9 +93,7 @@ out of this public repo.
 **ENG labels:** `Bug`, `Feature`, `Improvement`. Don't invent new ones — list what's there and
 reuse it.
 
-These three are currently **workspace-level**, not owned by Engineering, so they also appear
-when you list Business labels. They still mean engineering work: don't put `Bug` on a BIZ
-issue just because Linear offers it.
+These belong to Engineering, so Linear won't offer them on a Business issue at all.
 
 Add one label when the type is obvious; if you're not sure, leave it off rather than guess.
 
