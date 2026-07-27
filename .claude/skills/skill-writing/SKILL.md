@@ -9,31 +9,27 @@ A skill exists to make Claude take the **same route every time**. Not to produce
 answer — the answers differ — but to follow the same process, apply the same rules, and ask
 the same questions. Everything below serves that.
 
-## First — which repo are you in?
+This skill lives in `.claude/skills/` in the `workflow-skills` repo rather than in a published
+plugin, because it's about authoring *this* marketplace. It loads here and nowhere else, and
+anyone who clones the repo gets it with no install step.
 
-This skill is installed for the user, so it's available in every project, but most of it is
-about **one specific repo**: `workflow-skills`, which publishes the E.D.E.A marketplace.
-
-**In `workflow-skills`:** read `CLAUDE.md` at the repo root before you start — it's the source
-of truth for layout and process, and this skill is how to write the words inside. Everything
-below applies.
-
-**Anywhere else:** Steps 2, 3 and 5 — writing a description that fires, steps versus reference,
-and pruning — are general craft and still apply. Steps 1, 4 and 6 are not: there is no
-marketplace to pick a plugin from, no `plugin.json` to version, no `docs/` handbook page, and
-the public-repo rule is about *that* repo, not this one. **Say so rather than applying them.**
-Follow whatever conventions the repo you're in actually has.
+Read `CLAUDE.md` at the repo root before you start. It's the source of truth for layout and
+process; this skill is how to write the words inside.
 
 ## Step 1 — Which plugin does it belong to?
 
 One plugin per tool, because each tool's MCP connector ships inside its own plugin. A skill
 about Linear goes in `edea-linear`. A skill about Confluence goes in `edea-confluence`.
 
-A skill that isn't about any one tool — how we think, how we write, how we work — goes in
-`edea-craft`, which ships no connector.
+A skill that isn't about any one tool — how we think, how we work — goes in `edea-craft`,
+which ships no connector.
 
 If the skill would need a new tool's connector, you're adding a plugin, not a skill. Follow
 the "Adding a new plugin" steps in `CLAUDE.md` instead.
+
+**If the skill is about this repo itself**, it belongs in `.claude/skills/` alongside this one
+— not in a plugin. Plugins install for the user and load in every repo, so a skill that only
+makes sense here would fire in someone's product repo and give confidently wrong instructions.
 
 ## Step 2 — Write the description
 
@@ -67,8 +63,9 @@ enough for someone else to start" is checkable. "Gather requirements" is not, an
 declare it done early.
 
 **Keep the whole thing on one screen's worth of ideas.** If it's sprawling, either split it
-or move the rarely-needed parts into a second file in the skill folder and point at them from
-`SKILL.md`. Only what every run needs belongs in `SKILL.md`.
+or move the rarely-needed parts into a second file and point at them from `SKILL.md`. Only
+what every run needs belongs in `SKILL.md`. `edea-confluence` does this with `BRAIN.md`: three
+skills share one reference file instead of repeating it three times.
 
 **Say what to do, not what to avoid.** "Leave the label off if you're unsure" beats "don't
 guess at labels" — a prohibition names the bad behaviour and makes it more available, not
@@ -76,9 +73,9 @@ less. Keep an outright ban only for things that are genuinely destructive, and e
 what to do instead.
 
 **Reuse the same word for the same idea.** Every skill in this repo says `Outcome`, `Next
-action`, `Waiting`, ENG, BIZ. A word that appears in the skills, in Linear, and in how people
-talk becomes a reliable hook — Claude reaches for the same behaviour every time it sees it.
-Inventing a fresh synonym in each skill throws that away.
+action`, `Waiting`, ENG, BIZ, `Topics`. A word that appears in the skills, in the tools, and
+in how people talk becomes a reliable hook — Claude reaches for the same behaviour every time
+it sees it. Inventing a fresh synonym in each skill throws that away.
 
 ## Step 4 — Apply the house rules
 
@@ -98,7 +95,7 @@ does not leave blanks. For a genuinely fuzzy idea rather than one missing field,
 the `grilling` skill.
 
 **Guard anything destructive.** Deleting gets an explicit confirmation, and a reversible
-alternative offered first — cancel it, archive it, mark it a duplicate.
+alternative offered first — cancel it, archive it, supersede it, mark it a duplicate.
 
 ## Step 5 — Cut it down
 
@@ -139,7 +136,8 @@ Then, in order:
 3. **Bump `version` in that plugin's `plugin.json`.** Every content change, including a
    wording tweak. Patch for wording, minor for behaviour, major for a rewrite. Skip it and
    nobody picks the change up. Never put a version in `marketplace.json` — if it's in both,
-   the plugin manifest wins silently.
+   the plugin manifest wins silently. *(Skills in `.claude/skills/` have no version — they
+   ship with the repo, so a clone or pull is the whole distribution mechanism.)*
 4. **Run `claude plugin validate .`** It should pass with no warnings. Skipping it means the
    next person sees "Marketplace sync failed. Check the repository URL and try again", which
    says nothing about what's actually wrong.

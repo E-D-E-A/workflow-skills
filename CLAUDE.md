@@ -11,6 +11,8 @@ any tool.
 ## Layout
 
 ```
+.claude/
+  skills/<skill-name>/          # skills about THIS repo — never published
 .claude-plugin/
   marketplace.json              # the catalog — must be at exactly this path
 plugins/
@@ -174,9 +176,23 @@ House conventions for the body:
 Skill folder names are kebab-case and match the `name` in the frontmatter. Any commands a
 plugin ships are namespaced on install, appearing as `/edea-<tool>:<name>`.
 
-The `skill-writing` skill in `edea-craft` carries these conventions in a form Claude can
+The `skill-writing` skill in `.claude/skills/` carries these conventions in a form Claude can
 apply. If you change the rules here, change it too — otherwise the skill keeps teaching the
 old ones.
+
+### Plugin skill, or repo skill?
+
+**Plugins install for the user, not the project**, so a plugin's skills load in every repo
+that person opens. That's right for skills about a shared tool — Linear and Confluence are the
+same everywhere.
+
+It's wrong for skills about **this repo**. `skill-writing` tells you to pick a plugin, bump
+`plugin.json`, update a docs page and mind the public-repo rule — all meaningless in a product
+repo, and stated confidently enough to be believed. So it lives in `.claude/skills/`, which is
+committed here and loads nowhere else. No install step, no version, no way for it to leak.
+
+The test: **would this skill's instructions be wrong in someone's product repo?** If yes, it's
+a repo skill.
 
 ### Adapting someone else's skill
 

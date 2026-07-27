@@ -8,12 +8,10 @@ came from where.
 <https://github.com/mattpocock/skills> — "Skills for Real Engineers", by Matt Pocock. MIT
 licensed.
 
-Adapted into `edea-craft`:
-
-| Ours | Theirs | What changed |
-| --- | --- | --- |
-| `grilling` | `productivity/grilling` | Rewritten in house voice, tied to our gates — the Linear issue `Outcome`, ENG/BIZ routing, and the Confluence write gate. |
-| `skill-writing` | `productivity/writing-great-skills` | Substantially rewritten. Kept the underlying ideas — predictability, the description does the firing, steps vs reference, checkable completion, pruning no-ops, positive phrasing, consistent vocabulary. Dropped the coined vocabulary, which conflicts with our plain-language rule. Added our own process: which plugin a skill belongs to, the four house rules, docs page, version bump, `claude plugin validate`, and the public-repo limit. |
+| Ours | Where | Theirs | What changed |
+| --- | --- | --- | --- |
+| `grilling` | `edea-craft` | `productivity/grilling` | Rewritten in house voice, tied to our gates — the Linear issue `Outcome`, ENG/BIZ routing, and the Confluence write gate. |
+| `skill-writing` | `.claude/skills/` | `productivity/writing-great-skills` | Substantially rewritten. Kept the underlying ideas — predictability, the description does the firing, steps vs reference, checkable completion, pruning no-ops, positive phrasing, consistent vocabulary. Dropped the coined vocabulary, which conflicts with our plain-language rule. Added our own process: which plugin a skill belongs to, the four house rules, docs page, version bump, `claude plugin validate`, and the public-repo limit. |
 
 We deliberately did not adopt the rest of that repo. Most of it is engineering-craft work tied
 to a product codebase — code review, TDD, domain modelling, merge conflicts, triage — which is

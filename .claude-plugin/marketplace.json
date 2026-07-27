@@ -20,7 +20,7 @@
     {
       "name": "edea-craft",
       "source": "./plugins/edea-craft",
-      "description": "Shared E.D.E.A working practice that isn't tied to one tool: stress-testing a plan before you commit to it, and writing skills for this marketplace.",
+      "description": "Shared E.D.E.A working practice that isn't tied to one tool: stress-testing a plan or a decision before you commit to it.",
       "category": "productivity"
     }
   ]
