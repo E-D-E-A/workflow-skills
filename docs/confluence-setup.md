@@ -13,11 +13,11 @@ Everything here follows the design settled in `plugins/edea-confluence/skills/` 
 
 ## 1. Create the house space
 
-| Field | Value |
-| --- | --- |
-| Space name | `E.D.E.A` |
-| Space key | `EDEA` |
-| Type | Team space (**not** a personal space) |
+| Field      | Value                                 |
+| ---------- | ------------------------------------- |
+| Space name | `E.D.E.A`                             |
+| Space key  | `EDEA`                                |
+| Type       | Team space (**not** a personal space) |
 
 Personal spaces can't be shared properly and get deleted with the account. Make sure it's a
 team space.
@@ -65,6 +65,19 @@ The same five type trees repeat inside every idea and, later, inside every ventu
 repetition is deliberate: it means a venture graduating is a straight subtree move with
 nothing to reshape.
 
+**Page titles must be unique within a space.** Confluence enforces this silently — create a
+second `Decisions` and it becomes `Decisions (2)` without telling you. So inside `Ideas/`, the
+type trees carry the venture name:
+
+```
+Ideascout — Decisions      Ideascout — Specs      Ideascout — Research
+Ideascout — Runbooks       Ideascout — Meetings
+```
+
+This is better than a bare name anyway: search results show a title without its parent, so
+`Decisions` alone would be ambiguous. When a venture graduates to its own space the prefix
+becomes redundant — the space name carries it — so drop it during the move.
+
 ---
 
 ## 3. Leave venture spaces until they're earned
@@ -75,10 +88,10 @@ then it's an idea and lives under `Ideas/<Name>/`.
 Today that means `Ideascout` stays in the house space. When you start that Project, create the
 space then:
 
-| Field | Value |
-| --- | --- |
-| Space name | The venture name, as written in Linear |
-| Space key | The venture name, uppercase, no spaces — `IDEASCOUT` |
+| Field      | Value                                                |
+| ---------- | ---------------------------------------------------- |
+| Space name | The venture name, as written in Linear               |
+| Space key  | The venture name, uppercase, no spaces — `IDEASCOUT` |
 
 Match the Linear Project name exactly. The skills find the space by that name, and a mismatch
 means they can't.
@@ -88,23 +101,32 @@ links attached to Linear issues, which is the part that's easy to forget.
 
 ---
 
-## 4. Fix the label vocabulary
+## 4. Subject goes in a `Topics:` line, not a Confluence label
 
-Confluence creates a label the first time someone types it, which means `legal`, `Legal` and
-`legals` all become separate labels and the vocabulary quietly splits.
+**The connector cannot set Confluence labels.** There is no label tool, neither create nor
+update accepts a labels parameter, and no label scope is granted. It can *read* labels through
+search — it just can't write them.
 
-Create a page **`EDEA/Labels`** listing the canonical set, and treat it as the only source:
+So subject is carried by a **`Topics:` line near the top of the page body**, which the skill
+can write and search can find:
 
-**Subject labels** — the same seven words used on Business issues in Linear, so both tools
-share one vocabulary:
+```
+Topics: pricing, fundraising
+```
+
+The canonical vocabulary lives on the **`Topics`** page in the space. Seven core topics, the
+same words used as Business labels in Linear so both tools share one vocabulary:
 
 `product` · `design` · `research` · `fundraising` · `finance` · `legal` · `ops`
 
-**Free labels** — whatever the page is actually about: `pricing`, `onboarding`, `compliance`.
-Lowercase, singular, no spaces (use `-`).
+Plus free topics for whatever the page is actually about: `pricing`, `onboarding`,
+`e-invoicing`. Lowercase, singular, hyphens instead of spaces.
 
-Rules: all lowercase. Never a label for the document type — the tree already says that. Never
-a label for the venture — the space already says that.
+Rules: all lowercase — `Legal` and `legal` are different strings and the vocabulary splits.
+Never a topic for the page type (the tree says that). Never a topic for the venture (the space
+says that).
+
+Real Confluence labels are optional and human-added on top. Nothing depends on them.
 
 ---
 

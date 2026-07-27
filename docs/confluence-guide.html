@@ -307,15 +307,19 @@
 
     <h3>The same five trees everywhere</h3>
     <p><code>Decisions/</code> <code>Specs/</code> <code>Research/</code> <code>Runbooks/</code> <code>Meetings/</code> — in the house space, in each venture space, and inside each idea. Pick the type and the location follows; there's no judgement call.</p>
-    <p><strong>Subject is a label, not a tree.</strong> Reuse the words already on Business issues in Linear — <code>product</code>, <code>design</code>, <code>research</code>, <code>fundraising</code>, <code>finance</code>, <code>legal</code>, <code>ops</code> — plus whatever it's actually about (<code>pricing</code>, <code>onboarding</code>). One vocabulary across both tools beats two.</p>
+    <p><strong>Page titles are unique per space.</strong> Confluence silently renames a duplicate to <code>Decisions (2)</code> without warning, so inside <code>Ideas/</code> the trees carry the venture name — <code>Ideascout — Decisions</code>. It reads better anyway: search shows a title without its parent.</p>
+
+    <h3>Subject goes in a Topics line</h3>
+    <p>Near the top of every page: <code>Topics: pricing, fundraising</code>. Words come from the <strong>Topics</strong> page in the space — the same seven used on Business issues in Linear, plus whatever it's actually about. One vocabulary across both tools beats two.</p>
+    <p class="dim" style="font-size:14.5px">Not a Confluence label: the connector can't set those, so a label would depend on someone remembering every time. Add real labels yourself if you like them — nothing depends on them.</p>
 
     <h3>Graduation</h3>
     <p>When a Project starts but its pages are still under <code>Ideas/</code>, Claude will say so and offer to move them. <strong>You create the space</strong> — that sets a key and permissions and can't be renamed cleanly later. Claude then moves the tree and re-points any page links attached to Linear issues, so nothing dangles.</p>
 
     <div class="notice">
-      <p class="notice-head">Setup still pending</p>
-      <p>Confluence isn't built yet. Someone needs to create the <code>EDEA</code> space, add the five type trees, create <code>Ideas/Ideascout/</code>, and add the seven subject labels.</p>
-      <p>Access is open to all four of us everywhere — no restricted areas. Worth revisiting at the first hire who isn't a founder.</p>
+      <p class="notice-head">Two rules that keep it working</p>
+      <p><strong>Link by the exact page title.</strong> Write <code>[Charge per seat, not per invoice]</code>, never <code>[see the pricing decision]</code>. Finding what points at a page is done by searching its title — a link in different words is invisible, and that's how gaps appear.</p>
+      <p><strong>Nothing is deleted.</strong> Superseded pages stay, marked and linked to what replaced them. The connector has no delete tool at all, so this one enforces itself.</p>
     </div>
   </section>
 
@@ -401,7 +405,9 @@
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">confluence-doc</span></td><td>Writes and updates pages in our format. Searches first, asks where it goes, checks before deleting.</td></tr>
+          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks when it can't tell.</td></tr>
+          <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question.</td></tr>
+          <tr><td><span class="lbl">confluence-retire</span></td><td>Marks a page superseded and repairs everything that pointed at it. Also moves a venture's tree when it graduates.</td></tr>
         </tbody>
       </table>
     </div>
