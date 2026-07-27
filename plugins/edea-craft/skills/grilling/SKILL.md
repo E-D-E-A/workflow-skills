@@ -41,10 +41,13 @@ skill does the writing.
 
 ## Where this fits
 
-The `linear-issue` and `confluence-doc` skills each have a small gate of their own: stop and
+The `linear-issue` and `confluence-write` skills each have a small gate of their own: stop and
 ask when something is missing. This is the deeper version, for when the whole idea is fuzzy
 rather than one field being blank. Reach for it when the answer to "what does done look like?"
 is a shrug.
+
+Those two are E.D.E.A's tools. Grilling itself needs none of them — it works on any plan, in
+any repo, and hands off to whatever writes things down there.
 
 ---
 

@@ -49,7 +49,7 @@ Worked example for Confluence:
 
    ```
    plugins/edea-confluence/.claude-plugin/
-   plugins/edea-confluence/skills/confluence-doc/
+   plugins/edea-confluence/skills/confluence-write/
    ```
 
 2. **Write `plugins/edea-confluence/.claude-plugin/plugin.json`**
@@ -149,7 +149,7 @@ Frontmatter needs `name` and `description`:
 
 ```markdown
 ---
-name: confluence-doc
+name: confluence-write
 description: What it does, plus when to use it — this is what the model matches on, so
   name the trigger words someone would actually say.
 ---

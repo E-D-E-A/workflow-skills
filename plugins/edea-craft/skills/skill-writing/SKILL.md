@@ -9,8 +9,20 @@ A skill exists to make Claude take the **same route every time**. Not to produce
 answer — the answers differ — but to follow the same process, apply the same rules, and ask
 the same questions. Everything below serves that.
 
-Read `CLAUDE.md` at the repo root before you start. It's the source of truth for layout and
-process; this skill is how to write the words inside.
+## First — which repo are you in?
+
+This skill is installed for the user, so it's available in every project, but most of it is
+about **one specific repo**: `workflow-skills`, which publishes the E.D.E.A marketplace.
+
+**In `workflow-skills`:** read `CLAUDE.md` at the repo root before you start — it's the source
+of truth for layout and process, and this skill is how to write the words inside. Everything
+below applies.
+
+**Anywhere else:** Steps 2, 3 and 5 — writing a description that fires, steps versus reference,
+and pruning — are general craft and still apply. Steps 1, 4 and 6 are not: there is no
+marketplace to pick a plugin from, no `plugin.json` to version, no `docs/` handbook page, and
+the public-repo rule is about *that* repo, not this one. **Say so rather than applying them.**
+Follow whatever conventions the repo you're in actually has.
 
 ## Step 1 — Which plugin does it belong to?
 
