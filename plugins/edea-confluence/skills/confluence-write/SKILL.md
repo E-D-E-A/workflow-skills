@@ -92,6 +92,11 @@ these pages get scanned for one answer, not read start to finish.
 just found in search, copy its title verbatim. This is what makes the page findable when
 something later needs to know what points at it.
 
+**Write it as a real markdown link with the page URL** — `[Exact title](https://…/pages/123/…)`.
+Confluence turns that into a native page link that stores the title, so it survives the page
+being moved or renamed. Writing `[Exact title]` with no URL leaves plain text that looks right
+and links to nothing; get the URL from the search result rather than omitting it.
+
 Don't pad a short page to fill the shape, and don't compress a complicated one to look tidy.
 
 ## Step 6 — Updating an existing page

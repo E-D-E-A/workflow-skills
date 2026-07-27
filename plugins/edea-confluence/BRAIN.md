@@ -159,6 +159,10 @@ Verified against the live site. Design around these rather than assuming.
 | **Set labels** | ❌ no tool, no scope, no parameter — hence `Topics:` |
 | **Enumerate inbound links** | ❌ no API — hence the exact-title rule |
 
+Inbound-link discovery by title search is **verified working**: searching a page's exact title
+returns both that page and every page linking to it. That only holds while links carry the
+real title, which is why the rule above is a rule.
+
 Two of our rules are therefore enforced by the tooling rather than by discipline: **the skills
 cannot delete anything, and cannot create a space.** When either is needed, ask the user to do
 it and wait.
