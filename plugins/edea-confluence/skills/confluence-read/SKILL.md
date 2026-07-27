@@ -81,8 +81,9 @@ Decision cites Research, say what the Decision was and what evidence sat behind 
 > Nothing in the Brain covers the refund policy. The closest is *Charge per seat, not per
 > invoice*, which sets pricing but says nothing about refunds.
 
-Then offer the useful next move: write it up with `confluence-write` once they've decided, or
-grill the question out with `grilling` if it isn't decided yet.
+Then offer the useful next move: write it up with `confluence-write` once they've decided, or —
+if it isn't decided yet — work the question out with them first, one question at a time with
+the answer you'd recommend attached.
 
 Do **not** stitch an answer together from adjacent pages and present it as what we know. A
 confident wrong answer is worse than no Brain at all, because the user would have checked

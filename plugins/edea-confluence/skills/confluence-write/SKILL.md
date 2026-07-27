@@ -49,8 +49,9 @@ can pick rather than compose:
 - "What would make us revisit this?"
 - "Who owns this runbook — whoever would have to fix it if it broke?"
 
-For a whole idea that's still fuzzy rather than one missing field, hand off to the `grilling`
-skill instead of interrogating them here.
+For a whole idea that's still fuzzy rather than one missing field, work it out with them before
+writing — one question at a time, each with the answer you'd recommend attached, until you both
+describe the page the same way.
 
 ## Step 4 — Pick the type and therefore the place
 

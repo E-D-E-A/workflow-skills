@@ -1,7 +1,7 @@
 {
   "name": "edea-confluence",
   "description": "E.D.E.A's Confluence Brain: writing, reading and retiring pages in house format, keeping them connected to each other and to the Linear work they came from.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": {
     "name": "E.D.E.A"
   }

@@ -41,6 +41,10 @@ belong in a plugin at all — see "Plugin skill, or repo skill?" below.
 
 ## Adding a new plugin
 
+**Grill it first.** Run the `grilling` skill before creating anything. A plugin installs for
+the person, not the project, so it loads in every repo they open — a fuzzy purpose costs four
+people's tooling rather than one file. The steps below assume you already know what it's for.
+
 Worked example for Confluence:
 
 1. **Create the directories**

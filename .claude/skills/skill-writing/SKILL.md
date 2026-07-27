@@ -16,7 +16,19 @@ anyone who clones the repo gets it with no install step.
 Read `CLAUDE.md` at the repo root before you start. It's the source of truth for layout and
 process; this skill is how to write the words inside.
 
-## Step 1 — Which plugin does it belong to?
+## Step 1 — Is the purpose settled?
+
+For anything **new** — a skill, or a whole plugin — you should be able to state its job in one
+sentence, and name five phrasings someone here would really use to trigger it. If either is a
+shrug, stop and run `grilling` — it interviews the user until the purpose is sharp, which is
+the whole point of having it. Writing files off a fuzzy purpose is what it exists to prevent.
+
+A plugin raises the stakes, so grill it harder: it installs for the person rather than the
+project, and loads in every repo they open.
+
+Editing an existing skill skips this.
+
+## Step 2 — Which plugin does it belong to?
 
 One plugin per tool, because each tool's MCP connector ships inside its own plugin. A skill
 about Linear goes in `edea-linear`. A skill about Confluence goes in `edea-confluence`.
@@ -31,7 +43,7 @@ wrong instructions. The test: would this skill's instructions be wrong there?
 
 Everything published is a tool plugin. There is no plugin for general craft.
 
-## Step 2 — Write the description
+## Step 3 — Write the description
 
 The `description` is the only part Claude sees before deciding whether to use the skill, so
 it does all the firing. A vague one means the skill never runs and nobody finds out why.
@@ -50,7 +62,7 @@ It has two jobs: say what the skill does, and name the moments it should fire.
 If a skill fires too often, the triggers are too broad. If it never fires, they don't match
 the words people use. Both are fixed in the description, not the body.
 
-## Step 3 — Write the body
+## Step 4 — Write the body
 
 Two kinds of content, and they mix freely:
 
@@ -77,7 +89,7 @@ action`, `Waiting`, ENG, BIZ, `Topics`. A word that appears in the skills, in th
 in how people talk becomes a reliable hook — Claude reaches for the same behaviour every time
 it sees it. Inventing a fresh synonym in each skill throws that away.
 
-## Step 4 — Apply the house rules
+## Step 5 — Apply the house rules
 
 These are the ones that make a skill ours rather than generic. All four come from `CLAUDE.md`.
 
@@ -97,7 +109,7 @@ the `grilling` skill.
 **Guard anything destructive.** Deleting gets an explicit confirmation, and a reversible
 alternative offered first — cancel it, archive it, supersede it, mark it a duplicate.
 
-## Step 5 — Cut it down
+## Step 6 — Cut it down
 
 Go through line by line and ask of each: does this change what Claude does, compared with
 having said nothing? "Be helpful", "think carefully", "use good judgement" — Claude already
@@ -110,7 +122,7 @@ the other, so changing the rule later is a one-place edit.
 Skills rot by accumulation: adding a line feels safe, removing one feels risky, and after a
 year the skill is mostly sediment. Prune every time you edit.
 
-## Step 6 — Before you push
+## Step 7 — Before you push
 
 Skill folder names are kebab-case and match the `name` in the frontmatter.
 
