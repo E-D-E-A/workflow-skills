@@ -4,12 +4,17 @@ E.D.E.A's shared skills, published as a Claude Code plugin marketplace. This rep
 house conventions for the tools we run on, so everyone works the same way without having to
 remember the rules.
 
-The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear` today,
-`edea-confluence` and others later.
+The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear` and
+`edea-confluence` today, others later. Nothing else is published.
+
+The skills for *building* those plugins — grilling out what a new one is for, then writing it
+— live in `.claude/skills/` and are never published. They only make sense in this repo.
 
 ## Layout
 
 ```
+.claude/
+  skills/<skill-name>/          # skills about THIS repo — never published
 .claude-plugin/
   marketplace.json              # the catalog — must be at exactly this path
 plugins/
@@ -21,16 +26,24 @@ plugins/
       <skill-name>/
         SKILL.md
 docs/
-  <tool>-guide.html             # team-facing handbook — one per plugin
+  <plugin>-guide.html           # team-facing handbook — one per plugin
+ATTRIBUTION.md                  # what we adapted from other people's public skills
 ```
 
 ## Why one plugin per tool
 
 Each tool's MCP connector ships inside its own plugin. That way installing
-`edea-confluence` later doesn't force a Confluence connector onto someone who only needs
-Linear. Don't merge tools into one large plugin.
+`edea-confluence` doesn't force a Confluence connector onto someone who only needs Linear.
+Don't merge tools into one large plugin.
+
+Every plugin here wraps a tool. If a skill isn't about a tool the whole team uses, it doesn't
+belong in a plugin at all — see "Plugin skill, or repo skill?" below.
 
 ## Adding a new plugin
+
+**Grill it first.** Run the `grilling` skill before creating anything. A plugin installs for
+the person, not the project, so it loads in every repo they open — a fuzzy purpose costs four
+people's tooling rather than one file. The steps below assume you already know what it's for.
 
 Worked example for Confluence:
 
@@ -38,7 +51,7 @@ Worked example for Confluence:
 
    ```
    plugins/edea-confluence/.claude-plugin/
-   plugins/edea-confluence/skills/confluence-doc/
+   plugins/edea-confluence/skills/confluence-write/
    ```
 
 2. **Write `plugins/edea-confluence/.claude-plugin/plugin.json`**
@@ -103,7 +116,8 @@ better errors than a sync failure does. It should pass with no warnings.
 
 ## Docs for every plugin
 
-Every plugin gets a team-facing handbook page in `docs/`, named `<tool>-guide.html`.
+Every plugin gets a team-facing handbook page in `docs/`, named for the plugin with the
+`edea-` prefix dropped — `linear-guide.html`, `confluence-guide.html`.
 `docs/linear-guide.html` is the reference — **copy it as the starting point** for a new one
 and swap the content, so the pages read as one family rather than several unrelated designs.
 
@@ -137,7 +151,7 @@ Frontmatter needs `name` and `description`:
 
 ```markdown
 ---
-name: confluence-doc
+name: confluence-write
 description: What it does, plus when to use it — this is what the model matches on, so
   name the trigger words someone would actually say.
 ---
@@ -162,6 +176,42 @@ House conventions for the body:
 Skill folder names are kebab-case and match the `name` in the frontmatter. Any commands a
 plugin ships are namespaced on install, appearing as `/edea-<tool>:<name>`.
 
+### The two skills that build the others
+
+Both live in `.claude/skills/`, and both run in this order when a new plugin or skill is needed:
+
+1. **`grilling`** — interviews you, one question at a time, about what the thing is actually
+   for: the job, the words that should trigger it, who relies on it, what it replaces, how it
+   fails. A skill built on a fuzzy purpose fires on the wrong things and teaches four people
+   the wrong process.
+2. **`skill-writing`** — turns that understanding into a skill that follows the rules above.
+
+If you change the conventions in this file, change `skill-writing` too, or it keeps teaching
+the old ones.
+
+### Plugin skill, or repo skill?
+
+**Plugins install for the user, not the project**, so a plugin's skills load in every repo that
+person opens. That's right for a shared tool — Linear and Confluence are the same everywhere.
+
+It's wrong for skills about **this repo**. `skill-writing` tells you to pick a plugin, bump
+`plugin.json`, update a docs page and mind the public-repo rule — all meaningless in a product
+repo, and stated confidently enough to be believed. `grilling` is the same: it grills the
+purpose of a *plugin*, which is a question that only arises here.
+
+So both live in `.claude/skills/` — committed with the repo, loaded nowhere else. No install
+step, no version, no way to leak.
+
+The test: **would this skill's instructions be wrong in someone's product repo?** If yes, it's
+a repo skill.
+
+### Adapting someone else's skill
+
+Fine to do, and often better than starting blank. Check the source repo's licence first,
+rewrite it in our voice against our conventions rather than pasting it in, and record what
+came from where in `ATTRIBUTION.md` — including the licence text and what you deliberately
+didn't take.
+
 ## What may go in this repo
 
 **This repo is public.** Skills describe **how** we work, never **what** we're building.
@@ -173,6 +223,16 @@ Never publish: target markets or verticals, customer names, pricing, kill criter
 scoring, or anything about a specific venture. If a skill genuinely needs that context,
 that's the signal to start a **second, private marketplace** — one public repo for craft,
 one private for strategy. Don't smuggle it in here.
+
+**Examples count.** A real venture name in a worked example publishes that venture as surely
+as a sentence about it would, and nobody thinks to check an example. Invent the specifics and
+make them obviously invented — `<Venture>` in a path, a plainly fictional name where the shape
+needs a real-looking word, made-up figures and titles in sample pages. This covers every file
+that ships: `SKILL.md`, reference files like `BRAIN.md`, the `description` fields in
+`plugin.json` and `marketplace.json`, the `docs/` pages, and commit messages.
+
+Before pushing, read the diff once looking only for real names. It's a separate pass from
+reading it for correctness, and it's the one that catches this.
 
 A public repo's git history is effectively permanent. Flipping to private later does not
 unpublish what forks and caches already hold.
@@ -200,7 +260,11 @@ Once per person:
 ```
 /plugin marketplace add E-D-E-A/workflow-skills
 /plugin install edea-linear@edea
+/plugin install edea-confluence@edea
 ```
+
+Each prompts for a sign-in the first time it's used — Linear and Atlassian respectively. No
+credentials live in this repo.
 
 Then `/plugin` → Marketplaces → enable auto-update. Without that, people silently drift
 onto different skill versions.

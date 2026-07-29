@@ -1,6 +1,6 @@
 {
   "name": "edea",
-  "description": "E.D.E.A shared workflow skills — house conventions for the tools we run on, starting with Linear.",
+  "description": "E.D.E.A shared workflow skills — house conventions for the tools we run on, one plugin per tool.",
   "owner": {
     "name": "E.D.E.A"
   },
@@ -9,6 +9,12 @@
       "name": "edea-linear",
       "source": "./plugins/edea-linear",
       "description": "Shared E.D.E.A workflows for Linear: creating and updating issues in house format.",
+      "category": "productivity"
+    },
+    {
+      "name": "edea-confluence",
+      "source": "./plugins/edea-confluence",
+      "description": "E.D.E.A's Confluence Brain: writing, reading and retiring pages in house format, keeping them connected to each other and to the Linear work they came from.",
       "category": "productivity"
     }
   ]

@@ -12,9 +12,11 @@ belongs to exactly one team.
 
 Before you write, check the real names in the workspace instead of guessing — list the teams
 (`list_teams`), the statuses for the team (`list_issue_statuses`), and its labels
-(`list_issue_labels`). Then create the issue with `save_issue`. Each team has its **own**
-separate statuses and labels, so an ENG label and a BIZ label are different things even when
-they share a name.
+(`list_issue_labels`). Then create the issue with `save_issue`.
+
+**Our statuses and labels all belong to a team**, so ENG and BIZ have separate ones even where
+the names match. `list_issue_labels` for a team returns that team's labels, so what it gives
+you is already the valid set for the issue you're writing.
 
 ## Before you create — do you have enough to write a good issue?
 
@@ -87,8 +89,10 @@ out of this public repo.
 - `legal` — incorporation, contracts, compliance
 - `ops` — tools, hiring, suppliers, admin
 
-**ENG labels:** use whatever labels already exist on the ENG team (for example `bug`,
-`feature`, `chore`). Don't invent new ones here — list what's there and reuse it.
+**ENG labels:** use what `list_issue_labels` returns for the Engineering team and reuse the
+closest match — today that's `Bug`, `Feature`, `Improvement`. Ask before adding a new one.
+
+These belong to Engineering, so they aren't offered on a Business issue at all.
 
 Add one label when the type is obvious; if you're not sure, leave it off rather than guess.
 

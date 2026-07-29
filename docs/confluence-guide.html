@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Working in Confluence — E.D.E.A</title>
+<style>
+  /* Dark only, on purpose — the palette does not follow the OS or a theme toggle. */
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --ground: #0E1116;
+    --raised: #161B23;
+    --ink: #E8ECF1;
+    --ink-soft: #BAC3CE;
+    --muted: #8B96A3;
+    --rule: #232A33;
+    --rule-strong: #364049;
+    --eng: #7CA0F5;
+    --biz: #E0A356;
+    --biz-soft: #2A1F0F;
+    --warn-bg: #241B0B;
+    --warn-ink: #E5BE7C;
+    --warn-rule: #4A3818;
+
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 62ch;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px 88px; }
+
+  .masthead { padding: 60px 0 32px; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 16px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 42px); line-height: 1.06; letter-spacing: -0.028em;
+    font-weight: 680; margin: 0 0 14px; text-wrap: balance;
+  }
+  .standfirst { font-size: 18px; line-height: 1.5; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto; padding: 11px 28px;
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+  }
+  nav a {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    text-decoration: none; padding: 2px 0; border-bottom: 1.5px solid transparent;
+  }
+  nav a:hover { color: var(--ink); border-bottom-color: var(--rule-strong); }
+  nav a:focus-visible { outline: 2px solid var(--eng); outline-offset: 3px; }
+
+  section { padding: 46px 0 6px; }
+  section + section { border-top: 1px solid var(--rule); }
+
+  h2 {
+    font-size: 24px; line-height: 1.18; letter-spacing: -0.02em;
+    font-weight: 660; margin: 0 0 6px; text-wrap: balance;
+  }
+  .sec-note { color: var(--muted); font-size: 15px; margin: 0 0 26px; max-width: var(--measure); }
+  h3 { font-size: 16px; font-weight: 640; letter-spacing: -0.008em; margin: 28px 0 8px; }
+  p { max-width: var(--measure); margin: 0 0 12px; }
+  ul { max-width: var(--measure); margin: 0 0 12px; padding-left: 19px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 620; }
+  a { color: var(--eng); text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--mono); font-size: 0.875em;
+    background: var(--raised); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
+
+  .rule-box {
+    background: var(--raised); border: 1px solid var(--rule-strong);
+    border-radius: 3px; padding: 20px 22px; margin: 0 0 30px; max-width: var(--measure);
+  }
+  .rule-box p { margin: 0; font-size: 17px; line-height: 1.5; }
+  .rule-box .k { font-weight: 660; }
+  .rule-box .eng-k { color: var(--eng); }
+  .rule-box .biz-k { color: var(--biz); }
+
+  .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px; }
+  .team {
+    background: var(--raised); border: 1px solid var(--rule);
+    border-top: 2px solid var(--tint); border-radius: 2px; padding: 20px 20px 6px;
+  }
+  .team.is-eng { --tint: var(--eng); }
+  .team.is-biz { --tint: var(--biz); }
+  .team-id {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--tint); margin: 0 0 4px; font-weight: 600;
+  }
+  .team h3 { margin: 0 0 6px; font-size: 17px; }
+  .team p { font-size: 14.5px; color: var(--muted); max-width: none; margin-bottom: 10px; }
+  .team ul { font-size: 14.5px; max-width: none; margin-bottom: 14px; }
+
+  .t-scroll { overflow-x: auto; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 400px; }
+  th {
+    text-align: left; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    font-weight: 500; padding: 0 14px 8px 0; border-bottom: 1px solid var(--rule-strong);
+  }
+  td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-soft); }
+  td:first-child { color: var(--ink); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .dim { color: var(--muted); }
+  .lbl { font-family: var(--mono); font-size: 13px; }
+
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; max-width: none; }
+  ol.steps > li {
+    counter-increment: s; display: grid; grid-template-columns: 30px 1fr;
+    gap: 0 14px; padding: 15px 0; border-top: 1px solid var(--rule); margin: 0;
+  }
+  ol.steps > li:first-child { border-top: none; padding-top: 2px; }
+  ol.steps > li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    padding-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  ol.steps h3 { margin: 0 0 4px; font-size: 15.5px; }
+  ol.steps p, ol.steps ul { margin-bottom: 6px; }
+  ol.steps p:last-child, ol.steps ul:last-child { margin-bottom: 0; }
+  ol.steps ul { padding-left: 17px; }
+
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--raised); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 15px 17px; overflow-x: auto; margin: 0 0 16px; max-width: var(--measure);
+  }
+  pre code { background: none; border: none; padding: 0; white-space: pre; font-size: inherit; }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-rule);
+    border-radius: 3px; padding: 16px 18px; margin: 22px 0 4px; max-width: var(--measure);
+  }
+  .notice-head {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--warn-ink); margin: 0 0 7px; font-weight: 600;
+  }
+  .notice p { color: var(--warn-ink); margin: 0 0 8px; font-size: 14.5px; }
+  .notice p:last-child { margin-bottom: 0; }
+  .notice ul { color: var(--warn-ink); font-size: 14.5px; margin: 6px 0 0; max-width: none; }
+  .notice code {
+    background: color-mix(in srgb, var(--warn-ink) 10%, transparent);
+    border-color: var(--warn-rule); color: inherit;
+  }
+
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13.5px;
+  }
+  footer p { max-width: var(--measure); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#split">Confluence or Linear</a>
+    <a href="#types">Page types</a>
+    <a href="#where">Where it goes</a>
+    <a href="#writing">Writing one</a>
+    <a href="#linking">Linking</a>
+    <a href="#changing">Changing pages</a>
+    <a href="#skills">Skills</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">E.D.E.A · Internal handbook</p>
+    <h1>Working in Confluence</h1>
+    <p class="standfirst">What belongs here rather than in Linear, which kind of page to write, and how to make it findable six months later.</p>
+  </header>
+
+  <section id="split">
+    <h2>Confluence or Linear?</h2>
+    <p class="sec-note">The question isn't how big it is. It's how long it stays true.</p>
+
+    <div class="rule-box">
+      <p>Something <span class="k biz-k">to be done</span> → Linear.<br>
+      Something <span class="k eng-k">we now know</span> → Confluence.</p>
+    </div>
+
+    <div class="teams">
+      <div class="team is-biz">
+        <p class="team-id">Linear</p>
+        <h3>Work</h3>
+        <p>Has an owner, a status, and an end.</p>
+        <ul>
+          <li>Tasks, bugs, decisions to make</li>
+          <li>Interesting until it's Done</li>
+          <li>Then it's history</li>
+        </ul>
+      </div>
+
+      <div class="team is-eng">
+        <p class="team-id">Confluence</p>
+        <h3>Knowledge</h3>
+        <p>Still useful after the work is finished.</p>
+        <ul>
+          <li>What we decided and why</li>
+          <li>What we found out</li>
+          <li>How to do it again</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>The test</h3>
+    <p>Name who reads it in three months and what they get from it. If you can't, it's an issue description or a comment — not a page.</p>
+    <p><em>Decide pilot pricing</em> is a Linear issue. The pricing we landed on, and why, is a page. Never copy an issue into a page just to have a record; link to it.</p>
+  </section>
+
+  <section id="types">
+    <h2>Page types</h2>
+    <p class="sec-note">Five. If it fits none of them, ask before inventing a sixth.</p>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Type</th><th>Holds</th><th>Stays true because</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">Decision</span></td><td>What we chose, what we rejected, why</td><td>It records a moment — never edited to a different answer</td></tr>
+          <tr><td><span class="lbl">Spec</span></td><td>What we're building, what done looks like</td><td>Written before the build, closed out after</td></tr>
+          <tr><td><span class="lbl">Research</span></td><td>What we found out</td><td>Every claim names its source</td></tr>
+          <tr><td><span class="lbl">Runbook</span></td><td>How to do a repeatable thing</td><td>Whoever changes the process updates it</td></tr>
+          <tr><td><span class="lbl">Meeting notes</span></td><td>Said, decided, assigned</td><td>Dated, never rewritten</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Decisions are the ones people skip</h3>
+    <p>They're also the highest value. Any time an argument gets settled, that's a Decision page — <strong>including the options you turned down</strong>, which is the part anyone comes back for. Without it the same argument runs again in six months, from scratch.</p>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Type</th><th>Owner + review date?</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">Runbook</span> · <span class="lbl">Spec</span></td><td>Yes — they describe how things <em>are</em>, so they go quietly wrong when reality moves</td></tr>
+          <tr><td><span class="lbl">Decision</span> · <span class="lbl">Meeting notes</span></td><td>No — records of a moment can't expire</td></tr>
+          <tr><td><span class="lbl">Research</span></td><td>No — the date is in the title instead</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="where">
+    <h2>Where it goes</h2>
+    <p class="sec-note">By venture, not by team. Linear routes by team because teams decide how work gets done — but a finished page is knowledge <em>about</em> something, and everything known about one venture belongs together no matter who wrote it.</p>
+
+    <div class="rule-box">
+      <p>A venture gets its own space once its Linear Project is <span class="k eng-k">actually started</span>. Until then it's an idea, and lives in the house space.</p>
+    </div>
+
+    <pre><code>EDEA        E.D.E.A (house)       ACME        Acme
+├── Ideas/                        ├── Decisions/
+│   └── Acme/   ← an idea         ├── Specs/
+│       ├── Decisions/            ├── Research/
+│       └── Research/             ├── Runbooks/
+├── Decisions/                    └── Meetings/
+├── Research/
+├── Runbooks/                     one new space per committed venture
+└── Meetings/</code></pre>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Linear Project</th><th>Pages live in</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">Backlog</span> · <span class="lbl">Planned</span></td><td>House space, under <code>Ideas/&lt;Venture&gt;/</code></td></tr>
+          <tr><td><span class="lbl">In Progress</span></td><td>Its own space</td></tr>
+          <tr><td><span class="lbl">Done</span> · <span class="lbl">Canceled</span></td><td>Left where they are</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="font-size:14.5px">Not about a venture at all? House space, directly.</p>
+
+    <h3>The same five trees everywhere</h3>
+    <p><code>Decisions/</code> <code>Specs/</code> <code>Research/</code> <code>Runbooks/</code> <code>Meetings/</code> — in the house space, in each venture space, and inside each idea. Pick the type and the location follows; there's no judgement call.</p>
+    <p><strong>Page titles are unique per space.</strong> Confluence silently renames a duplicate to <code>Decisions (2)</code> without warning, so inside <code>Ideas/</code> the trees carry the venture name — <code>Acme — Decisions</code>. It reads better anyway: search shows a title without its parent.</p>
+
+    <h3>Subject goes in a Topics line</h3>
+    <p>Near the top of every page: <code>Topics: pricing, fundraising</code>. Words come from the <strong>Topics</strong> page in the space — the same seven used on Business issues in Linear, plus whatever it's actually about. One vocabulary across both tools beats two.</p>
+    <p class="dim" style="font-size:14.5px">Not a Confluence label: the connector can't set those, so a label would depend on someone remembering every time. Add real labels yourself if you like them — nothing depends on them.</p>
+
+    <h3>Graduation</h3>
+    <p>When a Project starts but its pages are still under <code>Ideas/</code>, Claude will say so and offer to move them. <strong>You create the space</strong> — that sets a key and permissions and can't be renamed cleanly later. Claude then moves the tree and re-points any page links attached to Linear issues, so nothing dangles.</p>
+
+    <div class="notice">
+      <p class="notice-head">Two rules that keep it working</p>
+      <p><strong>Link by the exact page title, and make it a real link.</strong> Use the page's own title as the link text — never <code>see the review decision</code>. Finding what points at a page is done by searching its title, so a link in different words is invisible, and that's how gaps appear. Typing brackets with no link behind them looks right and points nowhere.</p>
+      <p><strong>Nothing is deleted.</strong> Superseded pages stay, marked and linked to what replaced them. The connector has no delete tool at all, so this one enforces itself.</p>
+    </div>
+  </section>
+
+  <section id="writing">
+    <h2>Writing one</h2>
+    <p class="sec-note">Search first. If a page on this already exists, edit that one — two pages disagreeing about the same subject is how a wiki dies.</p>
+
+    <div class="rule-box">
+      <p>Someone who wasn't in the room should be able to read it and act <span class="k">without asking you what you meant</span>.</p>
+    </div>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Title it for search</h3>
+        <p>People type what they want to know, not what you called it.</p>
+        <ul>
+          <li><strong>Decisions state the decision</strong> — <em>Run the weekly review on Thursday, not Monday</em>, not <em>Meeting times</em>. The title alone should answer it.</li>
+          <li><strong>Date anything that's a snapshot</strong> — notes, research. Never "current" or "latest"; both are wrong within the month.</li>
+          <li>Subject, not ceremony. <em>Meeting notes 3</em> tells nobody anything.</li>
+        </ul>
+      </div></li>
+      <li><div>
+        <h3>Open with what it's for</h3>
+        <p>One or two lines, at the top, saying what this is and who it's for. Someone arriving from search decides in about five seconds whether to keep reading.</p>
+      </div></li>
+      <li><div>
+        <h3>Then write the type</h3>
+        <ul>
+          <li><strong>Decision</strong> — what we decided · what we rejected and why · what would make us revisit it</li>
+          <li><strong>Spec</strong> — the problem in the reader's terms · what done looks like · decisions already made · what's deliberately out of scope</li>
+          <li><strong>Research</strong> — the question · what you found · a source for every claim. Unsourced research is an opinion page.</li>
+          <li><strong>Runbook</strong> — numbered steps someone can follow without you · what to do when a step fails</li>
+          <li><strong>Meeting notes</strong> — date · who was there · what was decided · who owns what next</li>
+        </ul>
+      </div></li>
+      <li><div>
+        <h3>Runbook or Spec? Add an owner</h3>
+        <p>A line at the very top — <code>Owner: &lt;name&gt;   Review by: &lt;~3 months&gt;</code>. The owner is whoever would have to fix it, not whoever wrote it. Other types don't get one.</p>
+      </div></li>
+      <li><div>
+        <h3>Keep it scannable</h3>
+        <p>Short sections and tables over long prose. Plain language, same as everywhere else. These pages get scanned for one answer, not read start to finish.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <section id="linking">
+    <h2>Linking to Linear</h2>
+    <p class="sec-note">Pages and issues answer different questions, so they should always point at each other.</p>
+    <ul>
+      <li>Put the issue key in the page — <code>ENG-123</code>, <code>BIZ-45</code> — and paste the link. Linear picks up the mention, so the connection shows from both sides.</li>
+      <li>On the issue, paste the page link into <strong>Context</strong>, where Linear renders a preview, or attach it with the page's title.</li>
+      <li>A <strong>Spec</strong> names the issues that implement it. A <strong>Decision</strong> names the issue that triggered it.</li>
+    </ul>
+  </section>
+
+  <section id="changing">
+    <h2>Changing pages</h2>
+    <p class="sec-note">A wiki people don't trust is worse than no wiki.</p>
+
+    <h3>Fix what's wrong</h3>
+    <p>If a page is out of date and you know the current answer, correct it. If you don't know the answer, say on the page that it's stale rather than leaving a confident, wrong page in place.</p>
+
+    <h3>Except records</h3>
+    <p><strong>Never rewrite a Decision or Meeting notes page to say something different.</strong> They record a moment. When the answer changes, write a new Decision and link the old one as superseded — the history of the thinking is the point.</p>
+
+    <h3>Deleting</h3>
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">Out of date</span></td><td>Mark it superseded and link what replaced it — Claude does this, and repairs the pages pointing at it</td></tr>
+          <tr><td><span class="lbl">Junk</span></td><td>Accident, test page, empty draft — delete it yourself in Confluence. Claude has no delete tool</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="font-size:14.5px">Never delete a page for being old. Old and correct is the entire point.</p>
+  </section>
+
+  <section id="skills">
+    <h2>The shared skills</h2>
+    <p class="sec-note">Written up as a skill, so Claude writes pages in our format without anyone remembering the rules.</p>
+
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks when it can't tell.</td></tr>
+          <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question.</td></tr>
+          <tr><td><span class="lbl">confluence-retire</span></td><td>Marks a page superseded and repairs everything that pointed at it. Also moves a venture's tree when it graduates.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Install once</h3>
+    <pre><code>/plugin marketplace add E-D-E-A/workflow-skills
+/plugin install edea-confluence@edea</code></pre>
+    <p>You'll be asked to sign in to Atlassian the first time it's used. Then <code>/plugin</code> → Marketplaces → turn on auto-update.</p>
+
+    <h3>Changes</h3>
+    <p>The two developers maintain them. If something here is wrong, tell one of them — no need to file anything.</p>
+
+    <div class="notice">
+      <p class="notice-head">Keep in mind</p>
+      <p>The skills repo is public. It describes how we work, which is fine to share. Never put target markets, customer names, pricing or strategy in it. What you write inside a Confluence page is private.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>If the way we work changes, this page and the skills change with it. When they disagree, the skills are what's actually running.</p>
+  </footer>
+
+</div>
+</body>
+</html>
