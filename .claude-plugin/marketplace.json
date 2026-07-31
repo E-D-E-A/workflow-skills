@@ -16,6 +16,12 @@
       "source": "./plugins/edea-confluence",
       "description": "E.D.E.A's Confluence Brain: writing, reading and retiring pages in house format, keeping them connected to each other and to the Linear work they came from.",
       "category": "productivity"
+    },
+    {
+      "name": "edea-presentations",
+      "source": "./plugins/edea-presentations",
+      "description": "E.D.E.A presentations: executive-grade deck briefs in Hebrew or English, generated into real NotebookLM slide decks.",
+      "category": "productivity"
     }
   ]
 }
