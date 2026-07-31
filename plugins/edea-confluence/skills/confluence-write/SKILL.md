@@ -110,6 +110,10 @@ Topics: <words from the Topics page>
 Write with `contentFormat: "markdown"`. Plain language, short sections, tables over prose —
 these pages get scanned for one answer, not read start to finish.
 
+A **Meeting notes** page uses the eight-section template in `BRAIN.md` — same sections, same
+order, every time, empty sections included. Action-item owners come from a person, never from
+a recording's speaker labels.
+
 Title and body are written in the language the user chose in Step 3. The skeleton stays in
 English either way — `Topics:` keeps its canonical vocabulary, and `Owner:`, `Review by:`,
 `## Related` and `Supersedes:` are the exact strings that search and the repair pass in

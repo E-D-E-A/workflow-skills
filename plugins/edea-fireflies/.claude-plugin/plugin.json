@@ -1,0 +1,8 @@
+{
+  "name": "edea-fireflies",
+  "description": "Shared E.D.E.A workflows for Fireflies meeting recordings: filing nameless meeting summaries into the Confluence Brain, and answering questions about what was said.",
+  "version": "0.1.0",
+  "author": {
+    "name": "E.D.E.A"
+  }
+}
