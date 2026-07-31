@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making presentations — E.D.E.A</title>
+<style>
+  /* Dark only, on purpose — the palette does not follow the OS or a theme toggle. */
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --ground: #0E1116;
+    --raised: #161B23;
+    --ink: #E8ECF1;
+    --ink-soft: #BAC3CE;
+    --muted: #8B96A3;
+    --rule: #232A33;
+    --rule-strong: #364049;
+    --eng: #7CA0F5;
+    --biz: #E0A356;
+    --biz-soft: #2A1F0F;
+    --warn-bg: #241B0B;
+    --warn-ink: #E5BE7C;
+    --warn-rule: #4A3818;
+
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 62ch;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px 88px; }
+
+  .masthead { padding: 60px 0 32px; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 16px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 42px); line-height: 1.06; letter-spacing: -0.028em;
+    font-weight: 680; margin: 0 0 14px; text-wrap: balance;
+  }
+  .standfirst { font-size: 18px; line-height: 1.5; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto; padding: 11px 28px;
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+  }
+  nav a {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    text-decoration: none; padding: 2px 0; border-bottom: 1.5px solid transparent;
+  }
+  nav a:hover { color: var(--ink); border-bottom-color: var(--rule-strong); }
+  nav a:focus-visible { outline: 2px solid var(--eng); outline-offset: 3px; }
+
+  section { padding: 46px 0 6px; }
+  section + section { border-top: 1px solid var(--rule); }
+
+  h2 {
+    font-size: 24px; line-height: 1.18; letter-spacing: -0.02em;
+    font-weight: 660; margin: 0 0 6px; text-wrap: balance;
+  }
+  .sec-note { color: var(--muted); font-size: 15px; margin: 0 0 26px; max-width: var(--measure); }
+  h3 { font-size: 16px; font-weight: 640; letter-spacing: -0.008em; margin: 28px 0 8px; }
+  p { max-width: var(--measure); margin: 0 0 12px; }
+  ul { max-width: var(--measure); margin: 0 0 12px; padding-left: 19px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 620; }
+  a { color: var(--eng); text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--mono); font-size: 0.875em;
+    background: var(--raised); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
+
+  .rule-box {
+    background: var(--raised); border: 1px solid var(--rule-strong);
+    border-radius: 3px; padding: 20px 22px; margin: 0 0 30px; max-width: var(--measure);
+  }
+  .rule-box p { margin: 0; font-size: 17px; line-height: 1.5; }
+  .rule-box .k { font-weight: 660; }
+  .rule-box .eng-k { color: var(--eng); }
+  .rule-box .biz-k { color: var(--biz); }
+
+  .flow-label {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin: 24px 0 9px;
+  }
+  .flow-scroll { overflow-x: auto; padding-bottom: 6px; }
+  .flow { display: flex; align-items: center; gap: 7px; min-width: max-content; }
+  .chip {
+    font-family: var(--mono); font-size: 12.5px; padding: 5px 11px;
+    border: 1px solid var(--rule-strong); border-radius: 2px;
+    background: var(--raised); white-space: nowrap;
+  }
+  .chip.term-good { border-color: #3E8F65; color: #6DCB99; }
+  .chip.term-bad { border-color: var(--rule-strong); color: var(--muted); }
+  .chip.hi { border-color: var(--biz); color: var(--biz); background: var(--biz-soft); font-weight: 600; }
+  .arrow { color: var(--rule-strong); font-size: 13px; }
+  .slash { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+  .t-scroll { overflow-x: auto; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 400px; }
+  th {
+    text-align: left; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    font-weight: 500; padding: 0 14px 8px 0; border-bottom: 1px solid var(--rule-strong);
+  }
+  td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-soft); }
+  td:first-child { color: var(--ink); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .dim { color: var(--muted); }
+
+  .lbl { font-family: var(--mono); font-size: 13px; }
+
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; max-width: none; }
+  ol.steps > li {
+    counter-increment: s; display: grid; grid-template-columns: 30px 1fr;
+    gap: 0 14px; padding: 15px 0; border-top: 1px solid var(--rule); margin: 0;
+  }
+  ol.steps > li:first-child { border-top: none; padding-top: 2px; }
+  ol.steps > li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    padding-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  ol.steps h3 { margin: 0 0 4px; font-size: 15.5px; }
+  ol.steps p, ol.steps ul { margin-bottom: 6px; }
+  ol.steps p:last-child, ol.steps ul:last-child { margin-bottom: 0; }
+  ol.steps ul { padding-left: 17px; }
+
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--raised); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 15px 17px; overflow-x: auto; margin: 0 0 16px; max-width: var(--measure);
+  }
+  pre code { background: none; border: none; padding: 0; white-space: pre; font-size: inherit; }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-rule);
+    border-radius: 3px; padding: 16px 18px; margin: 22px 0 4px; max-width: var(--measure);
+  }
+  .notice-head {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--warn-ink); margin: 0 0 7px; font-weight: 600;
+  }
+  .notice p { color: var(--warn-ink); margin: 0; font-size: 14.5px; }
+  .notice ul { color: var(--warn-ink); font-size: 14.5px; margin: 6px 0 0; max-width: none; }
+  .notice code {
+    background: color-mix(in srgb, var(--warn-ink) 10%, transparent);
+    border-color: var(--warn-rule); color: inherit;
+  }
+
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13.5px;
+  }
+  footer p { max-width: var(--measure); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#outputs">What to ask for</a>
+    <a href="#making">How a deck gets made</a>
+    <a href="#rules">Slide rules</a>
+    <a href="#rtl">Hebrew &amp; RTL</a>
+    <a href="#setup">NotebookLM setup</a>
+    <a href="#skills">Skills</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">E.D.E.A · Internal handbook</p>
+    <h1>Making presentations</h1>
+    <p class="standfirst">How a rough idea becomes an investor-grade deck: what to ask Claude for, the rules every slide follows, and the one-time NotebookLM setup.</p>
+  </header>
+
+  <section id="outputs">
+    <h2>What to ask for</h2>
+    <p class="sec-note">One skill covers all of it — say what you want in your own words, Hebrew or English, and it picks the right output.</p>
+
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">A finished deck</span></td><td>"Make me an investor deck" / "תכין לי מצגת למשקיעים". Claude writes the brief, generates the deck in NotebookLM, and hands back a PPTX.</td></tr>
+          <tr><td><span class="lbl">A prompt to paste</span></td><td>A copy-ready description for NotebookLM, Gamma or a similar tool, when you'd rather run it yourself.</td></tr>
+          <tr><td><span class="lbl">A slide structure</span></td><td>Slide-by-slide: title, key message, visual, takeaway — for a deck you'll build by hand.</td></tr>
+          <tr><td><span class="lbl">A design brief</span></td><td>Visual direction only: palette, type, layout, chart choices.</td></tr>
+          <tr><td><span class="lbl">An infographic</span></td><td>A timeline, funnel, roadmap or process visual, described precisely enough to generate.</td></tr>
+          <tr><td><span class="lbl">A better deck</span></td><td>"Improve this presentation" — structure, titles, focus and credibility, not just polish.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="making">
+    <h2>How a deck gets made</h2>
+    <p class="sec-note">End to end, a first deck takes under an hour — most of it NotebookLM generating.</p>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Ask</h3>
+        <p>In your own words: <em>"I need a 12-slide deck for a partner meeting next week."</em></p>
+      </div></li>
+      <li><div>
+        <h3>Answer three questions</h3>
+        <p>Claude won't start without them: <strong>who it's for</strong>, <strong>what they should decide or do</strong>, and <strong>Hebrew or English</strong>. Everything else it works out or asks about as needed.</p>
+      </div></li>
+      <li><div>
+        <h3>Review the brief</h3>
+        <p>You get the deck's story before any slides exist — the narrative, one message per slide, what's fact and what's assumption. Cheapest moment to change direction.</p>
+      </div></li>
+      <li><div>
+        <h3>Choose delivery</h3>
+        <p>Generate in NotebookLM now, or take the brief and paste it into a tool yourself.</p>
+      </div></li>
+      <li><div>
+        <h3>Wait</h3>
+        <p>NotebookLM takes <strong>15–45 minutes</strong> to generate. Claude starts it and tells you; you don't have to sit there.</p>
+      </div></li>
+      <li><div>
+        <h3>Get the file — then fix by slide</h3>
+        <p>A PPTX (or PDF) lands back with you. Small fixes go per slide — <em>"change the title on slide 4"</em> — without regenerating the deck.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <section id="rules">
+    <h2>Slide rules</h2>
+    <p class="sec-note">The standard every output follows, whichever tool ends up rendering it.</p>
+
+    <div class="rule-box">
+      <p><span class="k">One slide, one message.</span> Every slide answers one management question, and its title states the <span class="k eng-k">conclusion</span>, not the topic.</p>
+    </div>
+
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">Titles</span></td><td>"The current process creates high cost and low scalability" — never "Market" or "Our Product".</td></tr>
+          <tr><td><span class="lbl">Honesty</span></td><td>Facts, assumptions and targets are labelled as what they are. A number we don't have is a marked assumption, never invented.</td></tr>
+          <tr><td><span class="lbl">Density</span></td><td>One main message, one visual, up to 3 supporting points, roughly 40–60 words. More than that splits into two slides.</td></tr>
+          <tr><td><span class="lbl">Color</span></td><td>White or deep-navy background, one accent color. More colors only when they mean something.</td></tr>
+          <tr><td><span class="lbl">Charts</span></td><td>Comparison → bar · over time → line · conversion → funnel · priorities → 2×2 · summary → KPI cards. Every chart answers a question.</td></tr>
+          <tr><td><span class="lbl">Never</span></td><td>Stock photos, generic AI imagery, decorative 3D, dense text blocks. The brief tells the generator to leave them out.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="rtl">
+    <h2>Hebrew &amp; RTL</h2>
+    <p class="sec-note">In a Hebrew deck, direction is part of correctness — a timeline running the wrong way reads as broken.</p>
+
+    <p class="flow-label">Every sequence runs right to left</p>
+    <div class="flow-scroll">
+      <div class="flow">
+        <span class="chip term-good">שלב אחרון</span><span class="arrow">←</span>
+        <span class="chip">שלב 3</span><span class="arrow">←</span>
+        <span class="chip">שלב 2</span><span class="arrow">←</span>
+        <span class="chip hi">שלב 1</span>
+      </div>
+    </div>
+
+    <ul style="margin-top:18px">
+      <li>Titles, text and bullets align right; tables put the lead column on the right.</li>
+      <li>Processes, timelines and funnels start at the far <strong>right</strong>; arrows point left.</li>
+      <li>Logos, charts and icons are <strong>not</strong> mirrored.</li>
+      <li>English terms stay only where they're clearer than the Hebrew.</li>
+    </ul>
+  </section>
+
+  <section id="setup">
+    <h2>NotebookLM setup</h2>
+    <p class="sec-note">Once per machine. A developer usually does this for you — after it, "make me a deck" just works.</p>
+
+    <pre><code>uv tool install "notebooklm-py[browser]"
+notebooklm login</code></pre>
+    <p><code>login</code> opens a browser for a normal Google sign-in, one time. No passwords are stored in any repo.</p>
+
+    <div class="notice">
+      <p class="notice-head">Built on an unofficial tool</p>
+      <p>NotebookLM has no official API, so generation runs through a community tool that can break whenever Google changes something. When that happens you still get the full brief to paste into NotebookLM yourself — tell a developer, and they'll sort the tool out.</p>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>The shared skill</h2>
+    <p class="sec-note">All of this is written up as a skill, so Claude follows the same process every time without anyone remembering the rules.</p>
+
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">presentation-create</span></td><td>Briefs, structures, infographics and full NotebookLM generation. Asks the three questions before starting; never invents numbers.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Install once</h3>
+    <pre><code>/plugin marketplace add E-D-E-A/workflow-skills
+/plugin install edea-presentations@edea</code></pre>
+    <p>Then <code>/plugin</code> → Marketplaces → turn on auto-update, so you don't drift onto an old version.</p>
+
+    <h3>Changes</h3>
+    <p>The two developers maintain it. If something here is wrong, tell one of them — no need to file anything.</p>
+
+    <div class="notice">
+      <p class="notice-head">Keep in mind</p>
+      <p>The skills repo is public. It describes how we make presentations, which is fine to share. Never put target markets, customer names, pricing or strategy in it. What goes <em>into</em> your actual decks and notebooks is private.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>If the way we work changes, this page and the skills change with it. When they disagree, the skills are what's actually running.</p>
+  </footer>
+
+</div>
+</body>
+</html>

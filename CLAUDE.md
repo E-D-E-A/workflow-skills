@@ -4,8 +4,10 @@ E.D.E.A's shared skills, published as a Claude Code plugin marketplace. This rep
 house conventions for the tools we run on, so everyone works the same way without having to
 remember the rules.
 
-The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear` and
-`edea-confluence` today, others later. Nothing else is published.
+The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear`,
+`edea-confluence` and `edea-presentations` today, others later. Nothing else is published.
+A tool doesn't have to mean an MCP connector: `edea-presentations` wraps NotebookLM, which
+has no MCP server, so its skills drive a CLI instead and the plugin ships no `.mcp.json`.
 
 The skills for *building* those plugins — grilling out what a new one is for, then writing it
 — live in `.claude/skills/` and are never published. They only make sense in this repo.
@@ -261,10 +263,13 @@ Once per person:
 /plugin marketplace add E-D-E-A/workflow-skills
 /plugin install edea-linear@edea
 /plugin install edea-confluence@edea
+/plugin install edea-presentations@edea
 ```
 
-Each prompts for a sign-in the first time it's used — Linear and Atlassian respectively. No
-credentials live in this repo.
+Linear and Confluence each prompt for a sign-in the first time they're used. Presentations
+needs a one-time CLI install and Google sign-in per machine instead — the steps live in the
+plugin's `NOTEBOOKLM.md` and in `docs/presentations-guide.html`. No credentials live in
+this repo.
 
 Then `/plugin` → Marketplaces → enable auto-update. Without that, people silently drift
 onto different skill versions.
