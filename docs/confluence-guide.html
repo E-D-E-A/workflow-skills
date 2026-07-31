@@ -331,6 +331,8 @@
       <p>Someone who wasn't in the room should be able to read it and act <span class="k">without asking you what you meant</span>.</p>
     </div>
 
+    <p class="dim" style="font-size:14.5px">Writing through Claude? It asks before it writes rather than assuming — including <strong>Hebrew or English</strong>, every time. The language your request is written in decides nothing.</p>
+
     <ol class="steps">
       <li><div>
         <h3>Title it for search</h3>
@@ -373,6 +375,7 @@
       <li>Put the issue key in the page — <code>ENG-123</code>, <code>BIZ-45</code> — and paste the link. Linear picks up the mention, so the connection shows from both sides.</li>
       <li>On the issue, paste the page link into <strong>Context</strong>, where Linear renders a preview, or attach it with the page's title.</li>
       <li>A <strong>Spec</strong> names the issues that implement it. A <strong>Decision</strong> names the issue that triggered it.</li>
+      <li>When Claude writes a page it asks whether the work has a Linear issue — <strong>yes</strong>, <strong>no</strong>, or <strong>no, create one for me</strong> — and wires both directions, or neither, accordingly.</li>
     </ul>
   </section>
 
@@ -405,7 +408,7 @@
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks when it can't tell.</td></tr>
+          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks rather than assumes — language, venture, type, Linear issue — whenever the request doesn't say.</td></tr>
           <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question.</td></tr>
           <tr><td><span class="lbl">confluence-retire</span></td><td>Marks a page superseded and repairs everything that pointed at it. Also moves a venture's tree when it graduates.</td></tr>
         </tbody>

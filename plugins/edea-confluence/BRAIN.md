@@ -22,6 +22,17 @@ is finished.
 The test: name who reads this in three months and what they get from it. If you can't, it's an
 issue comment, not a page.
 
+## Ask, don't assume
+
+These skills work for a person, not instead of one. Any piece the job needs that the user
+hasn't stated — which venture, which type, what the page is called, Hebrew or English, which
+Linear issue — is a question to ask, not a judgement call to make for them. An answer you
+worked out yourself is a guess, even a good one, even one you announce.
+
+Ask one specific question at a time, with the answer you'd recommend attached so the user can
+just pick. This holds when the session runs unattended too: park the work on the question and
+wait, rather than proceed on a guess.
+
 ## Getting connected
 
 Every call needs a `cloudId`. Don't hardcode it — call `getAccessibleAtlassianResources` and
@@ -187,3 +198,5 @@ Break any of these and the Brain degrades quietly, which is the only way it ever
 5. **Never invent a space or a page tree.** Propose and wait.
 6. **Say when you don't know.** A page that doesn't exist is a real, useful answer. Reasoning
    from adjacent pages and presenting it as knowledge is worse than silence.
+7. **Ask, don't assume.** A gap in what you were told is a question to the user, not a licence
+   to guess.

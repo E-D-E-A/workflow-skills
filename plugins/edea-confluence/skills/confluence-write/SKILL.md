@@ -43,12 +43,21 @@ The bar: **someone who wasn't in the room can read it and act without asking you
 meant.**
 
 If you're missing what the type needs — the decision itself, what done looks like, the sources,
-who owns it — **stop and ask.** Ask specific questions with likely answers attached, so the user
-can pick rather than compose:
+who owns it — **stop and ask.** Never fill a gap with a plausible guess, and never treat an
+answer you worked out for the user as one they gave — even a good one, even one you announce.
+Ask specific questions with likely answers attached, so the user can pick rather than compose:
 
 - "Is this a Decision or a Research page? I'd say Decision, since it settles something."
 - "What would make us revisit this?"
 - "Who owns this runbook — whoever would have to fix it if it broke?"
+
+Two questions are asked on **every** page, even when the request looks complete, and neither
+has a default:
+
+- **"Hebrew or English?"** The language the request was written in answers nothing — a Hebrew
+  ask can want an English page, and the other way round. Step 5 says what the answer covers.
+- **"Is there a Linear issue for this work?"** Offer exactly three answers: **yes** (ask which
+  one if it wasn't named), **no**, or **no — create one for me**. Step 7 acts on the answer.
 
 For a whole idea that's still fuzzy rather than one missing field, work it out with them before
 writing — one question at a time, each with the answer you'd recommend attached, until you both
@@ -67,6 +76,10 @@ Resolve the parent page by title with `searchConfluenceUsingCql` or
 
 If the venture has graduated and no space exists yet, **stop and ask the user to create it** —
 the connector can't. Then continue.
+
+If the page is about an idea with no tree under `Ideas/` yet, the tree is missing, not implied.
+Creating it names the idea, and names stick — so propose the tree, ask what the idea should be
+called, and wait for the answer before creating anything.
 
 ## Step 5 — Write it
 
@@ -90,6 +103,11 @@ Topics: <words from the Topics page>
 Write with `contentFormat: "markdown"`. Plain language, short sections, tables over prose —
 these pages get scanned for one answer, not read start to finish.
 
+Title and body are written in the language the user chose in Step 3. The skeleton stays in
+English either way — `Topics:` keeps its canonical vocabulary, and `Owner:`, `Review by:`,
+`## Related` and `Supersedes:` are the exact strings that search and the repair pass in
+`confluence-retire` match on.
+
 **Every link in `## Related` is a real markdown link — the target's exact title, and its URL**
 — `[Exact title](https://…/pages/123/…)`. Copy both verbatim from the search result that found
 the page. Confluence turns that into a native page link, which is what keeps the page findable
@@ -112,11 +130,21 @@ Load it with `getConfluencePage` and work from what's actually there.
 
 ## Step 7 — Wire it to Linear
 
-Pages and issues answer different questions, so they point at each other:
+Pages and issues answer different questions, so they point at each other. Act on the Linear
+answer from Step 3:
+
+- **Yes, there's an issue** → wire both ways, below.
+- **No** → skip this step. Don't invent an issue to link.
+- **No — create one for me** → create it first: with the `linear-issue` skill if it's
+  installed (it knows the house format), otherwise `save_issue` — confirming title and team
+  with the user before creating. Then wire both ways.
+
+Wiring both ways:
 
 - Put the issue key in the page — `ENG-123`, `BIZ-45` — and paste the issue link.
-- On the issue, attach the page URL with `create_attachment` titled with the page's name, or
-  paste it into the issue's `## Context`, where Linear renders a preview.
+- On the issue, paste the page URL into `## Context`, where Linear renders a preview, or add a
+  comment with `save_comment` carrying the page's title and URL. (`create_attachment` can't do
+  this — it uploads file content, not links.)
 - A **Spec** names the issues that implement it. A **Decision** names the issue that triggered
   it.
 
