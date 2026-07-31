@@ -1,6 +1,6 @@
 ---
 name: confluence-retire
-description: Retire a Confluence page that is no longer the answer — marking it superseded, linking what replaced it, and finding and repairing every page that pointed at it so the Brain has no dangling references. Also handles moving a venture's pages into its own space when it graduates. Use when the user says a page is out of date, wrong, replaced, superseded, or should be removed, or when a venture's Linear Project has started.
+description: Retire a Confluence page that is no longer the answer — marking it superseded, linking what replaced it, and finding and repairing every page that pointed at it so the Brain has no dangling references. Also handles moving a venture's pages into its own space when it graduates. Use when the user says a page is out of date, wrong, replaced, superseded, or should be removed, or when a venture graduates into its own space.
 ---
 
 # Retire a page, and repair what pointed at it
@@ -98,11 +98,13 @@ answer with no warning.
 
 ## Graduating a venture
 
-The other job this skill does. When a venture's Linear Project reaches `started` but its pages
-are still under `Ideas/<Venture>/`, it has graduated and nobody has moved it.
+The other job this skill does. Graduation is a human decision, not a status change — Linear
+is organised by team, not by venture, so nothing in Linear announces it. It happens when the
+user says a venture is now committed and should have its own space while its pages still sit
+under `Ideas/<Venture>/`.
 
-1. **Say so, and ask the user to create the space.** The connector can't — it needs a name
-   matching the Linear Project and a key that's the name uppercased. Wait for it.
+1. **Ask the user to create the space.** The connector can't — it needs a name matching the
+   venture and a key that's the name uppercased, or a sensible short form of it. Wait for it.
 2. **Move the tree.** `updateConfluencePage` with the new `spaceId` and `parentId`, walking the
    tree from `getConfluencePageDescendants` so nothing is orphaned.
 3. **Drop the prefix.** `Acme — Decisions` becomes `Decisions` — the space carries the

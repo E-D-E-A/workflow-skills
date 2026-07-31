@@ -280,7 +280,7 @@
     <p class="sec-note">By venture, not by team. Linear routes by team because teams decide how work gets done — but a finished page is knowledge <em>about</em> something, and everything known about one venture belongs together no matter who wrote it.</p>
 
     <div class="rule-box">
-      <p>A venture gets its own space once its Linear Project is <span class="k eng-k">actually started</span>. Until then it's an idea, and lives in the house space.</p>
+      <p>A venture gets its own space when <span class="k eng-k">you decide it's committed</span> — Linear is organised by team, not venture, so no Project status announces it. Until then it's an idea, and lives in the house space.</p>
     </div>
 
     <pre><code>EDEA        E.D.E.A (house)       ACME        Acme
@@ -295,11 +295,11 @@
 
     <div class="t-scroll">
       <table>
-        <thead><tr><th>Linear Project</th><th>Pages live in</th></tr></thead>
+        <thead><tr><th>The venture</th><th>Pages live in</th></tr></thead>
         <tbody>
-          <tr><td><span class="lbl">Backlog</span> · <span class="lbl">Planned</span></td><td>House space, under <code>Ideas/&lt;Venture&gt;/</code></td></tr>
-          <tr><td><span class="lbl">In Progress</span></td><td>Its own space</td></tr>
-          <tr><td><span class="lbl">Done</span> · <span class="lbl">Canceled</span></td><td>Left where they are</td></tr>
+          <tr><td><span class="lbl">Still an idea</span></td><td>House space, under <code>Ideas/&lt;Venture&gt;/</code></td></tr>
+          <tr><td><span class="lbl">Committed</span> — its space exists</td><td>Its own space</td></tr>
+          <tr><td><span class="lbl">Finished</span> · <span class="lbl">Abandoned</span></td><td>Left where they are</td></tr>
         </tbody>
       </table>
     </div>
@@ -314,7 +314,7 @@
     <p class="dim" style="font-size:14.5px">Not a Confluence label: the connector can't set those, so a label would depend on someone remembering every time. Add real labels yourself if you like them — nothing depends on them.</p>
 
     <h3>Graduation</h3>
-    <p>When a Project starts but its pages are still under <code>Ideas/</code>, Claude will say so and offer to move them. <strong>You create the space</strong> — that sets a key and permissions and can't be renamed cleanly later. Claude then moves the tree and re-points any page links attached to Linear issues, so nothing dangles.</p>
+    <p>Graduation is your call — tell Claude a venture is committed and its pages should move out of <code>Ideas/</code>. <strong>You create the space</strong> — that sets a key and permissions and can't be renamed cleanly later. Claude then moves the tree and re-points any page links attached to Linear issues, so nothing dangles.</p>
 
     <div class="notice">
       <p class="notice-head">Two rules that keep it working</p>
@@ -330,6 +330,8 @@
     <div class="rule-box">
       <p>Someone who wasn't in the room should be able to read it and act <span class="k">without asking you what you meant</span>.</p>
     </div>
+
+    <p class="dim" style="font-size:14.5px">Writing through Claude? It asks before it writes rather than assuming — including <strong>Hebrew or English</strong>, every time. The language your request is written in decides nothing.</p>
 
     <ol class="steps">
       <li><div>
@@ -373,6 +375,7 @@
       <li>Put the issue key in the page — <code>ENG-123</code>, <code>BIZ-45</code> — and paste the link. Linear picks up the mention, so the connection shows from both sides.</li>
       <li>On the issue, paste the page link into <strong>Context</strong>, where Linear renders a preview, or attach it with the page's title.</li>
       <li>A <strong>Spec</strong> names the issues that implement it. A <strong>Decision</strong> names the issue that triggered it.</li>
+      <li>When Claude writes a page it asks whether the work has a Linear issue — <strong>yes</strong>, <strong>no</strong>, or <strong>no, create one for me</strong> — and wires both directions, or neither, accordingly.</li>
     </ul>
   </section>
 
@@ -405,7 +408,7 @@
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks when it can't tell.</td></tr>
+          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks rather than assumes — language, venture and space, type, Linear issue — whenever the request doesn't say.</td></tr>
           <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question.</td></tr>
           <tr><td><span class="lbl">confluence-retire</span></td><td>Marks a page superseded and repairs everything that pointed at it. Also moves a venture's tree when it graduates.</td></tr>
         </tbody>
