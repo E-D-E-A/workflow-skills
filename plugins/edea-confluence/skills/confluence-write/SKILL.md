@@ -115,6 +115,33 @@ English either way — `Topics:` keeps its canonical vocabulary, and `Owner:`, `
 `## Related` and `Supersedes:` are the exact strings that search and the repair pass in
 `confluence-retire` match on.
 
+**A Hebrew page is written with `contentFormat: "html"`, not markdown.** Confluence has no
+right-to-left support of its own, so the page is laid out by hand from two mechanisms, both
+on every line (verified against the live site):
+
+- **Reading order** — wrap the text of every line in the invisible Unicode pair **RLI
+  (U+2067) before the first character, PDI (U+2069) after the last**. Without it, punctuation
+  and embedded English render scrambled.
+- **Right alignment** — `style="text-align: right;"` on every `<p>` and heading, including
+  paragraphs inside blockquotes and table cells. (`dir="rtl"` is rejected by the connector —
+  alignment is the only layout tool that exists.)
+
+The shapes that follow from those two rules:
+
+- **Bullets and numbers are typed, not real lists.** Confluence lists can't be aligned, so
+  the marker would sit on the wrong side. Write `<p style="text-align: right;">⁧• טקסט⁩</p>`
+  and number by hand — `⁧1. טקסט⁩` — the marker sits inside the RLI wrap, so it renders on
+  the right.
+- **Tables are mirrored.** The label column goes last in the HTML so it renders rightmost,
+  and every cell paragraph is aligned right.
+- **Task lists stay real.** A checkbox someone can tick is worth more than a mirrored one, so
+  they're the one element that stays anchored left — still wrap each item's text in RLI…PDI.
+- **The skeleton stays English and left-aligned** — `Topics:`, the `## Related` heading,
+  `Owner:` and `Review by:`.
+
+None of this changes what the page says, only how it renders. English pages keep using
+markdown as the paragraph above this one says.
+
 **Every link in `## Related` is a real markdown link — the target's exact title, and its URL**
 — `[Exact title](https://…/pages/123/…)`. Copy both verbatim from the search result that found
 the page. Confluence turns that into a native page link, which is what keeps the page findable
