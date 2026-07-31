@@ -147,6 +147,8 @@ Copy-ready output only — no commentary before or after unless the user asks.
 
 An output is done when every answer is yes:
 
+- Did the user state the audience, the goal, and the language themselves — none of them
+  inferred?
 - Is the deck's purpose explicit, and the audience clear?
 - Does each slide carry one message, under a conclusion title?
 - Are facts, assumptions, and targets separated?

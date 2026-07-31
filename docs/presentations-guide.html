@@ -235,15 +235,15 @@
       </div></li>
       <li><div>
         <h3>Answer three questions</h3>
-        <p>Claude won't start without them: <strong>who it's for</strong>, <strong>what they should decide or do</strong>, and <strong>Hebrew or English</strong>. Everything else it works out or asks about as needed.</p>
+        <p>Claude won't start without them: <strong>who it's for</strong>, <strong>what they should decide or do</strong>, and <strong>Hebrew or English</strong>. It won't fill any of them in for you — asking in Hebrew doesn't mean a Hebrew deck. Anything else it's missing, it asks about too, one question at a time.</p>
       </div></li>
       <li><div>
         <h3>Review the brief</h3>
         <p>You get the deck's story before any slides exist — the narrative, one message per slide, what's fact and what's assumption. Cheapest moment to change direction.</p>
       </div></li>
       <li><div>
-        <h3>Choose delivery</h3>
-        <p>Generate in NotebookLM now, or take the brief and paste it into a tool yourself.</p>
+        <h3>Confirm the run sheet</h3>
+        <p>One short message sums up what's about to be built — language, slide count, format — and asks: generate in NotebookLM now, or take the brief and paste it into a tool yourself? Nothing runs until you answer.</p>
       </div></li>
       <li><div>
         <h3>Wait</h3>
@@ -309,6 +309,13 @@ notebooklm login</code></pre>
     <p><code>login</code> opens a browser for a normal Google sign-in, one time. No passwords are stored in any repo.</p>
 
     <div class="notice">
+      <p class="notice-head">Temporary — July 2026</p>
+      <p>Google renamed NotebookLM to Gemini Notebook, and the released tool doesn't know the new address yet — <code>login</code> waits forever even after you signed in. Until version 0.8.0 is out, install from the project's main branch instead:</p>
+      <pre><code>uv tool install "notebooklm-py[browser] @ git+https://github.com/teng-lin/notebooklm-py.git"</code></pre>
+      <p>Delete this notice once 0.8.0 ships.</p>
+    </div>
+
+    <div class="notice">
       <p class="notice-head">Built on an unofficial tool</p>
       <p>NotebookLM has no official API, so generation runs through a community tool that can break whenever Google changes something. When that happens you still get the full brief to paste into NotebookLM yourself — tell a developer, and they'll sort the tool out.</p>
     </div>
@@ -321,7 +328,7 @@ notebooklm login</code></pre>
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">presentation-create</span></td><td>Briefs, structures, infographics and full NotebookLM generation. Asks the three questions before starting; never invents numbers.</td></tr>
+          <tr><td><span class="lbl">presentation-create</span></td><td>Briefs, structures, infographics and full NotebookLM generation. Asks the three questions before starting and confirms the run sheet before generating; anything unclear becomes a question, never a guess.</td></tr>
         </tbody>
       </table>
     </div>

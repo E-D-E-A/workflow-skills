@@ -18,27 +18,36 @@ Everything below assumes it. Open `NOTEBOOKLM.md` only when you reach Step 5.
 
 ## Step 1 — Three things before anything
 
-Continue only when you can state each of these in one line:
+Continue only when the user has stated each of these **in their own words**. An answer you
+worked out for them is a guess — even a good one, even one you announce:
 
 - **Audience** — who sits in front of it: investors, a partner, the board, the team?
 - **Goal** — the decision, belief, or action the deck should produce.
-- **Language** — Hebrew (which means full RTL, per `DECKCRAFT.md`) or English.
+- **Language** — Hebrew (which means full RTL, per `DECKCRAFT.md`) or English. The
+  language the request was written in answers nothing — a Hebrew ask can want an English
+  deck, and the other way round.
 
-If any is missing, ask — one specific question at a time, with the likely answer attached
-so the user can just pick:
+If any is missing, stop and ask — one specific question at a time, with the likely answer
+attached so the user can just pick:
 
 - "Who is this for? Sounds like investors, since you mentioned a round."
 - "What should they do after seeing it — agree to a pilot, or just understand the product?"
-- "Hebrew or English? The audience you named suggests Hebrew."
+- "Hebrew or English? You wrote in Hebrew, so probably Hebrew — but it's your call."
 
-One rule that applies to every output: **work only with the facts you were given.** A number
-you don't have becomes a marked assumption (`Assumption`, `Target`, `Validation required` —
-or הנחה / יעד in Hebrew), stated as such on the slide. Framing and sharpening are your job;
-inventing evidence is not.
+This holds when the session runs unattended too: park the work on the question and wait,
+rather than proceed on a guess.
+
+One rule that applies to every output: **work only with the facts you were given and the
+choices the user has made.** A number you don't have becomes a marked assumption
+(`Assumption`, `Target`, `Validation required` — or הנחה / יעד in Hebrew), stated as such
+on the slide. A gap that would change the deck's structure or its core message is a
+question to ask, not an assumption to mark. Framing and sharpening are your job; inventing
+evidence or deciding for the user is not.
 
 ## Step 2 — Pick the output
 
-The user's words pick it. If two could fit, ask, suggesting the likely one.
+The user's words pick it. If their words don't pick exactly one, ask, suggesting the
+likely one.
 
 | The user wants                                              | You produce                                    |
 | ----------------------------------------------------------- | ---------------------------------------------- |
@@ -58,12 +67,20 @@ RTL rules when the language is Hebrew.
 
 The brief is done when it passes the checklist at the end of `DECKCRAFT.md`.
 
-## Step 4 — Ask where to deliver
+## Step 4 — Confirm the run sheet
 
-Before running anything, ask: **"Generate the deck in NotebookLM now, or hand you the
-brief?"**
+Before running anything, show the user one short message they can correct in one reply:
 
-- **Generate** → Step 5.
+- The deck in one line — audience, goal, language, slide count, and the frame the brief
+  uses.
+- **Format and length** — `presenter` for light slides someone talks over, or `detailed`
+  for a deck that reads on its own; full length, or short. Suggest the one the audience
+  implies, and let the user call it.
+- **"Generate the deck in NotebookLM now, or hand you the brief?"**
+
+Continue only on their reply:
+
+- **Generate** → Step 5, carrying the format, length, and language they confirmed.
 - **Hand it over** → give the copy-ready output in the shape `DECKCRAFT.md` defines, with
   no commentary around it, and stop.
 

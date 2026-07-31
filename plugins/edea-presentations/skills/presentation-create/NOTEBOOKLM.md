@@ -23,6 +23,18 @@ notebooklm login                            # opens a browser for Google sign-in
 
 A developer usually runs this on each teammate's machine; after that it just works.
 
+**Temporary — until `notebooklm-py` 0.8.0 is on PyPI.** Google renamed NotebookLM to
+Gemini Notebook in July 2026, and the released 0.7.3 doesn't recognise the new
+`notebook.google.com` address — `notebooklm login` hangs on "Waiting for login" even after
+a successful sign-in. Until 0.8.0 ships (check with `pip index versions notebooklm-py`),
+install from the project's main branch instead:
+
+```bash
+uv tool install "notebooklm-py[browser] @ git+https://github.com/teng-lin/notebooklm-py.git"
+```
+
+Delete this note once 0.8.0 is out and the plain install works again.
+
 ## Preflight — every run
 
 ```bash
@@ -64,6 +76,11 @@ Proceed only when it reports `"status": "ok"` **and** `"checks.token_fetch": tru
    notebooklm generate slide-deck "<instruction>" -n <id> --json
    notebooklm generate slide-deck --prompt-file ./prompt.txt -n <id> --json
    ```
+
+   **Pass `--format`, `--length`, and `--language` explicitly** — each carries what the
+   user confirmed on the run sheet in the skill's Step 4. Language especially: the deck's
+   language is pinned by the flag, not by the prompt, and it defaults to English — a fully
+   Hebrew prompt still produces an English deck without `--language he`, silently.
 
    `--format presenter` for light slides someone talks over, `detailed` for a deck that
    reads on its own; `--length short` for a compact version.
