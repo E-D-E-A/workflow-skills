@@ -111,12 +111,36 @@ you're updating it, not creating a second one.
 | **Spec** | What we're building, what done looks like, what's out of scope | **Yes** |
 | **Research** | A question, what we found, a source for every claim | No — date in the title |
 | **Runbook** | A repeatable process, and what to do when a step fails | **Yes** |
-| **Meeting notes** | Date, who was there, what was decided, who owns what | No — a record |
+| **Meeting notes** | Said, decided, assigned — in the fixed template below | No — a record |
 
 If something fits none of the five, say so and ask. Don't force it into the nearest one.
 
 **Decisions and Meeting notes are records of a moment.** They are never edited to say something
 different. When the answer changes, write a new page and supersede the old one.
+
+### The Meeting notes template
+
+Every Meeting notes page uses the same eight sections, in this order, so a reader always knows
+where to look. An empty section stays and says so — "No decisions were made in this meeting"
+is information, not padding.
+
+After the opening line and `Topics:`:
+
+1. **Meeting details** — a table: date and time (Israel time) · duration · participants ·
+   link to the recording, if there is one · purpose
+2. **Summary** — three to five lines for someone who won't read further
+3. **Main points** — the heart of the page: a sub-heading per subject, every point that
+   mattered
+4. **Decisions** — numbered. A decision that matters gets its own Decision page too; link it
+5. **Open questions** — raised but not settled
+6. **Action items** — a task list. An owner appears only when a person supplied one — never
+   inferred from a recording, whose speaker labels misattribute
+7. **Next steps** — follow-ups, and the next meeting if one was set
+8. **Related** — per the linking rules below
+
+Participants come from the calendar invite. A page built from a recording carries no people's
+names in its body at all — what was said is reliable, who said it is not. The `fireflies-file`
+skill in the `edea-fireflies` plugin holds the full rules for that path.
 
 ## What every page carries
 

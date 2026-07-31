@@ -22,6 +22,12 @@
       "source": "./plugins/edea-presentations",
       "description": "E.D.E.A presentations: executive-grade deck briefs in Hebrew or English, generated into real NotebookLM slide decks.",
       "category": "productivity"
+    },
+    {
+      "name": "edea-fireflies",
+      "source": "./plugins/edea-fireflies",
+      "description": "Fireflies meeting recordings: nameless meeting summaries filed into the Confluence Brain, and answers about what was said.",
+      "category": "productivity"
     }
   ]
 }

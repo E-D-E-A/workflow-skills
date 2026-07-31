@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Working with Fireflies — E.D.E.A</title>
+<style>
+  /* Dark only, on purpose — the palette does not follow the OS or a theme toggle. */
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --ground: #0E1116;
+    --raised: #161B23;
+    --ink: #E8ECF1;
+    --ink-soft: #BAC3CE;
+    --muted: #8B96A3;
+    --rule: #232A33;
+    --rule-strong: #364049;
+    --eng: #7CA0F5;
+    --biz: #E0A356;
+    --biz-soft: #2A1F0F;
+    --warn-bg: #241B0B;
+    --warn-ink: #E5BE7C;
+    --warn-rule: #4A3818;
+
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 62ch;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px 88px; }
+
+  .masthead { padding: 60px 0 32px; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 16px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 42px); line-height: 1.06; letter-spacing: -0.028em;
+    font-weight: 680; margin: 0 0 14px; text-wrap: balance;
+  }
+  .standfirst { font-size: 18px; line-height: 1.5; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto; padding: 11px 28px;
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+  }
+  nav a {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    text-decoration: none; padding: 2px 0; border-bottom: 1.5px solid transparent;
+  }
+  nav a:hover { color: var(--ink); border-bottom-color: var(--rule-strong); }
+  nav a:focus-visible { outline: 2px solid var(--eng); outline-offset: 3px; }
+
+  section { padding: 46px 0 6px; }
+  section + section { border-top: 1px solid var(--rule); }
+
+  h2 {
+    font-size: 24px; line-height: 1.18; letter-spacing: -0.02em;
+    font-weight: 660; margin: 0 0 6px; text-wrap: balance;
+  }
+  .sec-note { color: var(--muted); font-size: 15px; margin: 0 0 26px; max-width: var(--measure); }
+  h3 { font-size: 16px; font-weight: 640; letter-spacing: -0.008em; margin: 28px 0 8px; }
+  p { max-width: var(--measure); margin: 0 0 12px; }
+  ul { max-width: var(--measure); margin: 0 0 12px; padding-left: 19px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 620; }
+  a { color: var(--eng); text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--mono); font-size: 0.875em;
+    background: var(--raised); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
+
+  .rule-box {
+    background: var(--raised); border: 1px solid var(--rule-strong);
+    border-radius: 3px; padding: 20px 22px; margin: 0 0 30px; max-width: var(--measure);
+  }
+  .rule-box p { margin: 0; font-size: 17px; line-height: 1.5; }
+  .rule-box .k { font-weight: 660; }
+  .rule-box .eng-k { color: var(--eng); }
+  .rule-box .biz-k { color: var(--biz); }
+
+  .t-scroll { overflow-x: auto; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 400px; }
+  th {
+    text-align: left; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    font-weight: 500; padding: 0 14px 8px 0; border-bottom: 1px solid var(--rule-strong);
+  }
+  td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-soft); }
+  td:first-child { color: var(--ink); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .dim { color: var(--muted); }
+  .lbl { font-family: var(--mono); font-size: 13px; }
+
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; max-width: none; }
+  ol.steps > li {
+    counter-increment: s; display: grid; grid-template-columns: 30px 1fr;
+    gap: 0 14px; padding: 15px 0; border-top: 1px solid var(--rule); margin: 0;
+  }
+  ol.steps > li:first-child { border-top: none; padding-top: 2px; }
+  ol.steps > li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    padding-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  ol.steps h3 { margin: 0 0 4px; font-size: 15.5px; }
+  ol.steps p, ol.steps ul { margin-bottom: 6px; }
+  ol.steps p:last-child, ol.steps ul:last-child { margin-bottom: 0; }
+  ol.steps ul { padding-left: 17px; }
+
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--raised); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 15px 17px; overflow-x: auto; margin: 0 0 16px; max-width: var(--measure);
+  }
+  pre code { background: none; border: none; padding: 0; white-space: pre; font-size: inherit; }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-rule);
+    border-radius: 3px; padding: 16px 18px; margin: 22px 0 4px; max-width: var(--measure);
+  }
+  .notice-head {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--warn-ink); margin: 0 0 7px; font-weight: 600;
+  }
+  .notice p { color: var(--warn-ink); margin: 0; font-size: 14.5px; }
+  .notice ul { color: var(--warn-ink); font-size: 14.5px; margin: 6px 0 0; max-width: none; }
+  .notice code {
+    background: color-mix(in srgb, var(--warn-ink) 10%, transparent);
+    border-color: var(--warn-rule); color: inherit;
+  }
+
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13.5px;
+  }
+  footer p { max-width: var(--measure); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#what">What it is</a>
+    <a href="#connect">Getting connected</a>
+    <a href="#nameless">The nameless rule</a>
+    <a href="#filing">Filing a meeting</a>
+    <a href="#template">The template</a>
+    <a href="#asking">Asking questions</a>
+    <a href="#skills">Skills</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">E.D.E.A · Internal handbook</p>
+    <h1>Working with Fireflies</h1>
+    <p class="standfirst">How a recorded meeting becomes a page in the Brain, why those pages carry no names, and how to ask questions about what was said.</p>
+  </header>
+
+  <section id="what">
+    <h2>What it is</h2>
+    <p class="sec-note">Fireflies is the notetaker bot in our calls. This plugin is how its recordings become knowledge instead of a pile of links.</p>
+    <p>Fireflies joins a meeting, records it, and produces a transcript and an automatic summary. One account covers the whole team — the bot joins whenever the account holder is in the call, so nobody else needs a seat.</p>
+    <p>The plugin does two things with a recording:</p>
+    <ul>
+      <li><strong>File it</strong> — write a full meeting-notes page into the right space's <code>Meetings</code> tree in Confluence, in the fixed house template.</li>
+      <li><strong>Ask about it</strong> — answer questions in chat, straight from the transcript, without writing anything.</li>
+    </ul>
+  </section>
+
+  <section id="connect">
+    <h2>Getting connected</h2>
+    <p class="sec-note">Once per person. No credentials live in the repo.</p>
+    <pre><code>/plugin marketplace add E-D-E-A/workflow-skills
+/plugin install edea-fireflies@edea</code></pre>
+    <p>The plugin ships the official Fireflies connector. The first time a skill uses it, a browser window opens to sign in to the Fireflies account — after that it just works.</p>
+    <p>Filing pages also needs <code>edea-confluence</code> installed — the Fireflies skills build on its rules rather than carrying their own copy. If it's missing, Claude will stop and say so.</p>
+  </section>
+
+  <section id="nameless">
+    <h2>The nameless rule</h2>
+    <p class="sec-note">The one rule that makes these pages trustworthy.</p>
+
+    <div class="rule-box">
+      <p><span class="k">Fireflies can't reliably tell who is speaking.</span> What was said is solid; who said it is a guess. So a page built from a recording carries <span class="k biz-k">no names in its body</span>.</p>
+    </div>
+
+    <p>We've watched the speaker labels swap people mid-conversation on our own meetings. A misattributed opinion in a permanent record is worse than no attribution — so the summary phrases everything as the room: "the team agreed", "one view was… the counter was…".</p>
+    <ul>
+      <li><strong>Participants still appear</strong> — once, in the meeting-details table. That list comes from the calendar invite, not from voices, so it's reliable.</li>
+      <li><strong>Action items are unowned by default.</strong> An owner is written only when a person supplies it — Claude asks at filing time; it never reads owners out of the transcript.</li>
+      <li><strong>"Who said that?"</strong> gets an honest answer: the transcript can't be trusted on that, here's <em>what</em> was said. The recording link is in every page for anyone who wants to listen.</li>
+    </ul>
+  </section>
+
+  <section id="filing">
+    <h2>Filing a meeting</h2>
+    <p class="sec-note">Say it in your own words — "summarize this meeting to Confluence", "create a wiki from the conversation", "add yesterday's call to the Brain" — with a Fireflies link if you have one.</p>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Claude finds the meeting</h3>
+        <p>From the link you pasted, or by searching by date — "yesterday's call" works. If more than one matches, it lists candidates and asks.</p>
+      </div></li>
+      <li><div>
+        <h3>Reads all of it</h3>
+        <p>The full transcript plus the automatic summary, end to end, before writing a word. Nothing important gets dropped because it happened in minute 90.</p>
+      </div></li>
+      <li><div>
+        <h3>Asks three questions</h3>
+        <ul>
+          <li><strong>Which space?</strong> — the page goes under that space's <code>Meetings</code> tree.</li>
+          <li><strong>Hebrew or English?</strong> — the language the meeting was held in decides nothing.</li>
+          <li><strong>Task owners?</strong> — name who owns what, or leave the action items unowned.</li>
+        </ul>
+      </div></li>
+      <li><div>
+        <h3>Writes and checks</h3>
+        <p>The eight-section template below, then a separate pass over the draft hunting only for names that slipped in. Hebrew pages come out right-to-left automatically.</p>
+      </div></li>
+      <li><div>
+        <h3>Files it and reports</h3>
+        <p>Under the space's <code>Meetings</code> tree, linked to the previous meeting's page. If a page for this meeting already exists, Claude shows it and asks instead of overwriting — meeting notes are records.</p>
+      </div></li>
+    </ol>
+
+    <div class="notice">
+      <p class="notice-head">What it deliberately doesn't do</p>
+      <ul>
+        <li>No automatic summaries — every page is asked for by a person.</li>
+        <li>No raw transcripts in Confluence — the page links the recording instead.</li>
+        <li>No Linear issues from action items unless you ask — that's <code>linear-issue</code>'s job.</li>
+        <li>No editing existing meeting pages — records are never rewritten.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="template">
+    <h2>The template</h2>
+    <p class="sec-note">Every meeting page — filed from a recording or written by hand — has the same eight sections in the same order. An empty section stays and says so: "no decisions were made" is information.</p>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Section</th><th>Holds</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">Meeting details</span></td><td>Date and time · duration · participants (from the invite) · recording link · purpose</td></tr>
+          <tr><td><span class="lbl">Summary</span></td><td>Three to five lines for someone who won't read further</td></tr>
+          <tr><td><span class="lbl">Main points</span></td><td>The heart of the page — a sub-heading per subject, every point that mattered</td></tr>
+          <tr><td><span class="lbl">Decisions</span></td><td>Numbered. A decision that matters gets its own Decision page, linked</td></tr>
+          <tr><td><span class="lbl">Open questions</span></td><td>Raised but not settled</td></tr>
+          <tr><td><span class="lbl">Action items</span></td><td>A task list — owners only when a person named them</td></tr>
+          <tr><td><span class="lbl">Next steps</span></td><td>Follow-ups, and the next meeting if one was set</td></tr>
+          <tr><td><span class="lbl">Related</span></td><td>Links to the previous meeting's page and anything the conversation pointed at</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="asking">
+    <h2>Asking questions</h2>
+    <p class="sec-note">No page, no filing — just answers from the transcript, in whatever language you asked.</p>
+    <ul>
+      <li>"What did we decide about the onboarding flow?"</li>
+      <li>"מה פספסתי בפגישה של אתמול?"</li>
+      <li>"Give me a quick recap of the call — in chat, don't write anything."</li>
+      <li>"Which meeting did the budget come up in?" — searches across meetings.</li>
+    </ul>
+    <p>Answers come from the meeting, not from general knowledge — if something wasn't discussed, Claude says so rather than filling the gap. Timestamps are quoted where they help, so you can jump to that minute of the recording.</p>
+  </section>
+
+  <section id="skills">
+    <h2>The skills</h2>
+    <p class="sec-note">What the plugin installs, and what each piece is for.</p>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Skill</th><th>Job</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">fireflies-file</span></td><td>Files a recorded meeting into the Brain: reads everything, asks space, language and owners, writes the eight-section template with no names in the body, and runs a names pass before publishing.</td></tr>
+          <tr><td><span class="lbl">fireflies-ask</span></td><td>Answers questions about meetings in chat — decisions, subjects, action items, quick recaps, and which meeting covered what. Writes nothing.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="font-size:14.5px">Both lean on <code>FIREFLIES.md</code>, the shared reference inside the plugin, and <code>fireflies-file</code> builds on the <code>edea-confluence</code> rules rather than duplicating them.</p>
+  </section>
+
+  <footer>
+    <p>The skills tell Claude how to work; this page tells people. If they ever disagree, the skill is what's actually running — fix the page.</p>
+  </footer>
+
+</div>
+</body>
+</html>
