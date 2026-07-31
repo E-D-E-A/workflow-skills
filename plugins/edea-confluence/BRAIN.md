@@ -187,6 +187,7 @@ Verified against the live site. Design around these rather than assuming.
 | **Create a space** | ❌ no tool |
 | **Set labels** | ❌ no tool, no scope, no parameter — hence `Topics:` |
 | **Enumerate inbound links** | ❌ no API — hence the exact-title rule |
+| **Right-to-left pages** | ⚠️ no `dir` attribute — but buildable by hand; the recipe lives in `confluence-write` |
 
 Inbound-link discovery by title search is **verified working**: searching a page's exact title
 returns both that page and every page linking to it. That only holds while links carry the
@@ -196,8 +197,15 @@ Two of our rules are therefore enforced by the tooling rather than by discipline
 cannot delete anything, and cannot create a space.** When either is needed, ask the user to do
 it and wait.
 
-Write page bodies with `contentFormat: "markdown"`. It converts cleanly — headings, tables,
-quotes, and checkbox lines become native Confluence task lists.
+Write English page bodies with `contentFormat: "markdown"`. It converts cleanly — headings,
+tables, quotes, and checkbox lines become native Confluence task lists.
+
+Hebrew pages are the exception: Confluence has no right-to-left support and the connector
+rejects `dir="rtl"` (verified), so they're written with `contentFormat: "html"` and laid out
+by hand — invisible RLI (U+2067) … PDI (U+2069) wraps fix each line's reading order, and
+`style="text-align: right;"` on paragraphs and headings fixes the alignment. Real bullet and
+numbered lists can't be aligned, so Hebrew pages fake them as aligned paragraphs; clickable
+task lists stay real and stay left. `confluence-write` carries the full recipe.
 
 ## Invariants
 
