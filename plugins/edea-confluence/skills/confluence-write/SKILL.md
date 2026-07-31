@@ -34,6 +34,10 @@ Then decide honestly:
   it's genuinely unclear.
 - **Nothing covers it** → you're creating. Continue.
 
+If matches turn up in more than one space — the house space and a venture's, or two
+ventures' — the *where* is ambiguous as well as the *what*. Ask which space is meant, naming
+the candidates and the one you'd pick, before deciding anything else.
+
 Skipping this step is how a wiki ends up with two pages that disagree, which is the failure
 mode that makes people stop trusting it.
 
@@ -67,15 +71,18 @@ describe the page the same way.
 
 The five types are in `BRAIN.md`. Pick one and the location follows:
 
-1. **Which space?** House space unless it's about a venture whose Linear Project has started.
+1. **Which space?** House space, unless it's about a venture that has its own space — check
+   the live list with `getConfluenceSpaces` rather than remembering. **If it isn't clear
+   which space the page belongs to, stop and ask**, naming the candidates and the one you'd
+   recommend. This question gates updating as much as creating.
 2. **Which tree?** The type tree — `Decisions/`, `Specs/`, `Research/`, `Runbooks/`, `Meetings/`.
 3. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
 
 Resolve the parent page by title with `searchConfluenceUsingCql` or
 `getPagesInConfluenceSpace`; don't assume an id.
 
-If the venture has graduated and no space exists yet, **stop and ask the user to create it** —
-the connector can't. Then continue.
+If the user says the venture should have its own space and none exists yet, **stop and ask
+them to create it** — the connector can't. Then continue.
 
 If the page is about an idea with no tree under `Ideas/` yet, the tree is missing, not implied.
 Creating it names the idea, and names stick — so propose the tree, ask what the idea should be

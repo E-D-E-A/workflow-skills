@@ -25,8 +25,9 @@ issue comment, not a page.
 ## Ask, don't assume
 
 These skills work for a person, not instead of one. Any piece the job needs that the user
-hasn't stated — which venture, which type, what the page is called, Hebrew or English, which
-Linear issue — is a question to ask, not a judgement call to make for them. An answer you
+hasn't stated — which venture and therefore which space, which type, what the page is called,
+Hebrew or English, which Linear issue — is a question to ask, not a judgement call to make for
+them. An answer you
 worked out yourself is a guess, even a good one, even one you announce.
 
 Ask one specific question at a time, with the answer you'd recommend attached so the user can
@@ -51,18 +52,30 @@ belongs together no matter who wrote it.
 
 ### Has the venture earned a space?
 
-Read its Linear Project with `get_project` and look at `status.type`:
+**Linear can't answer this.** Linear is organised by team (Business and Engineering), not by
+venture, so there is no venture Project whose status marks graduation. The record is
+Confluence itself — list the spaces with `getConfluenceSpaces`:
 
-| `status.type` | Where its pages go |
+| The venture | Where its pages go |
 | --- | --- |
-| `backlog`, `planned` | House space, under `Ideas/<Venture>/` |
-| `started` | Its own space |
-| `completed`, `canceled` | Leave them where they are |
+| Still an idea — no space of its own | House space, under `Ideas/<Venture>/` |
+| Committed — has its own space | That space |
+| Finished or abandoned | Leave its pages where they are |
 
 Not about a venture at all → house space, directly.
 
-Don't guess which venture a page belongs to. If it came from a Linear issue, use that issue's
-Project. If there's no issue and it isn't obvious, ask.
+Graduating is a human decision and a human act — deciding the venture is committed, then
+creating its space, which the connector can't do. Never infer graduation from activity; if an
+idea looks like it has outgrown `Ideas/`, raise it and ask.
+
+### Which space? If it isn't clear, ask
+
+Don't guess which venture — and therefore which space — a page belongs to. This gates
+creating **and** updating: if the request doesn't make the space obvious, or search finds
+candidate pages in more than one space, stop and ask before touching anything. Name the
+candidate spaces, say which you'd pick and why, and wait. A page created in the wrong space
+sits where nobody thinks to look; an update applied in the wrong space forks the subject into
+two pages that disagree.
 
 ### The five type trees
 
