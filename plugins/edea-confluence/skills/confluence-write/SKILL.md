@@ -110,6 +110,28 @@ Topics: <words from the Topics page>
 Write with `contentFormat: "markdown"`. Plain language, short sections, tables over prose —
 these pages get scanned for one answer, not read start to finish.
 
+### Write so nobody has to ask what you meant
+
+Plain language, short sentences. Some readers are not developers, and most arrive months later
+without the context you have while writing.
+
+**Leave no knowledge gap.** Whenever you use something the reader might not know, explain it in
+the same breath rather than assuming or pointing elsewhere:
+
+- Spell out an abbreviation the first time it appears.
+- Give a one-line explanation of any domain term, internal concept or named way of working, at
+  the point you use it. A link is not a substitute — the reader is here, now.
+- When you cite a rule, a law or another document, **say what it actually requires**. A section
+  number on its own tells the reader nothing.
+- Never assume the reader has read another page first, including the one this links from.
+
+The test: someone outside the team, reading this cold in six months, should not have to look
+anything up to follow it. Explaining a term costs one clause. Leaving it out costs every future
+reader a search, and some of them will guess instead.
+
+This is not the same as writing more. Simpler words and fuller explanations usually make a page
+*shorter*, because you stop hedging and cross-referencing.
+
 ### Use Confluence's own elements, sparingly
 
 Markdown covers most pages. But a page whose job is to get a **decision made** — options

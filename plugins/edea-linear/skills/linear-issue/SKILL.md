@@ -106,6 +106,21 @@ wrong — and don't pad a clear task just to fill in sections.
 Before you save, read the issue as if someone else wrote it. If you'd need to ask a question
 to get started, answer that question in the issue.
 
+**Write it plainly, and leave no knowledge gap.** Short sentences, ordinary words. Some readers
+are not developers, and whoever picks the issue up may do so weeks later without the context you
+have right now. So whenever you use something the reader might not know, explain it in the same
+breath rather than assuming it or pointing elsewhere:
+
+- Spell out an abbreviation the first time it appears.
+- Give a one-line explanation of any domain term, internal concept or named way of working, at
+  the point you use it. Linking to where it's defined is not a substitute.
+- When you cite a rule, a document or another issue, **say what it actually says**. A reference
+  on its own tells the reader nothing.
+
+The test: someone outside the team, reading it cold, should be able to follow the issue without
+looking anything up. This usually makes an issue *shorter*, not longer — you stop hedging and
+cross-referencing once you've just said the thing.
+
 Always include:
 
 - **A clear title** (from Step 2).
