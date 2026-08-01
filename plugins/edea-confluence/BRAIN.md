@@ -212,6 +212,7 @@ Verified against the live site. Design around these rather than assuming.
 | **Set labels** | ❌ no tool, no scope, no parameter — hence `Topics:` |
 | **Enumerate inbound links** | ❌ no API — hence the exact-title rule |
 | **Right-to-left pages** | ⚠️ no `dir` attribute — but buildable by hand; the recipe lives in `confluence-write` |
+| **Panels, status lozenges, decision lists, expands, columns** | ✅ via `contentFormat: "html"` — for meaning, never decoration; the rules live in `confluence-write` |
 
 Inbound-link discovery by title search is **verified working**: searching a page's exact title
 returns both that page and every page linking to it. That only holds while links carry the

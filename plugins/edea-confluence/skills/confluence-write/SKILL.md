@@ -110,6 +110,37 @@ Topics: <words from the Topics page>
 Write with `contentFormat: "markdown"`. Plain language, short sections, tables over prose —
 these pages get scanned for one answer, not read start to finish.
 
+### Use Confluence's own elements, sparingly
+
+Markdown covers most pages. But a page whose job is to get a **decision made** — options
+weighed, verdicts given, a warning that must not be missed — reads far better built from
+Confluence's own elements, which means `contentFormat: "html"`.
+
+| Element | Use it for | HTML |
+| --- | --- | --- |
+| Decision list | The decisions themselves — `UNDECIDED` while open, `DECIDED` once settled | `<ul data-type="decision-list">` |
+| Status lozenge | A verdict or state, in the heading where it can't be missed | `<span data-type="status" data-color="…">` |
+| Panel | The one thing on the page carrying real consequence | `<div data-type="panel-error">` |
+| Expand | What most readers skip — rejected options, detail on demand | `<details><summary>` |
+| Two-column layout | Two live candidates, genuinely side by side | `<section data-type="layout-two-equal">` |
+| Task list | Work someone will tick off | `<ul data-type="task-list">` |
+
+**The restraint rule: an element earns its place by carrying meaning the prose would bury.**
+Decoration makes a page look designed and read worse. A rough budget for one page — at most
+one panel, lozenges only where there is a genuine verdict or state, one expand. If everything
+is highlighted, nothing is.
+
+Colours mean things, so keep them consistent: `green` recommended · `yellow` qualified or
+unproven · `blue` time-boxed · `red` ruled out or dangerous · `neutral` a plain state.
+
+**Tables carry data, not arguments.** A status tracker, an index, a genuine two-axis grid —
+right. Four options scored against five criteria, where the verdict lands in the last column
+and nobody reads that far — wrong. Give each option a heading and a lozenge instead.
+
+Mind the nesting rules: panels can't hold tables, expands or other panels; list items can't
+hold headings, tables or panels. Invalid HTML is rejected with a descriptive error, so retry
+rather than guess.
+
 A **Meeting notes** page uses the eight-section template in `BRAIN.md` — same sections, same
 order, every time, empty sections included. Action-item owners come from a person, never from
 a recording's speaker labels.
