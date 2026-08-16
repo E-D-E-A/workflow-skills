@@ -97,6 +97,11 @@ These are the ones that make a skill ours rather than generic. All four come fro
 people relying on these skills are not developers, and a skill that assumes otherwise fails
 for them silently.
 
+**Explain every reference.** A skill never lets Claude cite a rule, page, or term by name or
+number alone — "per rule #3", a bare page title. The house pattern is one short clause saying
+what the referenced thing is, in the same breath, then the name. Write the skill so its
+output follows this too — reports and chat answers, not just pages.
+
 **Look up real values, never hardcode them.** Tell the skill to list the workspace's actual
 teams, statuses, labels, and spaces before writing, and to pick the closest match if a name
 has drifted. A hardcoded status name breaks the day someone renames it, and breaks quietly.

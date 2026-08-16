@@ -34,6 +34,33 @@ Ask one specific question at a time, with the answer you'd recommend attached so
 just pick. This holds when the session runs unattended too: park the work on the question and
 wait, rather than proceed on a guess.
 
+## Speak plainly
+
+Everything these skills write or say — pages, reports, questions in chat — uses simple words
+and short sentences. Some readers are not developers.
+
+Never point at something without saying what it is. "Because of invariant 3" or a bare page
+title tells the reader nothing. Give one short clause of explanation beside every reference —
+"because nothing in the Brain is ever deleted; superseded pages stay as the record" — and
+*then* name the page or rule. This holds for every reference, every time.
+
+## The Brain speaks up
+
+The Brain is not only for direct questions. In any session — company work or coding — when
+the conversation touches something E.D.E.A may have decided, documented or specced, check
+whether the Brain holds a page on it and say what you found.
+
+The balance: **context spent on the Brain is context taken from the work.** In a coding
+session especially, stay lean — search first, mention matching titles, and load a page's body
+only when it clearly earns its place in this session. There is no fixed page limit; the rule
+is that the Brain serves the work and never crowds it out.
+
+And whenever you're in a page for any reason, glance at it on the way through: a `Review by`
+date that has passed, a link written as loose words instead of the target's real title, a
+statement that disagrees with a page it links to. Report what you noticed as a proposal —
+never fix it silently. A systematic check of the whole Brain is the `confluence-doctor`
+skill's job; offer it when the glances keep finding problems.
+
 ## Getting connected
 
 Every call needs a `cloudId`. Don't hardcode it — call `getAccessibleAtlassianResources` and
@@ -141,6 +168,25 @@ After the opening line and `Topics:`:
 Participants come from the calendar invite. A page built from a recording carries no people's
 names in its body at all — what was said is reliable, who said it is not. The `fireflies-file`
 skill in the `edea-fireflies` plugin holds the full rules for that path.
+
+## How knowledge flows between the types
+
+Knowledge moves through the types in one direction: **Research informs Decisions. Decisions
+constrain Specs. Specs are implemented by Linear work and turned into practice by Runbooks.
+Meetings feed all of them.**
+
+That direction is what makes drift findable. When a page changes or is retired, the pages
+that might now be wrong are the ones downstream of it:
+
+| What changed | Where to look for damage |
+| --- | --- |
+| Research superseded | The Decisions that cited it — does the choice still hold? |
+| Decision superseded | The Specs it constrained, and the Runbooks built on it |
+| Spec changed | The Runbooks describing that process, and the Linear issues implementing it |
+| Runbook changed | Usually nothing — it is the end of the chain |
+| Meeting notes filed | The Decision pages its numbered decisions should have become |
+
+Every skill that changes or retires a page walks this table for the type it just touched.
 
 ## What every page carries
 

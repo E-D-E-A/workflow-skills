@@ -60,6 +60,16 @@ likely one.
 
 ## Step 3 — Build the brief
 
+**Start from what the company already knows.** E.D.E.A's decisions, specs and research live
+in Confluence — the team calls it the Brain, run by the `edea-confluence` plugin. If its
+Confluence tools are available in this session, make one light search for the deck's subject
+before writing a word: a Decision page may have settled the very claim a slide is about to
+make, and a Research page may hold the real numbers that beat a marked assumption. Use what
+you find as given facts — each traced to its page — and if the deck's message goes against
+something a current Decision page settled, raise that with the user before building on it.
+Keep the pull light: titles first, open only the pages the brief will actually use. If the
+Confluence tools aren't installed, skip this and say the Brain wasn't consulted.
+
 Apply `DECKCRAFT.md`: pick the story frame that fits the deck type and keep only the
 sections that strengthen the argument; give every slide one message and a conclusion title;
 separate fact, assumption, and target; tie every visual to the claim it supports; apply the

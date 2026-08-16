@@ -51,6 +51,12 @@ GitHub link move ENG issues instead of moving them by hand.
 Whenever you move an issue to `Waiting`, make sure the **Next action** in the description says
 what it's waiting on and who picks it back up — that's the whole point of the status.
 
+**Moving to `Done` can leave a document behind.** If the issue links a Confluence Spec — the
+page describing what was being built — the finished work may no longer match the page. When
+the Confluence tools are available, mention it: "this issue implements the spec page
+<title>; want me to check the page still matches what was built?" Offer, don't just do it —
+updating the page is the `confluence-write` skill's job, with its own approval.
+
 ## Reassigning
 
 Set the assignee to whoever owns the **next** step. On a `Waiting` issue, that's the person who
@@ -69,7 +75,10 @@ work changed. Don't pile on several labels to be safe — pick the main one.
   to link only). If you just have the link and are working through the Linear tools, attach it
   with `create_attachment`.
 - **Confluence / Google Docs / Figma:** attach the link with `create_attachment` and give it a
-  clear title, or paste it into the description, where Linear shows it as a preview.
+  clear title, or paste it into the description, where Linear shows it as a preview. For a
+  Confluence page, glance at it first when the Confluence tools are available: if it carries a
+  superseded notice — meaning a newer page replaced it — attach the replacement instead, and
+  say why.
 - Linking never removes anything, but it's still a write — show what you're about to attach
   or edit and get a yes first. A magic word does more than link: it changes the issue's
   status by itself when the PR merges, so say that consequence when you ask.

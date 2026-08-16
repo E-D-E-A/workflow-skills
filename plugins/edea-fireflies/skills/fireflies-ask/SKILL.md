@@ -25,6 +25,12 @@ speaker labels can't be trusted.
 - **The what, never the who.** When asked who said something, explain that Fireflies'
   speaker labels misattribute (FIREFLIES.md) and answer with what was said instead. Name a
   person in an answer only for attendance, from the meeting metadata.
+- **The meeting first, the Brain after.** The answer itself comes only from the transcript.
+  But if the Confluence tools are available and the subject has a page in the company's
+  Confluence Brain — say a Decision page recording where the question landed after this
+  meeting — add a pointer after the answer: the page's title plus one clause saying what it
+  is. Never blend the page's content into what the meeting said, and keep the check to a
+  title search.
 
 ## Working across meetings
 

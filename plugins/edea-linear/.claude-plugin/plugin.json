@@ -1,7 +1,7 @@
 {
   "name": "edea-linear",
-  "description": "Shared E.D.E.A workflows for Linear: creating and updating issues in house format.",
-  "version": "0.6.0",
+  "description": "Shared E.D.E.A workflows for Linear: creating and updating issues in house format, checking the company's Confluence Brain before drafting.",
+  "version": "0.7.0",
   "author": {
     "name": "E.D.E.A"
   }

@@ -73,6 +73,12 @@ exists, show it and ask — Meeting notes are records, so the answer is never to
 Hebrew pages get the right-to-left recipe. Wire `## Related` to the previous meeting's page
 and anything the conversation pointed at.
 
+While wiring, check what the meeting's decisions land on: search the Brain for the subject
+of each numbered decision. If a current Decision page settles the same question the other
+way, the meeting has likely replaced it — say so plainly ("decision 2 changes what the page
+titled <title> decided about <subject>"), and fold the supersede path into the offers in
+Step 6. Keep the check light — titles first, open a page only when it clearly matters.
+
 Paste the summary, never the raw transcript — the recording link already covers it.
 
 ## Step 6 — Say what you did, offer what you didn't
@@ -80,4 +86,6 @@ Paste the summary, never the raw transcript — the recording link already cover
 Give the title, the URL, and where it sits. Then offer, without doing them unasked:
 
 - Decisions in the page → their own Decision pages (`confluence-write`).
+- A decision that replaced an existing Decision page (found in Step 5) → retire the old page
+  properly, with the supersede notice and link repairs (`confluence-retire`).
 - Action items → Linear issues (`linear-issue`, if installed).

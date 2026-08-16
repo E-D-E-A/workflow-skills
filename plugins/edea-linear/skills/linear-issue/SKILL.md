@@ -31,6 +31,21 @@ will be written and wait for an explicit yes:
 The request approves the goal, not the writes, and silence is not a yes — if the session is
 running unattended, park on the question and wait.
 
+## Check the Brain first
+
+E.D.E.A's knowledge lives in Confluence — the team calls it the Brain, and the
+`edea-confluence` plugin runs it. If its Confluence tools are available in this session, make
+one light check before drafting: search for the issue's subject and see whether a Decision,
+Spec or Research page already covers it. A match fills gaps no clarification question needs
+to ask — link the page in `## Context` with its exact title and URL, and say in one clause
+what the page holds ("the spec that defines this feature"), never the bare title alone. If
+the requested work goes against something a current Decision page settled, say so before
+drafting rather than filing an issue that contradicts it.
+
+Keep the check light: match titles first, and open a page only when it clearly bears on the
+issue. If the Confluence tools aren't installed, skip this and say the Brain wasn't
+consulted.
+
 ## Before you create — the clarification pass
 
 **Never create issues on the first pass.** A raw task list is input, not a spec: it says what

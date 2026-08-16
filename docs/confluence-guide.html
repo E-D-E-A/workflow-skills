@@ -410,6 +410,23 @@
       </table>
     </div>
     <p class="dim" style="font-size:14.5px">Never delete a page for being old. Old and correct is the entire point.</p>
+
+    <h3>Changes ripple</h3>
+    <p>When a page's meaning changes, the pages linking to it may now be wrong. Claude runs the check after every real update — it finds what links here, proposes the repairs, and applies them with the update in one approved batch. Renaming a page always triggers the full repair, because links carry the exact title.</p>
+  </section>
+
+  <section id="breathing">
+    <h2>A Brain that keeps itself honest</h2>
+    <p class="sec-note">Knowledge flows one way: Research informs Decisions, Decisions constrain Specs, Specs become Linear work and Runbooks. Meetings feed all of them. Drift is found by walking that flow backwards.</p>
+
+    <h3>It speaks up</h3>
+    <p>The Brain isn't only for direct questions. When any session — company work or coding — touches something we may have decided or specced, Claude checks the Brain and says what it holds. It stays light about it: matching titles first, opening a page only when it earns its place. The Brain serves the work; it never crowds it out.</p>
+
+    <h3>It glances as it goes</h3>
+    <p>Any skill inside a page also looks at its health on the way through — a review date that passed, a link written as loose words, a page disagreeing with its neighbour — and proposes the fix rather than fixing silently.</p>
+
+    <h3>And it has a doctor</h3>
+    <p>Say <em>“run the doctor”</em>, <em>“check the Brain”</em> or <em>“anything stale?”</em> and Claude sweeps the whole Brain: broken and vague links, stale pages, specs whose work finished long ago, meeting decisions that never became Decision pages, pages that contradict each other. You get one ranked report, worst first, each finding with its proposed fix — nothing is changed until you approve, and questions only a person can answer stay questions.</p>
   </section>
 
   <section id="skills">
@@ -419,9 +436,10 @@
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, and asks rather than assumes — language, venture and space, type, Linear issue — whenever the request doesn't say.</td></tr>
-          <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question.</td></tr>
+          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, asks rather than assumes — language, venture and space, type, Linear issue — and after a real update, checks the pages linking here and repairs what the change made wrong.</td></tr>
+          <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question. Also speaks up unasked when a session touches something the Brain holds — lightly, titles first.</td></tr>
           <tr><td><span class="lbl">confluence-retire</span></td><td>Marks a page superseded and repairs everything that pointed at it. Also moves a venture's tree when it graduates.</td></tr>
+          <tr><td><span class="lbl">confluence-doctor</span></td><td>The health check. Sweeps for broken links, stale pages, drift against Linear, and contradictions — then reports worst-first and fixes what you approve.</td></tr>
         </tbody>
       </table>
     </div>

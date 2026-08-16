@@ -232,6 +232,29 @@ Load it with `getConfluencePage` and work from what's actually there.
 - **Spec or Runbook?** Refresh `Review by` when you make a real change, and check `Owner` is
   still the right person.
 
+### After the update — check what the change ripples to
+
+An update can quietly make *other* pages wrong: every page that links here and repeats or
+relies on what this page used to say. So after any update that changes what the page **says**
+— the answer, the scope, the owner — run the same search the repair pass uses, the one that
+finds every page linking here by this page's exact title:
+
+```
+searchConfluenceUsingCql: type = page AND text ~ "<this page's exact title>"
+```
+
+Glance at each page it returns: does it state something the update just made wrong? Does the
+flow table in `BRAIN.md` — the one saying which types depend on which — point at it? Bring
+the repairs into the same approval batch as the update itself, each shown before → after.
+One yes can cover the whole batch.
+
+A wording fix that changes nothing the page claims — a typo, a clearer sentence — skips this.
+
+**Renaming a page never skips it.** Links carry the target's exact title, and that title is
+also the only way to find the links — so the moment a title changes, every inbound link is
+both broken and about to become unfindable. Run the search on the **old** title first, then
+update every page it found. No exceptions, whatever the size of the rename.
+
 ## Step 7 — Wire it to Linear
 
 Pages and issues answer different questions, so they point at each other. Act on the Linear

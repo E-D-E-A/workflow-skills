@@ -97,6 +97,14 @@ Where the old reference is historically meaningful — a Decision citing the Res
 informed it — **keep it and add the replacement** rather than swapping. Losing why a decision
 was made is worse than an extra line.
 
+**Repairing the link is half the repair.** A page that pointed here may also *rely* on what
+the retired page said. Use the flow table in `BRAIN.md` — the one saying which types depend
+on which — to know where damage lands: retiring Research means the Decisions citing it may
+no longer be justified; retiring a Decision means the Specs and Runbooks built on it may now
+describe the wrong thing. Where a linking page's own content has been made doubtful, don't
+rewrite it yourself — flag it in the same report, and where only a person can say whether it
+still holds, ask.
+
 **Confirm before you start.** Show the user the list of pages you're about to change and what
 each change is. This is a bulk edit across pages other people wrote, and there's no undo beyond
 Confluence's per-page version history.

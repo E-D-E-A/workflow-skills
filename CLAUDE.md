@@ -167,6 +167,10 @@ House conventions for the body:
 
 - **Plain language.** No jargon. Spell out anything that could be read two ways. Some
   readers are not developers.
+- **Explain every reference.** Never cite a rule, page, or term by name or number alone —
+  "per rule #3" tells the reader nothing. One short clause saying what the referenced thing
+  is, in the same breath, then the name. This governs what skills write *and* what they say
+  in chat.
 - **Look up real values, don't hardcode them.** Tell the skill to list the workspace's
   actual teams, statuses, and labels before writing, and to pick the closest match if a
   name has drifted.
