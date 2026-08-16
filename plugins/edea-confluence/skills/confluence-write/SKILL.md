@@ -12,6 +12,19 @@ types, the linking rules, and what the connector can and can't do. Everything be
 Creating and updating are one skill because they're one judgement: you can't know which you're
 doing until you've searched.
 
+## Nothing is written without a yes
+
+Nothing changes in Confluence or Linear without the user seeing it first and agreeing to it.
+Before **every** write — creating a page, editing an existing one, commenting, creating a
+Linear issue, wiring links — show exactly what will be written and wait for an explicit yes:
+
+- **Creating a page** → show the full draft: title, space, parent, and the complete body.
+- **Updating a page** → show which page, and before → after for what changes.
+- **Writing to Linear** (Step 7) → show the comment or issue draft before saving it.
+
+The request approves the goal, not the writes, and silence is not a yes — if the session is
+running unattended, park on the question and wait.
+
 ## Step 1 — Does this belong in Confluence?
 
 Linear holds work; Confluence holds what we know. If you can't name who reads this in three
@@ -227,8 +240,8 @@ answer from Step 3:
 - **Yes, there's an issue** → wire both ways, below.
 - **No** → skip this step. Don't invent an issue to link.
 - **No — create one for me** → create it first: with the `linear-issue` skill if it's
-  installed (it knows the house format), otherwise `save_issue` — confirming title and team
-  with the user before creating. Then wire both ways.
+  installed (it knows the house format), otherwise `save_issue` — showing the full issue
+  draft for approval before creating. Then wire both ways.
 
 Wiring both ways:
 

@@ -246,3 +246,6 @@ Break any of these and the Brain degrades quietly, which is the only way it ever
    from adjacent pages and presenting it as knowledge is worse than silence.
 7. **Ask, don't assume.** A gap in what you were told is a question to the user, not a licence
    to guess.
+8. **Nothing is written without a yes.** Every create, update, or move is shown to the user
+   first — the full draft, or before → after — and waits for explicit approval. The request
+   approves the goal, not the writes.

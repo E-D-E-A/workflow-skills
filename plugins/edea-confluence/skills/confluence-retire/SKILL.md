@@ -12,6 +12,17 @@ Retiring is not deleting. The connector cannot delete anything, and that matches
 the paths we rejected are part of what the Brain knows. What retiring means is **this page is
 no longer the answer, and everything pointing at it now knows that.**
 
+## Nothing is written without a yes
+
+Nothing changes in Confluence or Linear without the user seeing it first and agreeing to it.
+That covers **every** write in the steps below — the supersede notice (Step 4), each repaired
+pointer (Step 5), the Linear attachment fix (Step 6), and every move and rename in a
+graduation. Show what will change — which page, and before → after — and wait for an explicit
+yes. For the bulk passes, one approval of the full list is enough; don't re-ask per page.
+
+The request approves the goal, not the writes, and silence is not a yes — if the session is
+running unattended, park on the question and wait.
+
 ## Step 1 — Is retiring the right move?
 
 Load the page with `getConfluencePage` and check what it actually is:

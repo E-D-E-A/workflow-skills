@@ -106,8 +106,15 @@ asks specific follow-up questions and suggests the likely answers — it does no
 does not leave blanks. For a genuinely fuzzy idea rather than one missing field, hand off to
 the `grilling` skill.
 
-**Guard anything destructive.** Deleting gets an explicit confirmation, and a reversible
-alternative offered first — cancel it, archive it, supersede it, mark it a duplicate.
+**Ask before every write.** A skill that creates, updates, or deletes anything in a shared
+tool — Linear, Confluence, GitHub — shows the user exactly what will change and waits for an
+explicit yes: the full draft for a create, before → after for an update. The request approves
+the goal, not the writes, and silence is not a yes — an unattended session parks on the
+question. Put the gate near the top of the skill so it governs every step, and check the body
+for lines that quietly contradict it ("no need to ask for X").
+
+**Guard anything destructive.** Deleting additionally gets a reversible alternative offered
+first — cancel it, archive it, supersede it, mark it a duplicate.
 
 ## Step 6 — Cut it down
 

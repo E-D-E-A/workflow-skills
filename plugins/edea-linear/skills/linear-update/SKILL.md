@@ -10,6 +10,19 @@ first** with `get_issue`, so you change it from its real current state, then sav
 with `save_issue`. Each team has its own statuses and labels, so look up the names with
 `list_issue_statuses` / `list_issue_labels` for **that issue's team** before you set them.
 
+## Nothing is written without a yes
+
+Nothing changes in Linear without the user seeing it first and agreeing to it. Before
+**every** write — a status move, a reassignment, a label change, an attachment, an edit to
+the description, a delete — show exactly what will change and wait for an explicit yes:
+
+- **Updating** → show before → after for each field you'll touch: "`ENG-123`: status
+  `In Progress` → `Done`, assignee stays."
+- **Attaching or commenting** → show what will be attached or said, and on which issue.
+
+The request approves the goal, not the writes, and silence is not a yes — if the session is
+running unattended, park on the question and wait.
+
 ## Before you change anything — is the intent clear?
 
 Load the issue and compare what you're being asked to do against its current state. If the
@@ -57,7 +70,9 @@ work changed. Don't pile on several labels to be safe — pick the main one.
   with `create_attachment`.
 - **Confluence / Google Docs / Figma:** attach the link with `create_attachment` and give it a
   clear title, or paste it into the description, where Linear shows it as a preview.
-- Linking never removes anything, so there's no need to ask first.
+- Linking never removes anything, but it's still a write — show what you're about to attach
+  or edit and get a yes first. A magic word does more than link: it changes the issue's
+  status by itself when the PR merges, so say that consequence when you ask.
 
 ## Closing an issue
 

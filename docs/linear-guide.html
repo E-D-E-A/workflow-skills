@@ -381,6 +381,7 @@
         <ul>
           <li><strong>Context</strong> — why it matters, constraints, decisions already made</li>
           <li><strong>Next action</strong> — the single next step. Essential if it'll sit in Waiting</li>
+          <li><strong>Open questions</strong> — what still needed a human answer, phrased as questions for the owner. Deleted when empty</li>
           <li><strong>Links</strong> — pull request, documents, related issues</li>
         </ul>
         <p><strong>Write it plainly, and explain as you go.</strong> Short sentences, ordinary words. Whoever picks the issue up may do it weeks later, and two of us aren't developers. So spell out an abbreviation the first time you use it, explain any term or internal shorthand right where it appears, and when you point at a rule or a document, say what it actually says — a reference on its own tells the reader nothing.</p>
@@ -441,13 +442,13 @@ browser / OS / version / URL</code></pre>
 
   <section id="skills">
     <h2>The shared skills</h2>
-    <p class="sec-note">All of this is written up as skills, so Claude creates and updates issues in our format without anyone remembering the rules.</p>
+    <p class="sec-note">All of this is written up as skills, so Claude creates and updates issues in our format without anyone remembering the rules. Every skill shows you what it's about to write and writes nothing until you say yes.</p>
 
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">linear-issue</span></td><td>Creates an issue in our format. Asks follow-up questions when something's missing.</td></tr>
-          <tr><td><span class="lbl">linear-update</span></td><td>Moves, reassigns, relabels, links, closes. Checks before deleting.</td></tr>
+          <tr><td><span class="lbl">linear-issue</span></td><td>Creates issues in our format. Asks about the work before writing — unknowns stay visible under Open questions, and a batch starts with one sample issue for sign-off.</td></tr>
+          <tr><td><span class="lbl">linear-update</span></td><td>Moves, reassigns, relabels, links, closes, deletes.</td></tr>
         </tbody>
       </table>
     </div>

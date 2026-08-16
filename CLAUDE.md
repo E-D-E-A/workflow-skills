@@ -173,8 +173,12 @@ House conventions for the body:
 - **Gate on missing information.** If the skill can't do its job with what it's been
   given, it should ask specific follow-up questions and suggest the likely options rather
   than guessing.
-- **Guard destructive actions.** Deleting anything gets an explicit confirmation, and a
-  reversible alternative offered first.
+- **Ask before every write.** A skill that creates, updates, or deletes anything in a
+  shared tool — Linear, Confluence, GitHub — shows the user exactly what will change
+  (the full draft for a create, before → after for an update) and waits for an explicit
+  yes first. The request approves the goal, not the writes, and silence is not a yes.
+- **Guard destructive actions.** Deleting anything additionally gets a reversible
+  alternative offered first.
 
 Skill folder names are kebab-case and match the `name` in the frontmatter. Any commands a
 plugin ships are namespaced on install, appearing as `/edea-<tool>:<name>`.

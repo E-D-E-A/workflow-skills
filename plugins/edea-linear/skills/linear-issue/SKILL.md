@@ -1,6 +1,6 @@
 ---
 name: linear-issue
-description: Create a Linear issue in E.D.E.A house format — routing it to the right team (Engineering vs Business), setting the correct starting status and type labels, writing the standard description structure, and attaching GitHub branches/PRs and Confluence docs. Use when the user wants to create, file, open, or draft a Linear issue/ticket/task for E.D.E.A.
+description: Create a Linear issue in E.D.E.A house format — routing it to the right team (Engineering vs Business), setting the correct starting status and type labels, writing the standard description structure, and attaching GitHub branches/PRs and Confluence docs. Use when the user wants to create, file, open, or draft a Linear issue/ticket/task for E.D.E.A — including turning a raw task list or meeting notes into a batch of issues.
 ---
 
 # Create a Linear issue (E.D.E.A house format)
@@ -18,20 +18,74 @@ Before you write, check the real names in the workspace instead of guessing — 
 the names match. `list_issue_labels` for a team returns that team's labels, so what it gives
 you is already the valid set for the issue you're writing.
 
-## Before you create — do you have enough to write a good issue?
+## Nothing is written without a yes
 
-Go through the steps below and check what you actually know. If you're missing anything the
-rules need — especially a clear **Outcome**, the right **team**, or enough detail for someone
-to act without asking — **stop and ask the user before you create the issue.** Don't guess,
-and don't leave blanks and hope.
+Nothing changes in Linear without the user seeing it first and agreeing to it. Before
+**every** write — creating an issue, adding a comment, attaching a link — show exactly what
+will be written and wait for an explicit yes:
 
-When you ask, make it easy to answer: ask specific follow-up questions, and suggest the likely
-options so the user can just pick. For example:
+- **Creating an issue** → show the full draft: title, team, status, labels, assignee, and the
+  complete description.
+- **Attaching or commenting** → show what will be attached or said, and on which issue.
+
+The request approves the goal, not the writes, and silence is not a yes — if the session is
+running unattended, park on the question and wait.
+
+## Before you create — the clarification pass
+
+**Never create issues on the first pass.** A raw task list is input, not a spec: it says what
+someone typed, not everything they know. Run this pass first, even when the list looks clear.
+
+**Sort every task into known and not known.** Known is the title, the owner, and whatever the
+requester explicitly said. Not known is the rest of what a good issue needs: why it matters
+now, what "done" means, what it blocks or is blocked by, decisions made in meetings you can't
+see, and the meaning of any specialist term — if you'd have to define it yourself, it's not
+known. The second column gets filled by asking; every sentence in the issue should trace back
+to the first column or to an answer.
+
+**Routing questions don't count.** Team, project, assignee, priority, status — that's the
+easy half, and if every question you asked was routing, nothing about the work itself has
+been clarified. For a batch of tasks, the minimum content pass asks:
+
+- which tasks came out of a meeting or decision you can't see;
+- what "done" means, for each task where it's ambiguous;
+- which tasks actually depend on each other — ask rather than infer, because an inferred
+  dependency becomes a real blocking relation in Linear and stalls work that was never
+  blocked;
+- a one-line definition of any specialist term.
+
+**For a batch of more than three tasks, get one issue signed off first.** Write one complete
+issue, show it in full, and only then draft the rest. What's being confirmed is how much
+inference the requester is comfortable with, not the wording — the full batch is still shown
+for approval before anything is created.
+
+**Anything still unknown goes under `## Open questions`, phrased as a question** — that is
+where a gap belongs, not woven into Context as if someone had said it.
+
+**Smell test, right before you save:** read each sentence of Context and ask *who told me
+this?* If the answer is "nobody — it seemed reasonable", cut it or turn it into an open
+question.
+
+When you ask, make it easy to answer: specific questions, with the likely options suggested
+so the user can just pick. For example:
 - "Is this Engineering or Business? (I'd guess BIZ, because the next step is a customer call.)"
-- "Which label fits best — `product` or `design`?"
 - "What does 'done' look like here — a signed pilot, or just a first reply?"
+- "Do these two tasks depend on each other, or can they run in parallel?"
 
-Create the issue only once it will read clearly to someone who wasn't part of the conversation.
+### Asking on screen (Cowork and the desktop app)
+
+The desktop app clips option descriptions, so a long one is invisible and the user is left
+choosing between options they can't read. When you ask with `AskUserQuestion`:
+
+- **Label: 1–5 words that stand alone.** Assume it's the only thing the user sees.
+- **Description: one short phrase.** Assume it may not be read at all.
+- **Anything the user must actually read to decide** — a proposed mapping, a table, a draft
+  issue, trade-offs — goes in a `SendUserMessage` first; then ask, with short labels that
+  point back to it. The substance lives in the message — an option only routes the answer.
+- **At most 4 questions per round.** Use another round rather than cramming.
+
+The sign-off pattern: send the full draft issue as a message, then ask "Does that work?" with
+options like `Yes, create them` / `Adjust some` / `Start over`.
 
 ## Step 1 — Pick the team: ENG or BIZ
 
@@ -135,7 +189,14 @@ Add these whenever they help the reader (usually they do):
   "why" clear. Link the Confluence doc or related issue here.
 - **Next action** — the single next step to take. Especially important for BIZ issues that
   will sit in `Waiting`, so whoever comes back to it knows exactly where to pick up.
+- **Open questions** — anything that needed a human answer and didn't get one, phrased as a
+  question for the owner. It goes after **Next action**. Delete the section if it's empty.
 - **Links** — GitHub branch/PR, Confluence docs, related issues.
+
+`## Open questions` exists so uncertainty has somewhere to go. Without it, the template
+itself pushes you to fill a gap by inventing something plausible; with it, "we don't know
+yet" is a legitimate thing for an issue to say, and the gap stays visible to whoever picks
+up the work.
 
 ### Bugs (ENG)
 
