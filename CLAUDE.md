@@ -181,6 +181,9 @@ House conventions for the body:
   shared tool — Linear, Confluence, GitHub — shows the user exactly what will change
   (the full draft for a create, before → after for an update) and waits for an explicit
   yes first. The request approves the goal, not the writes, and silence is not a yes.
+  Match the detail to the change: for a bulk of same-shaped mechanical fixes, show the
+  shape once — one example, the count, the affected titles — with full detail on request.
+  A wall of identical diffs invites a skimmed yes, which is not consent.
 - **Guard destructive actions.** Deleting anything additionally gets a reversible
   alternative offered first.
 

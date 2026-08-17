@@ -118,6 +118,12 @@ the goal, not the writes, and silence is not a yes — an unattended session par
 question. Put the gate near the top of the skill so it governs every step, and check the body
 for lines that quietly contradict it ("no need to ask for X").
 
+Match the approval's detail to the change. For a bulk of same-shaped mechanical fixes, the
+full diff of every item is mental overhead that invites a skimmed yes — show the shape once
+(one example, the count, the affected titles) and keep full detail available on request.
+Anything that changes what a page or issue *says*, or varies item by item, keeps full
+before → after — that's exactly where a summary would hide what the user needed to see.
+
 **Guard anything destructive.** Deleting additionally gets a reversible alternative offered
 first — cancel it, archive it, supersede it, mark it a duplicate.
 

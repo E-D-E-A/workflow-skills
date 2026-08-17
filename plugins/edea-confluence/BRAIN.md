@@ -114,6 +114,21 @@ Decisions/   Specs/   Research/   Runbooks/   Meetings/
 
 Pick the type and the location follows. There's no judgement call once the type is known.
 
+**A crowded tree can grow sub-folders.** A sub-folder is a plain page directly under the tree
+root — `Research/Suppliers and pricing`, say — that groups its children by subject and opens
+with a one-line description plus a linked index of what sits inside it. Two rules follow
+wherever sub-folders exist:
+
+- **Filing:** list the tree's children before placing a page. If the tree has sub-folders, the
+  new page's parent is the closest matching sub-folder, not the tree root. If none fits, ask
+  whether to file at the root or start a new group — don't invent one silently.
+- **The index:** a page filed into a sub-folder is also added to that sub-folder's index list,
+  or the index quietly rots into a lie about what's inside.
+
+A page that reads across the whole tree — a synthesis, an overview — may deliberately stay at
+the root. Splitting a tree into sub-folders in the first place is a structural change: propose
+the full mapping and wait, as ever.
+
 ### Titles are unique per space
 
 **Confluence silently renames a duplicate to `Decisions (2)`.** It does not warn you. So inside
@@ -294,4 +309,8 @@ Break any of these and the Brain degrades quietly, which is the only way it ever
    to guess.
 8. **Nothing is written without a yes.** Every create, update, or move is shown to the user
    first — the full draft, or before → after — and waits for explicit approval. The request
-   approves the goal, not the writes.
+   approves the goal, not the writes. Match the detail to the change: a bulk of same-shaped
+   mechanical fixes is shown as its shape — one example, the count, the affected titles —
+   with full detail on request, because a wall of identical diffs invites a skimmed yes,
+   and a skimmed yes is not consent. Anything that changes what a page says keeps full
+   before → after.

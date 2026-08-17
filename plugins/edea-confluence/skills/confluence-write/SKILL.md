@@ -89,7 +89,12 @@ The five types are in `BRAIN.md`. Pick one and the location follows:
    which space the page belongs to, stop and ask**, naming the candidates and the one you'd
    recommend. This question gates updating as much as creating.
 2. **Which tree?** The type tree — `Decisions/`, `Specs/`, `Research/`, `Runbooks/`, `Meetings/`.
-3. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
+3. **Which parent inside the tree?** List the tree's children first. A crowded tree may have
+   grown sub-folders — subject-grouping pages under the tree root, described in `BRAIN.md`. If
+   it has, the page's parent is the closest matching sub-folder, not the tree root, **and the
+   new page is added to that sub-folder's index list** in the same approval batch. If no
+   sub-folder fits, ask whether to file at the root or start a new group.
+4. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
 
 Resolve the parent page by title with `searchConfluenceUsingCql` or
 `getPagesInConfluenceSpace`; don't assume an id.

@@ -37,7 +37,11 @@ The mechanical faults, found with search (`searchConfluenceUsingCql`) and the sp
 - **Dangling links** — link text whose target title no longer matches any page.
 - **Orphan pages** — pages sitting outside every type tree (the five trees `BRAIN.md`
   defines: Decisions, Specs, Research, Runbooks, Meetings).
-- **Missing skeleton** — a page with no `Topics:` line or no `## Related` section.
+- **Missing skeleton** — a page with no `Topics:` line or no `## Related` section. Structural
+  pages are exempt: the five tree roots, and any sub-folder page directly under one (a subject
+  group holding a description and an index of its children — `BRAIN.md` defines them).
+- **A sub-folder index that lies** — a sub-folder page whose linked index no longer matches
+  its actual children: a page moved in but never listed, or listed but since moved away.
 - **Twins** — two pages covering one subject, the failure that makes people stop trusting a
   wiki.
 
@@ -97,9 +101,13 @@ sweep never reads as more complete than it was.
 
 ## Fixing — on a yes, and only a yes
 
-Nothing is written without the user seeing it first and agreeing. Show each proposed fix as
-before → after; one yes may cover the whole approved list, as a bulk repair does — don't
-re-ask per page. Then:
+Nothing is written without the user seeing it first and agreeing. Match how much you show to
+what the fix is: a fix that changes what a page says gets full before → after, but a run of
+same-shaped mechanical fixes — fourteen links re-pointed the same way — is shown as its
+shape: one example, the count, and the affected page titles, with the full list ready if the
+user asks. A wall of identical diffs is mental overhead that invites a skimmed yes, and a
+skimmed yes is not consent. One yes may cover the whole approved list, as a bulk repair does
+— don't re-ask per page. Then:
 
 - **Mechanical faults** — repair vague links into real ones, add missing skeleton, fix the
   stale reference. Straightforward edits, done directly.
