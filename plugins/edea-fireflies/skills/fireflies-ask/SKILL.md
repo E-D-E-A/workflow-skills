@@ -1,8 +1,10 @@
 ---
 name: fireflies-ask
-description: Answer questions about recorded meetings straight from the Fireflies transcript
-  — what was decided, what was said about a subject, which action items came out, a quick
-  summary in chat — without writing anything anywhere. Use when the user asks what happened,
+description: Answer questions about recorded meetings — from the meeting's page in the
+  Confluence Brain when it's been filed there, falling back to the Fireflies transcript when
+  it hasn't or the page dropped the detail — what was decided, what was said about a subject,
+  which action items came out, a quick summary in chat — without writing anything anywhere.
+  Use when the user asks what happened,
   what was said or what was decided in a meeting or call; asks what they missed; asks who
   said something; wants a quick recap in chat rather than a Confluence page; or asks which
   meeting a subject came up in.
@@ -22,21 +24,28 @@ speaker labels can't be trusted.
   it didn't come up in that meeting — that's a real, useful answer. Say what you're basing an
   answer on when it helps: the transcript carries timestamps, so "around 32:00 the discussion
   turned to…" lets the user jump to the recording.
+- **The Brain first, the transcript for what the page dropped.** Meetings get filed into
+  Confluence — each becomes a Meeting notes page under a space's Meetings tree — so when the
+  Confluence tools are available, look there first and answer from the page, naming it as
+  the source. Go to the Fireflies transcript only when the meeting has no page yet, or the
+  question needs something the summary dropped — the exact wording, a number, a timestamp —
+  and say that's why you went to the recording. If a meeting turns out not to be filed,
+  mention that `fireflies-file` can fix that, once the question is answered.
 - **The what, never the who.** When asked who said something, explain that Fireflies'
   speaker labels misattribute (FIREFLIES.md) and answer with what was said instead. Name a
   person in an answer only for attendance, from the meeting metadata.
-- **The meeting first, the Brain after.** The answer itself comes only from the transcript.
-  But if the Confluence tools are available and the subject has a page in the company's
-  Confluence Brain — say a Decision page recording where the question landed after this
-  meeting — add a pointer after the answer: the page's title plus one clause saying what it
-  is. Never blend the page's content into what the meeting said, and keep the check to a
-  title search.
+- **Point sideways when the Brain knows more.** If the subject also has a Decision or Spec
+  page — say the page recording where the question finally landed after this meeting — add
+  a pointer after the answer: the page's title plus one clause saying what it is. Never
+  blend it into what the meeting itself said.
 
 ## Working across meetings
 
-"Which meeting did we discuss X in?" — search with `fireflies_search`, answer with the
-matching meetings' titles and dates, and offer to dig into whichever one they pick. For a
-question about one meeting that search can't settle, show the candidates and ask.
+"Which meeting did we discuss X in?" — search the Meetings trees in Confluence first, since
+filed pages are faster to scan and carry the summary; use `fireflies_search` to cover
+meetings that aren't filed yet. Answer with the matching meetings' titles and dates, and
+offer to dig into whichever one they pick. For a question about one meeting that search
+can't settle, show the candidates and ask.
 
 ## Long answers
 

@@ -297,7 +297,7 @@
       <li>"Give me a quick recap of the call — in chat, don't write anything."</li>
       <li>"Which meeting did the budget come up in?" — searches across meetings.</li>
     </ul>
-    <p>Answers come from the meeting, not from general knowledge — if something wasn't discussed, Claude says so rather than filling the gap. Timestamps are quoted where they help, so you can jump to that minute of the recording.</p>
+    <p>Filed meetings are answered from their Confluence page — the Brain is the first stop. Claude opens the Fireflies transcript only when a meeting isn't filed yet, or you need detail the summary dropped: exact wording, a number, a timestamp. Either way answers come from the meeting, not from general knowledge — if something wasn't discussed, Claude says so rather than filling the gap. Timestamps are quoted where they help, so you can jump to that minute of the recording.</p>
   </section>
 
   <section id="skills">
@@ -308,7 +308,7 @@
         <thead><tr><th>Skill</th><th>Job</th></tr></thead>
         <tbody>
           <tr><td><span class="lbl">fireflies-file</span></td><td>Files a recorded meeting into the Brain: reads everything, asks space, language and owners, writes the eight-section template with no names in the body, and runs a names pass before publishing. If a decision in the meeting changes something an existing page settled, it says so and offers to retire the old page properly.</td></tr>
-          <tr><td><span class="lbl">fireflies-ask</span></td><td>Answers questions about meetings in chat — decisions, subjects, action items, quick recaps, and which meeting covered what. Writes nothing. If the Brain has a page on the subject, it points at it after the answer.</td></tr>
+          <tr><td><span class="lbl">fireflies-ask</span></td><td>Answers questions about meetings in chat — decisions, subjects, action items, quick recaps, and which meeting covered what. Answers from the meeting's Confluence page when it's filed; opens the transcript only for unfiled meetings or dropped detail. Writes nothing.</td></tr>
         </tbody>
       </table>
     </div>
