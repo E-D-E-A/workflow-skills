@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "mortgage-survey": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/index.mjs"
+      ],
+      "env": {
+        "SURVEY_API_URL": "https://mortgage-survey.netlify.app",
+        "SURVEY_SUPABASE_URL": "https://jcidhrsnbemebdrgtfmw.supabase.co",
+        "SURVEY_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpjaWRocnNuYmVtZWJkcmd0Zm13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTUwNzYsImV4cCI6MjEwMTY3MTA3Nn0.wviVFe1gVOFasuTyjNOJeOuEw3pUBZMDPfhrAYLsJ9A"
+      }
+    }
+  }
+}
