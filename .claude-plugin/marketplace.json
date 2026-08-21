@@ -28,6 +28,12 @@
       "source": "./plugins/edea-fireflies",
       "description": "Fireflies meeting recordings: nameless meeting summaries filed into the Confluence Brain, and answers about what was said.",
       "category": "productivity"
+    },
+    {
+      "name": "edea-mortgage-survey",
+      "source": "./plugins/edea-mortgage-survey",
+      "description": "Create and edit mortgage-survey questionnaires from chat: propose, review the diff, apply, simulate respondent paths.",
+      "category": "productivity"
     }
   ]
 }
