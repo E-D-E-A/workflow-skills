@@ -43983,6 +43983,10 @@ var errorResult = (text) => ({
   content: [{ type: "text", text }],
   isError: true
 });
+function serverWarnings(warnings) {
+  if (!warnings?.length) return "";
+  return "\n\n\u26A0\uFE0F \u05D0\u05D6\u05D4\u05E8\u05D5\u05EA \u05DE\u05D4\u05E9\u05E8\u05EA (\u05D4\u05E4\u05E2\u05D5\u05DC\u05D4 \u05E2\u05E6\u05DE\u05D4 \u05D4\u05E6\u05DC\u05D9\u05D7\u05D4) \u2014 \u05D9\u05E9 \u05DC\u05D3\u05D5\u05D5\u05D7 \u05E2\u05DC\u05D9\u05D4\u05DF \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9:\n" + warnings.map((w) => `- ${w}`).join("\n");
+}
 function configAsObject(value) {
   if (typeof value !== "string") return { ok: true, config: value };
   try {
@@ -44003,6 +44007,15 @@ function configAsObject(value) {
 }
 function failureResult(f) {
   const detail = jsonBlock(f.body);
+  if (f.body.error === "schema-drift") {
+    const missing = (f.body.missing ?? []).map((o) => `${o.kind} ${o.name}`);
+    return errorResult(
+      `Database schema is behind the code \u2014 the server is missing ${missing.join(", ") || "objects it needs"}. This is NOT an outage and NOT transient: STOP, do not retry, and do not try other tools \u2014 every tool on this server passes the same gate and will fail identically.
+Tell the user the fix, which only a person with database access can do: run supabase/schema.sql against the Supabase project (SQL Editor in the dashboard), or \`npm run db:schema\` against a local stack. The file is idempotent and safe to re-run.
+\u05D1\u05E1\u05D9\u05E1 \u05D4\u05E0\u05EA\u05D5\u05E0\u05D9\u05DD \u05D0\u05D9\u05E0\u05D5 \u05DE\u05E2\u05D5\u05D3\u05DB\u05DF \u05DE\u05D5\u05DC \u05D4\u05E7\u05D5\u05D3 \u2014 \u05D7\u05E1\u05E8\u05D9\u05DD \u05D1\u05D5 \u05D0\u05D5\u05D1\u05D9\u05D9\u05E7\u05D8\u05D9\u05DD \u05E9\u05D4\u05E9\u05E8\u05EA \u05D6\u05E7\u05D5\u05E7 \u05DC\u05D4\u05DD. \u05D6\u05D5 \u05D0\u05D9\u05E0\u05D4 \u05EA\u05E7\u05DC\u05D4 \u05D6\u05DE\u05E0\u05D9\u05EA \u05D5\u05D0\u05D9\u05DF \u05D8\u05E2\u05DD \u05DC\u05E0\u05E1\u05D5\u05EA \u05E9\u05D5\u05D1 \u05D0\u05D5 \u05DC\u05E0\u05E1\u05D5\u05EA \u05DB\u05DC\u05D9\u05DD \u05D0\u05D7\u05E8\u05D9\u05DD. \u05D4\u05EA\u05D9\u05E7\u05D5\u05DF: \u05DC\u05D4\u05E8\u05D9\u05E5 \u05D0\u05EA supabase/schema.sql \u05DE\u05D5\u05DC \u05D4\u05E4\u05E8\u05D5\u05D9\u05E7\u05D8 \u05D1-Supabase.
+` + detail
+    );
+  }
   if (f.status === 401) {
     return errorResult(
       `Authentication expired or revoked (401). \u05D4\u05D4\u05EA\u05D7\u05D1\u05E8\u05D5\u05EA \u05E4\u05D2\u05D4 \u05D0\u05D5 \u05D1\u05D5\u05D8\u05DC\u05D4 \u2014 \u05D4\u05E7\u05E8\u05D9\u05D0\u05D4 \u05D4\u05D1\u05D0\u05D4 \u05DC\u05DB\u05DC \u05DB\u05DC\u05D9 \u05EA\u05E4\u05EA\u05D7 \u05D3\u05E4\u05D3\u05E4\u05DF \u05DC\u05D4\u05EA\u05D7\u05D1\u05E8\u05D5\u05EA \u05DE\u05D7\u05D3\u05E9 \u05E2\u05DD \u05D7\u05E9\u05D1\u05D5\u05DF first-edea.com. \u05D0\u05D9\u05DF \u05D5\u05DC\u05D0 \u05D9\u05D4\u05D9\u05D4 \u05E9\u05D9\u05DE\u05D5\u05E9 \u05D1\u05D4\u05E8\u05E9\u05D0\u05D4 \u05DE\u05E9\u05D5\u05EA\u05E4\u05EA.
@@ -44057,6 +44070,14 @@ ${detail}`
     return errorResult(
       `Config too large (413). \u05D4\u05E7\u05D5\u05E0\u05E4\u05D9\u05D2 \u05D7\u05D5\u05E8\u05D2 \u05DE\u05BE500KB \u05D5\u05DC\u05D0 \u05E0\u05E9\u05DE\u05E8 \u2014 \u05D9\u05E9 \u05DC\u05E6\u05DE\u05E6\u05DD.
 ${detail}`
+    );
+  }
+  if (f.body.error === "upstream") {
+    const target = f.body.target;
+    const named = target?.name ? ` reaching ${target.kind ?? "object"} ${target.name}` : "";
+    return errorResult(
+      `The admin API's database call failed${named} (${f.status}). This one may be transient \u2014 report it to the user with the detail below; if it repeats identically, it is not a blip and the detail names what to look at.
+` + detail
     );
   }
   return errorResult(`Admin API call failed with status ${f.status}.
@@ -44138,7 +44159,8 @@ function createSurveyMcpServer({ api: api2, proposals = new ProposalStore() }) {
       outputSchema: {
         slug: external_exports.string(),
         name: external_exports.string(),
-        draft_updated_at: external_exports.string()
+        draft_updated_at: external_exports.string(),
+        warnings: external_exports.array(external_exports.string()).optional()
       },
       annotations: {
         readOnlyHint: false,
@@ -44153,11 +44175,12 @@ function createSurveyMcpServer({ api: api2, proposals = new ProposalStore() }) {
       return textResult(
         `\u05E0\u05D5\u05E6\u05E8 \u05E9\u05D0\u05DC\u05D5\u05DF "${res.data.name}" (${res.data.slug}) \u05E2\u05DD \u05D8\u05D9\u05D5\u05D8\u05EA \u05E9\u05DC\u05D3 \u2014 \u05DE\u05E1\u05DA \u05E4\u05EA\u05D9\u05D7\u05D4 \u05D5\u05DE\u05E1\u05DA \u05E1\u05D9\u05D5\u05DD \u05D1\u05DC\u05D1\u05D3.
 \u05DE\u05D6\u05D4\u05D4 \u05D4\u05D2\u05E8\u05E1\u05D4 \u05E9\u05DC \u05D4\u05D8\u05D9\u05D5\u05D8\u05D4: ${res.data.draft_updated_at}
-\u05E2\u05DB\u05E9\u05D9\u05D5: \u05D1\u05E0\u05D5 \u05D0\u05EA \u05D4\u05E9\u05D0\u05DC\u05D5\u05DF \u05E2\u05DD propose_change (\u05D4\u05E2\u05D1\u05D9\u05E8\u05D5 \u05D0\u05EA \u05DE\u05D6\u05D4\u05D4 \u05D4\u05D2\u05E8\u05E1\u05D4 \u05D4\u05D6\u05D4 \u05DB\u05BEbase_updated_at), \u05D4\u05E6\u05D9\u05D2\u05D5 \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9 \u05D0\u05EA \u05D4-diff, \u05D5\u05E8\u05E7 \u05D0\u05D7\u05E8\u05D9 \u05D0\u05D9\u05E9\u05D5\u05E8 \u05DE\u05E4\u05D5\u05E8\u05E9 \u05E7\u05E8\u05D0\u05D5 \u05DC-apply_change.`,
+\u05E2\u05DB\u05E9\u05D9\u05D5: \u05D1\u05E0\u05D5 \u05D0\u05EA \u05D4\u05E9\u05D0\u05DC\u05D5\u05DF \u05E2\u05DD propose_change (\u05D4\u05E2\u05D1\u05D9\u05E8\u05D5 \u05D0\u05EA \u05DE\u05D6\u05D4\u05D4 \u05D4\u05D2\u05E8\u05E1\u05D4 \u05D4\u05D6\u05D4 \u05DB\u05BEbase_updated_at), \u05D4\u05E6\u05D9\u05D2\u05D5 \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9 \u05D0\u05EA \u05D4-diff, \u05D5\u05E8\u05E7 \u05D0\u05D7\u05E8\u05D9 \u05D0\u05D9\u05E9\u05D5\u05E8 \u05DE\u05E4\u05D5\u05E8\u05E9 \u05E7\u05E8\u05D0\u05D5 \u05DC-apply_change.` + serverWarnings(res.data.warnings),
         {
           slug: res.data.slug,
           name: res.data.name,
-          draft_updated_at: res.data.draft_updated_at
+          draft_updated_at: res.data.draft_updated_at,
+          ...res.data.warnings?.length ? { warnings: res.data.warnings } : {}
         }
       );
     })
@@ -44339,7 +44362,8 @@ ${renderDiff(diff, "\u05D0\u05D9\u05DF \u05D4\u05D1\u05D3\u05DC \u05D1\u05D9\u05
       outputSchema: {
         applied: external_exports.boolean(),
         survey: external_exports.string(),
-        updated_at: external_exports.string()
+        updated_at: external_exports.string(),
+        warnings: external_exports.array(external_exports.string()).optional()
       },
       // destructiveHint stays true (the spec's default): the write REPLACES
       // the draft revision it was proposed against, and a client that gates
@@ -44374,8 +44398,13 @@ ${renderDiff(diff, "\u05D0\u05D9\u05DF \u05D4\u05D1\u05D3\u05DC \u05D1\u05D9\u05
       proposals.consume(change_id);
       return textResult(
         `\u05D4\u05D8\u05D9\u05D5\u05D8\u05D4 \u05E0\u05E9\u05DE\u05E8\u05D4. \u05E2\u05D3\u05DB\u05D5\u05DF: ${res.data.updated_at} (\u05E9\u05D0\u05DC\u05D5\u05DF "${proposal.survey}").
-\u05E2\u05DB\u05E9\u05D9\u05D5: \u05D4\u05E8\u05D9\u05E6\u05D5 simulate_path \u05DC\u05DB\u05DC \u05E4\u05E8\u05E1\u05D5\u05E0\u05D4/\u05DE\u05E1\u05DC\u05D5\u05DC \u05E9\u05D4\u05E9\u05D9\u05E0\u05D5\u05D9 \u05E0\u05D5\u05D2\u05E2 \u05D1\u05D4\u05DD \u05D5\u05D3\u05D5\u05D5\u05D7\u05D5 \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9; \u05D4\u05D6\u05DB\u05D9\u05E8\u05D5 \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9 \u05DC\u05E2\u05D1\u05D5\u05E8 \u05E2\u05DC \u05D4\u05D8\u05D9\u05D5\u05D8\u05D4 \u05D1\u05E7\u05D5\u05E0\u05E1\u05D5\u05DC\u05EA /admin \u05D5\u05DC\u05E4\u05E8\u05E1\u05DD \u05DE\u05E9\u05DD \u2014 \u05E4\u05E8\u05E1\u05D5\u05DD \u05D4\u05D5\u05D0 \u05E4\u05E2\u05D5\u05DC\u05D4 \u05D0\u05E0\u05D5\u05E9\u05D9\u05EA \u05D1\u05DC\u05D1\u05D3.`,
-        { applied: true, survey: proposal.survey, updated_at: res.data.updated_at }
+\u05E2\u05DB\u05E9\u05D9\u05D5: \u05D4\u05E8\u05D9\u05E6\u05D5 simulate_path \u05DC\u05DB\u05DC \u05E4\u05E8\u05E1\u05D5\u05E0\u05D4/\u05DE\u05E1\u05DC\u05D5\u05DC \u05E9\u05D4\u05E9\u05D9\u05E0\u05D5\u05D9 \u05E0\u05D5\u05D2\u05E2 \u05D1\u05D4\u05DD \u05D5\u05D3\u05D5\u05D5\u05D7\u05D5 \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9; \u05D4\u05D6\u05DB\u05D9\u05E8\u05D5 \u05DC\u05DE\u05E9\u05EA\u05DE\u05E9 \u05DC\u05E2\u05D1\u05D5\u05E8 \u05E2\u05DC \u05D4\u05D8\u05D9\u05D5\u05D8\u05D4 \u05D1\u05E7\u05D5\u05E0\u05E1\u05D5\u05DC\u05EA /admin \u05D5\u05DC\u05E4\u05E8\u05E1\u05DD \u05DE\u05E9\u05DD \u2014 \u05E4\u05E8\u05E1\u05D5\u05DD \u05D4\u05D5\u05D0 \u05E4\u05E2\u05D5\u05DC\u05D4 \u05D0\u05E0\u05D5\u05E9\u05D9\u05EA \u05D1\u05DC\u05D1\u05D3.` + serverWarnings(res.data.warnings),
+        {
+          applied: true,
+          survey: proposal.survey,
+          updated_at: res.data.updated_at,
+          ...res.data.warnings?.length ? { warnings: res.data.warnings } : {}
+        }
       );
     })
   );

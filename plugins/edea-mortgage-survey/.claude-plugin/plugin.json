@@ -1,7 +1,7 @@
 {
   "name": "edea-mortgage-survey",
   "description": "Create and edit mortgage-survey questionnaires from chat: propose, review the diff, apply, simulate respondent paths.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "E.D.E.A"
   }

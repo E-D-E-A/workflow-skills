@@ -70,11 +70,14 @@ to review and publish it in the console for a respondent to ever see it.
 ## When a tool comes back with an error
 
 The server explains each of these in its own response — pass that explanation on rather than
-rewriting it. Two are worth handling deliberately:
+rewriting it. Three are worth handling deliberately:
 
 - **A draft conflict** means someone saved while you were working. Call `get_draft` again,
   rebuild the change on top of what is there now, and propose it again. Never merge blindly.
 - **A rate limit** means stop. Tell the user when they can try again; do not retry in a loop.
+- **A schema drift error** means the database is behind the code, and retrying will not fix
+  it — every other tool passes the same gate and fails the same way. Stop there and tell the
+  user that someone with database access has to run `supabase/schema.sql` against the project.
 
 ## Recording it
 
