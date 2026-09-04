@@ -59,6 +59,14 @@ type = page AND text ~ "Topics:" AND text ~ "<topic>"
 Try the subject, its obvious synonyms, and the `Topics:` word if one fits. A single query
 returning nothing is not an answer — it's an incomplete search.
 
+Keep each search small — `limit` of 10 or so with a title or topic filter — because the
+connector's quota is shared and a wide search spends it fast. When the job grows past a few
+pages, or a call comes back `429 Too Many Requests`, move to the plugin's REST script,
+`scripts/brain.mjs` two levels up from this file: same pages, your own token, parallel reads
+allowed. `BRAIN.md` ("Two ways to read") has the commands and the one-time setup. If the
+script says the token variables are missing, tell the user the two-minute setup and carry on
+with the connector one page at a time.
+
 ## Step 3 — Check each page before you believe it
 
 **This is the step that makes the Brain safe to use.** A superseded page reads exactly like a

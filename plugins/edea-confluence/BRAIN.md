@@ -67,6 +67,49 @@ Every call needs a `cloudId`. Don't hardcode it — call `getAccessibleAtlassian
 use the id of the E.D.E.A site. Space ids likewise: get them from `getConfluenceSpaces` by key
 rather than remembering numbers, because page and space ids change when things are rebuilt.
 
+## Two ways to read, and when to use each
+
+The connector (Atlassian's Rovo MCP server) is the front door for ordinary reads and for
+**every write**, because a write is shown for approval first. But it reads through one
+hourly quota that Atlassian shares across everyone using that server, and it throttles
+bursts: a handful of parallel calls, or one wide search, can return `429 Too Many Requests`
+and then nothing works until the top of the hour.
+
+So the plugin ships a second read path: `scripts/brain.mjs` at the root of this plugin. It
+reads the same pages through the REST API with the person's own API token, which is metered
+per person and takes parallel reads without complaint. Use it for:
+
+- more than about five page reads in one job;
+- any read done in parallel, including subagents reading pages;
+- any moment the connector answers 429 — switch to the script, do not wait for the hour.
+
+```
+node <plugin root>/scripts/brain.mjs search 'space = MTG AND type = page AND title ~ "guided flow"'
+node <plugin root>/scripts/brain.mjs pages 26509325 28672001 --out <scratch dir>
+node <plugin root>/scripts/brain.mjs children <hub page id> --depth 2
+node <plugin root>/scripts/brain.mjs backlinks "<exact page title>"
+```
+
+The plugin root is two levels up from any skill's `SKILL.md`. Pages come back as markdown
+with a header line (title, id, version, date, URL) so every claim can still be cited. Pages
+are cached per version in `~/.cache/edea-brain/`, so a page read twice costs one call.
+
+**Fan out over files, not over the connector.** For a job that needs many pages read by
+several agents, fetch the pages once with the script into a scratch folder, then point the
+agents at the files. No agent should hold a connector call in a loop.
+
+**Setup, once per person**, in the shell profile — the token comes from
+id.atlassian.com → Security → API tokens (the plain kind, longest expiry):
+
+```
+export ATLASSIAN_SITE="first-edea-team.atlassian.net"
+export ATLASSIAN_EMAIL="you@first-edea.com"
+export ATLASSIAN_API_TOKEN="…"
+```
+
+Without the variables the script says so and stops; the connector still works. The script
+never writes.
+
 ## Where pages live
 
 Organised by **venture**, not by team. Teams decide how work gets done, which is right for

@@ -445,6 +445,17 @@
       </table>
     </div>
 
+    <h3>Reading a lot at once</h3>
+    <p>The connector reads through a quota Atlassian shares across everyone using it, and it throttles bursts. When Claude needs more than a few pages, or gets a <code>429 Too Many Requests</code>, it switches to a small script in this plugin that reads the same pages with your own Atlassian API token. Set it up once:</p>
+    <ol>
+      <li>Open <code>id.atlassian.com</code> → Security → <strong>Create API token</strong> (the plain one). Copy it.</li>
+      <li>Add three lines to your shell profile (<code>~/.zshrc</code>), then open a new terminal:</li>
+    </ol>
+    <pre><code>export ATLASSIAN_SITE="first-edea-team.atlassian.net"
+export ATLASSIAN_EMAIL="you@first-edea.com"
+export ATLASSIAN_API_TOKEN="paste the token"</code></pre>
+    <p>The script only reads. Writing a page still goes through the connector, where you approve every change first.</p>
+
     <h3>Install once</h3>
     <pre><code>/plugin marketplace add E-D-E-A/workflow-skills
 /plugin install edea-confluence@edea</code></pre>
