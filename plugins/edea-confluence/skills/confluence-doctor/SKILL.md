@@ -42,6 +42,11 @@ The mechanical faults, found with search (`searchConfluenceUsingCql`) and the sp
   group holding a description and an index of its children — `BRAIN.md` defines them).
 - **A sub-folder index that lies** — a sub-folder page whose linked index no longer matches
   its actual children: a page moved in but never listed, or listed but since moved away.
+- **A superseded page still sitting in the live tree** — a page marked superseded belongs
+  under its tree's `… — History` sub-folder (`BRAIN.md` defines it). One still parked among
+  the current pages, or still listed in a live index as if current, misleads every reader of
+  that tree. The reverse is a fault too: a page inside History with no supersede or retire
+  notice on it.
 - **Twins** — two pages covering one subject, the failure that makes people stop trusting a
   wiki.
 

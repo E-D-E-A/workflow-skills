@@ -93,7 +93,9 @@ The five types are in `BRAIN.md`. Pick one and the location follows:
    grown sub-folders — subject-grouping pages under the tree root, described in `BRAIN.md`. If
    it has, the page's parent is the closest matching sub-folder, not the tree root, **and the
    new page is added to that sub-folder's index list** in the same approval batch. If no
-   sub-folder fits, ask whether to file at the root or start a new group.
+   sub-folder fits, ask whether to file at the root or start a new group. One sub-folder is
+   never a filing target: the tree's `… — History` page holds only superseded pages, and a
+   new page is born current — it never starts there.
 4. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
 
 Resolve the parent page by title with `searchConfluenceUsingCql` or
