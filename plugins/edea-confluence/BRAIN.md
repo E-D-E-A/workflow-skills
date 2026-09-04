@@ -129,6 +129,20 @@ A page that reads across the whole tree — a synthesis, an overview — may del
 the root. Splitting a tree into sub-folders in the first place is a structural change: propose
 the full mapping and wait, as ever.
 
+**Superseded pages move to the tree's History sub-folder** (decided 2026-09-04, Eden). Each
+tree may hold one sub-folder for pages that are no longer the answer, titled with the tree's
+name — `Decisions — History` — because titles are unique per space and every tree may
+eventually need one. It is created the first time a tree gets a superseded page, never before.
+When a page is superseded it moves there: the notice goes on top, the content stays untouched,
+and the page joins the History page's index with one line naming what replaced it. The live
+tree then shows only what is true today; the record sits one click away. Three rules follow:
+
+- New pages are **never** filed into History — a page is born current.
+- A live sub-folder's index never lists a superseded page among the current ones; if readers
+  of that group need the trail, one line pointing at the History page is enough.
+- Links keep working across the move — Confluence links carry the page id — so nothing needs
+  re-pointing just because a page moved to History.
+
 ### Titles are unique per space
 
 **Confluence silently renames a duplicate to `Decisions (2)`.** It does not warn you. So inside
@@ -299,8 +313,9 @@ Break any of these and the Brain degrades quietly, which is the only way it ever
 
 1. **Search before creating.** Two pages on one subject is how a wiki dies.
 2. **Never rewrite a record.** Decisions and Meeting notes get superseded, not edited.
-3. **Nothing is deleted.** Superseded pages stay — the paths we rejected are part of what we
-   know, and losing them means re-running the same argument.
+3. **Nothing is deleted.** Superseded pages stay — moved into their tree's History sub-folder,
+   marked and linked to what replaced them. The paths we rejected are part of what we know,
+   and losing them means re-running the same argument.
 4. **Link by exact title**, or the link doesn't exist as far as the Brain is concerned.
 5. **Never invent a space or a page tree.** Propose and wait.
 6. **Say when you don't know.** A page that doesn't exist is a real, useful answer. Reasoning

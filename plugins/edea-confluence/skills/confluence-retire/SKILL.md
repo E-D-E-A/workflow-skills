@@ -80,6 +80,14 @@ With no replacement:
 **Don't edit the body.** The content is the record of what we thought at the time; changing it
 destroys the thing worth keeping. Only the notice goes on.
 
+**Then move it into the tree's History sub-folder** — a plain page directly under the tree
+root, titled with the tree's name (`Decisions — History`), holding only superseded and retired
+pages so the live tree shows only what is true today (`BRAIN.md` defines it). Create it on
+first use — a one-line description plus an index — and add the retired page to that index with
+one line naming what replaced it. If a live sub-folder's index listed the page, remove that
+entry (a one-line pointer to the History page may stand in where the trail matters). The move
+itself breaks nothing: Confluence links carry the page id and survive it.
+
 ## Step 5 — Repair the pointers
 
 For each page found in Step 3, update its `## Related` (or wherever the reference sits) to point
