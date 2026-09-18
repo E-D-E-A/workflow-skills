@@ -251,7 +251,7 @@
       <table>
         <thead><tr><th>Type</th><th>Holds</th><th>Stays true because</th></tr></thead>
         <tbody>
-          <tr><td><span class="lbl">Decision</span></td><td>What we chose, what we rejected, why</td><td>It records a moment — never edited to a different answer</td></tr>
+          <tr><td><span class="lbl">Decision</span></td><td>What we chose, what we rejected, why — always today's rule</td><td>Edited in place when the rule changes; the old rule goes under Rejected, and Confluence's version history keeps every earlier text</td></tr>
           <tr><td><span class="lbl">Spec</span></td><td>What we're building, what done looks like</td><td>Written before the build, closed out after</td></tr>
           <tr><td><span class="lbl">Research</span></td><td>What we found out</td><td>Every claim names its source</td></tr>
           <tr><td><span class="lbl">Runbook</span></td><td>How to do a repeatable thing</td><td>Whoever changes the process updates it</td></tr>
@@ -263,12 +263,28 @@
     <h3>Decisions are the ones people skip</h3>
     <p>They're also the highest value. Any time an argument gets settled, that's a Decision page — <strong>including the options you turned down</strong>, which is the part anyone comes back for. Without it the same argument runs again in six months, from scratch.</p>
 
+    <h3>How a decision is kept</h3>
+    <p>Decided 2026-09-18. Whoever lands on a Decision page — a person or Claude — opens one page and trusts it, so the page must always say today's rule.</p>
+    <div class="t-scroll">
+      <table>
+        <tbody>
+          <tr><td><span class="lbl">The rule changes</span></td><td>The page is <strong>edited in place</strong>: same page, same title, new body. The old rule moves under <em>Rejected</em> with its date, and one line goes at the bottom — <code>Changed 2026-09-14: a lost case also triggers deletion.</code> Confluence's version history is the record; nothing is copied</td></tr>
+          <tr><td><span class="lbl">Only wording changes</span></td><td>A typo, a clearer sentence, an example — a plain edit, no <em>Changed</em> line. If a sentence a Spec could rely on moved, it's a change</td></tr>
+          <tr><td><span class="lbl">The group page</span></td><td>Each decision group's page is its <strong>rules page</strong>: one sentence per current rule, its date, a link. Read it first; most questions stop there. It carries an owner and a review date. Past about forty lines, the group splits</td></tr>
+          <tr><td><span class="lbl">Page or line?</span></td><td>A decision gets its own page when something was rejected, or the why doesn't fit in one sentence. Otherwise it's one line on the rules page. A line can become a page later</td></tr>
+          <tr><td><span class="lbl">From a meeting</span></td><td>A numbered decision in Meeting notes becomes a line or a page <strong>only after a team member says it is a decision</strong>. Claude proposes; you approve each one</td></tr>
+          <tr><td><span class="lbl">Dropped outright</span></td><td>A rule that no longer exists and has no replacement is retired: notice on top, moved to the tree's History sub-folder, its rules line removed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="t-scroll">
       <table>
         <thead><tr><th>Type</th><th>Owner + review date?</th></tr></thead>
         <tbody>
-          <tr><td><span class="lbl">Runbook</span> · <span class="lbl">Spec</span></td><td>Yes — they describe how things <em>are</em>, so they go quietly wrong when reality moves</td></tr>
-          <tr><td><span class="lbl">Decision</span> · <span class="lbl">Meeting notes</span></td><td>No — records of a moment can't expire</td></tr>
+          <tr><td><span class="lbl">Runbook</span> · <span class="lbl">Spec</span> · <span class="lbl">Rules page</span></td><td>Yes — they describe how things <em>are</em>, so they go quietly wrong when reality moves</td></tr>
+          <tr><td><span class="lbl">Decision</span></td><td>No — its group's rules page carries the review for the whole group</td></tr>
+          <tr><td><span class="lbl">Meeting notes</span></td><td>No — a record of a moment can't expire</td></tr>
           <tr><td><span class="lbl">Research</span></td><td>No — the date is in the title instead</td></tr>
         </tbody>
       </table>
@@ -320,7 +336,7 @@
     <div class="notice">
       <p class="notice-head">Two rules that keep it working</p>
       <p><strong>Link by the exact page title, and make it a real link.</strong> Use the page's own title as the link text — never <code>see the review decision</code>. Finding what points at a page is done by searching its title, so a link in different words is invisible, and that's how gaps appear. Typing brackets with no link behind them looks right and points nowhere.</p>
-      <p><strong>Nothing is deleted.</strong> Superseded pages stay — moved into the tree's History sub-folder (<code>Decisions — History</code>), marked and linked to what replaced them, so the live tree shows only what is true today and the old answer stays one click away. The connector has no delete tool at all, so the no-deleting half enforces itself.</p>
+      <p><strong>Nothing is deleted.</strong> A dropped or replaced page stays — moved into the tree's History sub-folder (<code>Decisions — History</code>), marked and linked to what replaced it, so the live tree shows only what is true today and the old answer stays one click away. A changed rule stays on its own Decision page, under Rejected. The connector has no delete tool at all, so the no-deleting half enforces itself.</p>
     </div>
   </section>
 
@@ -398,14 +414,17 @@
     <h3>Fix what's wrong</h3>
     <p>If a page is out of date and you know the current answer, correct it. If you don't know the answer, say on the page that it's stale rather than leaving a confident, wrong page in place.</p>
 
-    <h3>Except records</h3>
-    <p><strong>Never rewrite a Decision or Meeting notes page to say something different.</strong> They record a moment. When the answer changes, write a new Decision and link the old one as superseded — the history of the thinking is the point. The superseded page then moves into its tree's History sub-folder, so the live tree stays clean without losing the record.</p>
+    <h3>A decision that changed</h3>
+    <p>Edit the Decision page in place — Claude does it as one batch: new body, old rule under Rejected with its date, a <em>Changed</em> line at the bottom, the group's rules line refreshed. No banner, no new page, no move. The history of the thinking stays on the page and in its version history.</p>
+
+    <h3>Except Meeting notes</h3>
+    <p><strong>Never rewrite a Meeting notes page to say something different.</strong> It records a moment. If a decision from it changed, the change lands on the Decision page.</p>
 
     <h3>Deleting</h3>
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">Out of date</span></td><td>Mark it superseded, link what replaced it, and move it into the tree's History sub-folder — Claude does this, and repairs the pages pointing at it</td></tr>
+          <tr><td><span class="lbl">Dropped or replaced whole</span></td><td>Mark it retired or superseded, link what replaced it, and move it into the tree's History sub-folder — Claude does this, and repairs the pages pointing at it. A Decision whose rule merely changed is not this case: it is edited in place</td></tr>
           <tr><td><span class="lbl">Junk</span></td><td>Accident, test page, empty draft — delete it yourself in Confluence. Claude has no delete tool</td></tr>
         </tbody>
       </table>
@@ -427,7 +446,7 @@
     <p>Any skill inside a page also looks at its health on the way through — a review date that passed, a link written as loose words, a page disagreeing with its neighbour — and proposes the fix rather than fixing silently.</p>
 
     <h3>And it has a doctor</h3>
-    <p>Say <em>“run the doctor”</em>, <em>“check the Brain”</em> or <em>“anything stale?”</em> and Claude sweeps the whole Brain: broken and vague links, stale pages, specs whose work finished long ago, meeting decisions that never became Decision pages, pages that contradict each other. You get one ranked report, worst first, each finding with its proposed fix — nothing is changed until you approve, and questions only a person can answer stay questions.</p>
+    <p>Say <em>“run the doctor”</em>, <em>“check the Brain”</em> or <em>“anything stale?”</em> and Claude sweeps the whole Brain: broken and vague links, stale pages, specs whose work finished long ago, Decision pages still carrying a banner, decisions with no line on their rules page, a rules page past its review date, a Decision version with no <em>Changed</em> line, meeting decisions that never landed (proposed for your approval, never filed alone), pages that contradict each other. You get one ranked report, worst first, each finding with its proposed fix — nothing is changed until you approve, and questions only a person can answer stay questions.</p>
   </section>
 
   <section id="skills">
@@ -437,9 +456,9 @@
     <div class="t-scroll">
       <table>
         <tbody>
-          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, asks rather than assumes — language, venture and space, type, Linear issue — and after a real update, checks the pages linking here and repairs what the change made wrong.</td></tr>
-          <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Follows supersede chains, flags stale pages, and says plainly when nothing covers the question. Also speaks up unasked when a session touches something the Brain holds — lightly, titles first.</td></tr>
-          <tr><td><span class="lbl">confluence-retire</span></td><td>Marks a page superseded and repairs everything that pointed at it. Also moves a venture's tree when it graduates.</td></tr>
+          <tr><td><span class="lbl">confluence-write</span></td><td>Writes a page, or updates the existing one. Searches first so nothing is duplicated, asks rather than assumes — language, venture and space, type, Linear issue — changes a Decision page in place when its rule changes, keeps the group's rules page current, files a meeting's decisions only after you approve each one, and after a real update checks the pages linking here and repairs what the change made wrong.</td></tr>
+          <tr><td><span class="lbl">confluence-read</span></td><td>Answers from the Brain, citing every claim. Reads the rules page first, follows supersede chains, flags stale pages, shows what a rule used to say from the page's version history, and says plainly when nothing covers the question. Also speaks up unasked when a session touches something the Brain holds — lightly, titles first.</td></tr>
+          <tr><td><span class="lbl">confluence-retire</span></td><td>Retires a page that is dropped or replaced whole: the notice, the move to History, and the repair of everything that pointed at it. Hands a changed decision to confluence-write. Also moves a venture's tree when it graduates.</td></tr>
           <tr><td><span class="lbl">confluence-doctor</span></td><td>The health check. Sweeps for broken links, stale pages, drift against Linear, and contradictions — then reports worst-first and fixes what you approve.</td></tr>
         </tbody>
       </table>

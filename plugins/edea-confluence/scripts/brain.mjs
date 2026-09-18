@@ -18,9 +18,13 @@
 //   brain.mjs search "<cql>" [--limit N]          titles, ids and urls; N defaults to 10
 //   brain.mjs children <id> [--depth N]           the page tree under a page
 //   brain.mjs backlinks "<exact page title>"      pages whose text mentions that title
+//   brain.mjs versions <id|url>                   every saved version: number, date, message
+//   brain.mjs versions <id|url> --version N       that version's body as markdown
 //
 // Options: --out <dir> (also for page/search), --concurrency N (default 6),
-//          --no-cache, --json (raw API json instead of markdown).
+//          --no-cache, --json (raw API json instead of markdown), --version N.
+// A Decision page is edited in place, so its version history is the record of what
+// the rule used to say; `versions` is how a skill reads that record.
 // Pages are cached at ~/.cache/edea-brain/<id>-v<version>.md; a page is fetched
 // again only when its version number changed (one cheap metadata call).
 
@@ -57,6 +61,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (arg === "--concurrency") options.concurrency = Number(argv[++i]);
   else if (arg === "--limit") options.limit = Number(argv[++i]);
   else if (arg === "--depth") options.depth = Number(argv[++i]);
+  else if (arg === "--version") options.version = Number(argv[++i]);
   else if (arg === "--no-cache") options.cache = false;
   else if (arg === "--json") options.json = true;
   else positional.push(arg);
@@ -284,6 +289,35 @@ async function children(id, depth) {
   }));
 }
 
+// ---------- versions ----------
+
+async function versions(id) {
+  const rows = [];
+  let url = `${base}/api/v2/pages/${id}/versions?limit=100`;
+  while (url) {
+    const data = await get(url);
+    for (const v of data.results) {
+      rows.push({
+        number: v.number,
+        date: v.createdAt.slice(0, 10),
+        message: v.message ?? "",
+        author: v.authorId,
+      });
+    }
+    url = data._links?.next ? new URL(data._links.next, `https://${site}`).href : null;
+  }
+  return rows.sort((a, b) => a.number - b.number);
+}
+
+// The v2 API lists versions but returns no body for an old one; the v1 API does.
+async function versionBody(id, number) {
+  const url = `${base}/rest/api/content/${id}?version=${number}&expand=body.storage,version`;
+  const data = await get(url);
+  if (options.json) return JSON.stringify(data, null, 2);
+  const head = `# ${data.title}\n\nid: ${data.id} · version: ${data.version.number} of the page's history · saved: ${data.version.when.slice(0, 10)}\n`;
+  return `${head}\n${toMarkdown(data.body.storage.value)}\n`;
+}
+
 // ---------- main ----------
 
 switch (command) {
@@ -316,6 +350,20 @@ switch (command) {
     printList(await search(cql, Math.max(options.limit, 25)));
     break;
   }
+  case "versions": {
+    if (!positional[0]) fail("give the page id or url");
+    const id = pageId(positional[0]);
+    if (options.version) {
+      process.stdout.write(await versionBody(id, options.version));
+      break;
+    }
+    const rows = await versions(id);
+    if (options.json) process.stdout.write(`${JSON.stringify(rows, null, 2)}\n`);
+    else
+      for (const row of rows)
+        process.stdout.write(`v${row.number}\t${row.date}\t${row.message}\n`);
+    break;
+  }
   default:
-    fail("commands: page, pages, search, children, backlinks — see the header of this file");
+    fail("commands: page, pages, search, children, backlinks, versions — see the header of this file");
 }
