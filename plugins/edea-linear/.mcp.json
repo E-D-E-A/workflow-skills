@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "linear": {
+    "edea-linear": {
       "type": "http",
       "url": "https://mcp.linear.app/mcp"
     }
