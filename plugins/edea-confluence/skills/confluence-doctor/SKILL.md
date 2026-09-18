@@ -7,8 +7,8 @@ description: Health-check E.D.E.A's Confluence Brain — sweep it for broken or 
 
 **Read `../../BRAIN.md` first** — it sits at the root of this plugin, two levels up from this
 file. Everything below leans on it: the page types, the flow table saying which types depend
-on which, the exact-title link rule, and the rule that records are superseded rather than
-edited.
+on which, the exact-title link rule, and the rule that a Decision page is edited in place
+while Meeting notes are never rewritten.
 
 The job: find where the Brain has drifted from the truth, say so in plain words, and fix what
 the user approves. The Brain degrades quietly — that's the only way it ever degrades — and
@@ -42,11 +42,21 @@ The mechanical faults, found with search (`searchConfluenceUsingCql`) and the sp
   group holding a description and an index of its children — `BRAIN.md` defines them).
 - **A sub-folder index that lies** — a sub-folder page whose linked index no longer matches
   its actual children: a page moved in but never listed, or listed but since moved away.
-- **A superseded page still sitting in the live tree** — a page marked superseded belongs
-  under its tree's `… — History` sub-folder (`BRAIN.md` defines it). One still parked among
-  the current pages, or still listed in a live index as if current, misleads every reader of
-  that tree. The reverse is a fault too: a page inside History with no supersede or retire
-  notice on it.
+- **A live Decision page carrying a banner or struck-out text** — a supersede or amendment
+  notice at its top, or text struck through. Under the rule in `BRAIN.md` ("How a decision
+  is kept") a live Decision page always states today's rule, with the old rule under
+  Rejected and a dated `Changed` line at the bottom. A banner means a reader has to work
+  out which sentences still hold. Fix: change the page in place with `confluence-write`.
+- **A Decision page with no rules line** — every live Decision page has one sentence on its
+  group's rules page. Missing means a reader of the group never learns the rule exists.
+- **A rules line with no date or no source** — every line on a rules page carries the date
+  it was settled and a link to the Decision page, meeting or issue behind it. Check the
+  link's target exists.
+- **A dropped page still sitting in the live tree** — a page marked superseded or retired
+  belongs under its tree's `… — History` sub-folder (`BRAIN.md` defines it). One still
+  parked among the current pages, or still listed in a live index as if current, misleads
+  every reader of that tree. The reverse is a fault too: a page inside History with no
+  supersede or retire notice on it.
 - **Twins** — two pages covering one subject, the failure that makes people stop trusting a
   wiki.
 
@@ -54,15 +64,21 @@ The mechanical faults, found with search (`searchConfluenceUsingCql`) and the sp
 
 Still cheap — dates and markers, not meaning:
 
-- **`Review by` passed** on a Spec or Runbook.
+- **`Review by` passed** on a Spec, a Runbook, or a Decisions rules page.
+- **A rules page past about forty lines** — the group has outgrown one page. Propose a
+  split, with the mapping, and wait.
 - **Old snapshots quoted as current** — a Research page past roughly six months whose
   claims other pages still lean on.
 - **A supersede chain whose current end is itself doubtful** — replaced but never marked, or
   stale in its own right.
-- **A record that changed after retirement** — a Decision or Meeting notes page is never
-  edited to say something different; the one legitimate edit is the supersede or retire
-  notice at the top. If content beneath an existing notice has changed, don't declare
+- **A Meeting notes page that changed after filing** — Meeting notes are never edited to
+  say something different. If the body changed after the first version, don't declare
   tampering — raise it as a question for the user, since page history alone can't say why.
+- **A Decision version with no log line** — reported, never decided. List the page's
+  versions (`scripts/brain.mjs versions <id>`), and for each version that changed the body,
+  look for a `Changed <that date>: …` line at the bottom of the page. A version without one
+  is either a clarification, which needs no line, or a change that forgot its line. The
+  doctor cannot tell which; it reports the page, the version number and its date, and asks.
 
 ## Pass 3 — Across to Linear
 
@@ -70,8 +86,12 @@ Knowledge often stops at the tool boundary. When the Linear tools are connected,
 
 - **Specs whose implementing issues are Done** but whose page never changed after the work
   finished — the built thing and its description may have parted ways.
-- **Meeting notes with numbered decisions that never became Decision pages** — the meeting
-  template says a decision that matters gets its own page; find the ones that didn't.
+- **Meeting notes with numbered decisions that never landed** — no rules line and no
+  Decision page holds them. For each, propose the landing (a rules line or a page, and the
+  group) exactly as `confluence-write` does, and put it in the report as a proposal. **A
+  team member approves each one before it is written.** A meeting summary is where a
+  decision is most easily invented, so the doctor never files one on its own — and "that
+  was not a decision" is a valid answer that closes the finding.
 - **Issue attachments pointing at superseded pages** — a live issue steering people to a
   retired answer.
 
@@ -116,8 +136,13 @@ skimmed yes is not consent. One yes may cover the whole approved list, as a bulk
 
 - **Mechanical faults** — repair vague links into real ones, add missing skeleton, fix the
   stale reference. Straightforward edits, done directly.
-- **A record that needs replacing** — never edited in place: hand off to `confluence-retire`,
-  which writes the supersede notice and repairs every page that pointed at the old one.
+- **A Decision page whose rule changed, or one left with a banner** — hand off to the
+  change-in-place flow in `confluence-write`: new body, old rule under Rejected, dated
+  `Changed` line, rules line refreshed. Never a new page, never a move to History.
+- **A page dropped outright or replaced whole** — hand off to `confluence-retire`, which
+  writes the notice, moves it to History and repairs every page that pointed at it.
+- **A meeting decision that never landed** — a proposal in the report, written only after
+  a person says yes to that one.
 - **Anything only a person can settle** — whether a spec still matches what was built,
   whether old research still holds, which of two twins is the real page — stays a question
   in the report. A question is a finding, not a failure; never close it with a guess.

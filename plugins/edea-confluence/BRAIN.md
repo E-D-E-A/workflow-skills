@@ -88,6 +88,8 @@ node <plugin root>/scripts/brain.mjs search 'space = MTG AND type = page AND tit
 node <plugin root>/scripts/brain.mjs pages 26509325 28672001 --out <scratch dir>
 node <plugin root>/scripts/brain.mjs children <hub page id> --depth 2
 node <plugin root>/scripts/brain.mjs backlinks "<exact page title>"
+node <plugin root>/scripts/brain.mjs versions <page id>              the page's version list
+node <plugin root>/scripts/brain.mjs versions <page id> --version 3  one old version's body
 ```
 
 The plugin root is two levels up from any skill's `SKILL.md`. Pages come back as markdown
@@ -166,22 +168,30 @@ wherever sub-folders exist:
   new page's parent is the closest matching sub-folder, not the tree root. If none fits, ask
   whether to file at the root or start a new group — don't invent one silently.
 - **The index:** a page filed into a sub-folder is also added to that sub-folder's index list,
-  or the index quietly rots into a lie about what's inside.
+  or the index quietly rots into a lie about what's inside. In a Decisions tree the group
+  page is a **rules page**, and the entry is a rules line — see "How a decision is kept".
 
 A page that reads across the whole tree — a synthesis, an overview — may deliberately stay at
 the root. Splitting a tree into sub-folders in the first place is a structural change: propose
 the full mapping and wait, as ever.
 
-**Superseded pages move to the tree's History sub-folder** (decided 2026-09-04, Eden). Each
-tree may hold one sub-folder for pages that are no longer the answer, titled with the tree's
-name — `Decisions — History` — because titles are unique per space and every tree may
-eventually need one. It is created the first time a tree gets a superseded page, never before.
-When a page is superseded it moves there: the notice goes on top, the content stays untouched,
-and the page joins the History page's index with one line naming what replaced it. The live
-tree then shows only what is true today; the record sits one click away. Three rules follow:
+**Dropped pages move to the tree's History sub-folder** (decided 2026-09-04, Eden; narrowed
+2026-09-18). Each tree may hold one sub-folder for pages that are no longer the answer,
+titled with the tree's name — `Decisions — History` — because titles are unique per space
+and every tree may eventually need one. It is created the first time a tree needs it, never
+before. Two kinds of page go there: a page **dropped outright** with no replacement (an idea
+that died, a process we no longer run), and a page of any type but Decision that is
+**replaced whole** (a Research page replaced by a newer study). The notice goes on top, the
+content stays untouched, and the page joins the History page's index with one line naming
+what replaced it, or saying nothing did. The live tree then shows only what is true today;
+the record sits one click away.
+
+A Decision page whose rule changed does **not** go to History: it is edited in place, and
+Confluence's version history keeps the old text — see "How a decision is kept" below. Three
+rules follow:
 
 - New pages are **never** filed into History — a page is born current.
-- A live sub-folder's index never lists a superseded page among the current ones; if readers
+- A live sub-folder's index never lists a History page among the current ones; if readers
   of that group need the trail, one line pointing at the History page is enough.
 - Links keep working across the move — Confluence links carry the page id — so nothing needs
   re-pointing just because a page moved to History.
@@ -206,7 +216,7 @@ you're updating it, not creating a second one.
 
 | Type | Holds | `Owner` + `Review by` |
 | --- | --- | --- |
-| **Decision** | What we chose, what we rejected, why, what would make us revisit | No — a record |
+| **Decision** | What we chose, what we rejected, why, what would make us revisit — always today's rule | No — the group's rules page carries them |
 | **Spec** | What we're building, what done looks like, what's out of scope | **Yes** |
 | **Research** | A question, what we found, a source for every claim | No — date in the title |
 | **Runbook** | A repeatable process, and what to do when a step fails | **Yes** |
@@ -214,8 +224,63 @@ you're updating it, not creating a second one.
 
 If something fits none of the five, say so and ask. Don't force it into the nearest one.
 
-**Decisions and Meeting notes are records of a moment.** They are never edited to say something
-different. When the answer changes, write a new page and supersede the old one.
+**Meeting notes are a record of a moment.** They are never edited to say something different.
+A Decision page is the opposite: it is kept current, as the next section says.
+
+### How a decision is kept
+
+Decided 2026-09-18 (Eden), on the Decision page *A Decision page is edited in place and stays
+current, and each group keeps a one-line rules page* in the house space. The reader a
+Decision page is written for is whoever lands on it — a person or an agent — and that reader
+opens one page and trusts it. So:
+
+**A Decision page is edited in place.** It keeps its id and its title for as long as the
+decision exists. When the rule it states changes, the page itself changes: the body is
+rewritten to the new rule with no banner and no struck-out text; the old rule moves into the
+page's **Rejected** section, dated, with the reason it was dropped; and one dated line is
+added at the bottom of the page:
+
+```
+Changed 2026-09-14: a lost case also triggers deletion.
+```
+
+Confluence's version history is the record — every earlier version is kept, diffable and
+restorable, and `scripts/brain.mjs versions` shows it. Nothing is copied anywhere. Every
+link, old or new, lands on today's rule, because the id never moves.
+
+**A clarification is a plain edit.** An edit that changes nothing a Spec or the code could
+depend on — a typo, clearer wording, a spelled-out term, an added example — needs no log
+line. If any sentence a Spec could rely on is added, removed or altered, it is a change and
+gets the line. When in doubt, log it.
+
+**Each group's page is its rules page.** A Decisions group page does not list titles. It
+states every current rule in the group, **one sentence each**, with the date it was settled
+and a link to the Decision page, meeting or issue behind it:
+
+```
+- Files are deleted when the case is closed or lost (2026-09-14) → [Exact page title](url)
+```
+
+A reader looks here first and usually stops here. The rules page carries `Owner:` — whoever
+wrote most of the group — and `Review by:`, about three months out, refreshed on every real
+change. About forty lines is the ceiling; past it, the group should split. A Decisions tree
+with no groups yet keeps its rules on the tree's root page itself, the same way.
+
+**Not every decision earns a page.** A decision gets its own page when we said no to
+something — an alternative was weighed and rejected, and the reason would otherwise be lost
+— or when the why does not fit in one sentence. Otherwise it is one line on the rules page,
+dated, with the meeting or issue as its source. "The OCR engine runs in an EU region" is a
+line; "sessions, not JWT" is a page. A line can be promoted to a page later; the line stays
+and gains the link.
+
+**A meeting decision lands only through a person.** Every numbered decision in a Meeting
+notes page becomes a rules line or a Decision page in its group — and only after a team
+member has said it is a decision. The skill proposes; a person says yes. Nothing is written
+from a meeting without that yes, because a summary is where a decision is most easily
+invented.
+
+**A decision dropped outright** — the rule no longer exists and nothing replaces it — is the
+one case that still goes through `confluence-retire` and History. Its rules line is removed.
 
 ### The Meeting notes template
 
@@ -253,10 +318,10 @@ that might now be wrong are the ones downstream of it:
 | What changed | Where to look for damage |
 | --- | --- |
 | Research superseded | The Decisions that cited it — does the choice still hold? |
-| Decision superseded | The Specs it constrained, and the Runbooks built on it |
+| Decision changed in place, or dropped | The Specs it constrained, the Runbooks built on it, and its group's rules line |
 | Spec changed | The Runbooks describing that process, and the Linear issues implementing it |
 | Runbook changed | Usually nothing — it is the end of the chain |
-| Meeting notes filed | The Decision pages its numbered decisions should have become |
+| Meeting notes filed | The rules lines or Decision pages its numbered decisions should have become — proposed, and written only on a person's yes |
 
 Every skill that changes or retires a page walks this table for the type it just touched.
 
@@ -276,8 +341,12 @@ or `latest`.
 
 **A `## Related` section** — see below.
 
-**`Owner:` and `Review by:`** on Specs and Runbooks only, at the very top. The owner is whoever
-would have to fix the page, not whoever wrote it. Review dates go about three months out.
+**`Owner:` and `Review by:`** on Specs, Runbooks and Decisions rules pages, at the very top.
+The owner is whoever would have to fix the page, not whoever wrote it — on a rules page,
+whoever wrote most of the group. Review dates go about three months out.
+
+**A `Changed <date>: …` line** at the bottom of a Decision page for every change to its rule,
+newest last. Never on a Meeting notes page.
 
 ## How pages connect
 
@@ -355,10 +424,12 @@ task lists stay real and stay left. `confluence-write` carries the full recipe.
 Break any of these and the Brain degrades quietly, which is the only way it ever degrades.
 
 1. **Search before creating.** Two pages on one subject is how a wiki dies.
-2. **Never rewrite a record.** Decisions and Meeting notes get superseded, not edited.
-3. **Nothing is deleted.** Superseded pages stay — moved into their tree's History sub-folder,
-   marked and linked to what replaced them. The paths we rejected are part of what we know,
-   and losing them means re-running the same argument.
+2. **Never rewrite a Meeting notes page.** It is the record of a moment. A Decision page is
+   the opposite: it is kept current, edited in place, with the old rule in its Rejected
+   section, a dated `Changed` line, and Confluence's version history as the record.
+3. **Nothing is deleted.** A dropped page moves to its tree's History sub-folder, marked and
+   linked to what replaced it. A changed rule stays on its page, under Rejected. The paths we
+   rejected are part of what we know, and losing them means re-running the same argument.
 4. **Link by exact title**, or the link doesn't exist as far as the Brain is concerned.
 5. **Never invent a space or a page tree.** Propose and wait.
 6. **Say when you don't know.** A page that doesn't exist is a real, useful answer. Reasoning

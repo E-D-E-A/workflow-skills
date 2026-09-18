@@ -1,6 +1,6 @@
 ---
 name: confluence-write
-description: Write a page into E.D.E.A's Confluence Brain, or update an existing one — deciding whether something belongs in Confluence at all, picking the document type, finding the right space and tree, searching first so nothing is duplicated, and wiring it to related pages and the Linear issue it came from. Use when the user wants to write up, document, record, capture, draft or update a decision, spec, research finding, runbook, or meeting notes.
+description: Write a page into E.D.E.A's Confluence Brain, or update an existing one — deciding whether something belongs in Confluence at all, picking the document type, finding the right space and tree, searching first so nothing is duplicated, changing a Decision page in place when its rule changes, keeping each decision group's rules page current, filing a meeting's decisions once a person approves them, and wiring it all to related pages and the Linear issue it came from. Use when the user wants to write up, document, record, capture, draft, update, change or amend a decision, spec, research finding, runbook, or meeting notes, or says a decision changed.
 ---
 
 # Write a page into the Brain
@@ -94,8 +94,13 @@ The five types are in `BRAIN.md`. Pick one and the location follows:
    it has, the page's parent is the closest matching sub-folder, not the tree root, **and the
    new page is added to that sub-folder's index list** in the same approval batch. If no
    sub-folder fits, ask whether to file at the root or start a new group. One sub-folder is
-   never a filing target: the tree's `… — History` page holds only superseded pages, and a
+   never a filing target: the tree's `… — History` page holds only dropped pages, and a
    new page is born current — it never starts there.
+5. **A Decision?** First decide whether it earns a page at all. `BRAIN.md` ("How a decision
+   is kept") gives the test: a page when something was rejected or the why does not fit in
+   one sentence, otherwise one line on the group's rules page. Say which you'd pick and
+   why, and ask. Either way the group's rules page gets a line in the same approval batch —
+   one sentence, the date, the link.
 4. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
 
 Resolve the parent page by title with `searchConfluenceUsingCql` or
@@ -116,7 +121,7 @@ Snapshots carry their date.
 Then, in order:
 
 ```
-Owner: <name>   Review by: <date>        ← Specs and Runbooks only
+Owner: <name>   Review by: <date>        ← Specs, Runbooks and Decisions rules pages only
 Topics: <words from the Topics page>
 
 > One line: what this is for, and who it's for.
@@ -230,14 +235,47 @@ Don't pad a short page to fill the shape, and don't compress a complicated one t
 
 Load it with `getConfluencePage` and work from what's actually there.
 
-- **Is it a record?** Decisions and Meeting notes are never edited to say something different.
-  If the answer has changed, this is a new Decision plus a supersede — hand off to
-  `confluence-retire`, which handles the pointers.
+- **Is it Meeting notes?** Never edited to say something different. It is the record of a
+  moment; if a decision in it changed, the change lands on the Decision page, not here.
+- **Is it a Decision page whose rule changed?** Change it in place — the flow below. Never
+  a new page, never a banner, never a move to History.
+- **Is it a Decision that no longer exists at all** — the rule is dropped and nothing
+  replaces it? That is the one case for `confluence-retire`.
 - **Is it just wrong or stale?** Fix it. A wiki people don't trust is worse than no wiki.
 - **Don't know the current answer?** Say so on the page and ask the user. Leaving a confident,
   wrong page in place is the worse option.
-- **Spec or Runbook?** Refresh `Review by` when you make a real change, and check `Owner` is
-  still the right person.
+- **Spec, Runbook or rules page?** Refresh `Review by` when you make a real change, and
+  check `Owner` is still the right person.
+
+### Changing a Decision page in place
+
+The rule is in `BRAIN.md` ("How a decision is kept"): a Decision page keeps its id and
+title and always states today's rule, and Confluence's version history is the record. One
+change is one approval batch holding all of this, shown before → after:
+
+1. **Rewrite the body to the new rule.** No banner at the top, no struck-out text, no
+   "previously" paragraphs. A reader who lands here must not have to work out which
+   sentences still hold.
+2. **Move the old rule into `## Rejected`**, dated, with the reason it was dropped:
+   `- **Delete files only at case close** (the rule until 2026-09-14) — a lost case left
+   files in place for months.` The paths we rejected are part of what we know.
+3. **Add one dated log line at the bottom** of the page, after `## Related`, newest last:
+   `Changed 2026-09-14: a lost case also triggers deletion.` One sentence saying what
+   changed; the version diff holds the detail. No version message is needed — the date
+   on the line is what matches it to the version.
+4. **Refresh the group's rules line** — the one sentence on the group page — and its
+   date. If the page's title no longer states the rule, rename it and run the rename
+   repair in the section below.
+5. **Walk the ripple** (next section): the Specs and Runbooks built on the old rule.
+
+**Is it a change or a clarification?** A typo, clearer wording, a spelled-out term, an
+added example — anything no Spec or code could depend on — is a plain edit with no log
+line and no Rejected entry. If any sentence a Spec could rely on is added, removed or
+altered, it is a change. When in doubt, log it.
+
+**A decision that turns out to earn a page** — a rules line whose why has grown, or that
+now has a rejected alternative — is promoted: write the page as in Step 5, and the line
+stays on the rules page and gains the link.
 
 ### After the update — check what the change ripples to
 
@@ -261,6 +299,27 @@ A wording fix that changes nothing the page claims — a typo, a clearer sentenc
 also the only way to find the links — so the moment a title changes, every inbound link is
 both broken and about to become unfindable. Run the search on the **old** title first, then
 update every page it found. No exceptions, whatever the size of the rename.
+
+## Filing a meeting's decisions — only through a person
+
+A Meeting notes page's numbered decisions are the raw material for the Decisions tree, and
+the place a decision is most easily invented: a summary can make a remark look settled.
+So nothing goes from a meeting into the Decisions tree without a team member saying it is
+a decision.
+
+After filing Meeting notes, or when asked to file a meeting's decisions:
+
+1. For each numbered decision, search the Decisions tree for a page or a rules line that
+   already holds it. Skip the ones that do.
+2. For each one that doesn't, propose the landing: a rules line (one sentence, the date,
+   the meeting as source) or a Decision page (when something was rejected or the why is
+   longer than a sentence), and the group it belongs to. Show the exact line or draft.
+3. Wait for a yes on each — a person may say "that was not a decision", and that answer
+   is final. Write only what was approved, and then link the meeting's decision to where it
+   landed.
+
+If the session runs unattended, park on the proposals. Never file a meeting decision on
+your own judgement, however clear it looks.
 
 ## Step 7 — Wire it to Linear
 

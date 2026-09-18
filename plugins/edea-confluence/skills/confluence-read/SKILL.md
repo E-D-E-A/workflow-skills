@@ -1,6 +1,6 @@
 ---
 name: confluence-read
-description: Answer a question from E.D.E.A's Confluence Brain — searching our structure, following supersede chains so a retired page is never quoted as current, citing every claim to the page it came from, and saying plainly when nothing covers the question. Use when the user asks what we decided, what we know, why we did something, whether something is documented, or asks you to find, look up, or check a page. Also use unasked, in any session including coding, the moment the work touches something E.D.E.A may already have decided, documented or specced — building a feature a spec might cover, discussing a choice a Decision page may have settled — keeping the pull light so it never crowds the session.
+description: Answer a question from E.D.E.A's Confluence Brain — searching our structure, reading a group's rules page first for what we decided, following supersede chains so a retired page is never quoted as current, showing a Decision page's earlier versions when asked what a rule used to say, citing every claim to the page it came from, and saying plainly when nothing covers the question. Use when the user asks what we decided, what we know, why we did something, whether something is documented, or asks you to find, look up, or check a page. Also use unasked, in any session including coding, the moment the work touches something E.D.E.A may already have decided, documented or specced — building a feature a spec might cover, discussing a choice a Decision page may have settled — keeping the pull light so it never crowds the session.
 ---
 
 # Answer from the Brain
@@ -36,7 +36,8 @@ Different questions want different types, which narrows the search a long way:
 
 | The question | Look in |
 | --- | --- |
-| "What did we decide about…" / "Why do we…" | `Decisions` |
+| "What did we decide about…" / "Why do we…" | `Decisions` — the group's rules page first: one sentence per current rule, dated, linked. Open the Decision page for the why and what was rejected |
+| "What did we use to do…" / "When did that change…" | The Decision page's `Changed` lines at its bottom, then its version history: `scripts/brain.mjs versions <id>` lists the versions, `--version N` shows one |
 | "What are we building…" / "What does done look like…" | `Specs` |
 | "What do we know about…" / "Did we look into…" | `Research` |
 | "How do I…" | `Runbooks` |
@@ -74,9 +75,12 @@ current one.
 
 For every page you're about to draw on:
 
-1. **Is it superseded?** Look for a supersede marker or a `Supersedes:` line pointing at it.
-   If it's been replaced, follow the chain to the current page and use that. Mention the old
-   one only as history.
+1. **Is it superseded or retired?** Look for a notice at the top or a `Supersedes:` line
+   pointing at it. If it's been replaced, follow the chain to the current page and use that.
+   Mention the old one only as history. A Decision page carries no such notice: it always
+   states today's rule, and its `Changed` lines say when that rule moved. If you find a
+   Decision page with a banner or struck-out text, it was left behind by the old rule —
+   read it as current with care, and mention it as a finding for the doctor.
 2. **Is it stale?** Specs and Runbooks carry `Review by`. If that date has passed, you can
    still use the page — but say the review date has passed.
 3. **Is it a snapshot?** Research is true as of its date. Quote it with that date attached.
@@ -100,6 +104,11 @@ Include the page links so they can go and read it.
 
 **Connect across pages** — that's the whole point of a Brain rather than a search box. If a
 Decision cites Research, say what the Decision was and what evidence sat behind it.
+
+**When asked what a rule used to say**, the answer is the page's Rejected section and its
+`Changed` lines, and — for the exact old wording — the version from before the dated line,
+read with `scripts/brain.mjs versions <id> --version N`. Quote it with its date and say it
+is no longer the rule.
 
 ## Step 5 — Say when the Brain doesn't know
 

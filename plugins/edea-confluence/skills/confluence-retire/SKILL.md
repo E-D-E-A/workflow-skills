@@ -1,6 +1,6 @@
 ---
 name: confluence-retire
-description: Retire a Confluence page that is no longer the answer — marking it superseded, linking what replaced it, and finding and repairing every page that pointed at it so the Brain has no dangling references. Also handles moving a venture's pages into its own space when it graduates. Use when the user says a page is out of date, wrong, replaced, superseded, or should be removed, or when a venture graduates into its own space.
+description: Retire a Confluence page that is no longer the answer — marking it superseded or retired, moving it to its tree's History sub-folder, linking what replaced it, and finding and repairing every page that pointed at it so the Brain has no dangling references. A Decision page whose rule merely changed is not retired but edited in place by confluence-write; this skill hands it there. Also handles moving a venture's pages into its own space when it graduates. Use when the user says a page is out of date, wrong, replaced, superseded, dropped or should be removed, or when a venture graduates into its own space.
 ---
 
 # Retire a page, and repair what pointed at it
@@ -29,7 +29,9 @@ Load the page with `getConfluencePage` and check what it actually is:
 
 | Situation | What to do |
 | --- | --- |
-| A newer page replaces it | **Supersede** — the main path below |
+| A Decision page whose rule changed | Not this skill — `confluence-write` changes it in place: new body, old rule under Rejected, a dated `Changed` line, the group's rules line refreshed. Version history is the record. `BRAIN.md` ("How a decision is kept") has the rule |
+| A Decision dropped outright — the rule is gone and nothing replaces it | **Retire** — the path below, with no replacement, and its line removed from the group's rules page |
+| A Spec, Research, Runbook page replaced whole by a newer page | **Supersede** — the main path below |
 | It's simply wrong and you know the fix | Not this skill — use `confluence-write` and correct it |
 | It's stale and nobody knows the answer | Not this skill — mark it stale on the page and ask |
 | It's junk: a test page, an accident, an empty draft | The connector can't delete. Ask the user to remove it in Confluence |
@@ -81,12 +83,13 @@ With no replacement:
 destroys the thing worth keeping. Only the notice goes on.
 
 **Then move it into the tree's History sub-folder** — a plain page directly under the tree
-root, titled with the tree's name (`Decisions — History`), holding only superseded and retired
-pages so the live tree shows only what is true today (`BRAIN.md` defines it). Create it on
-first use — a one-line description plus an index — and add the retired page to that index with
-one line naming what replaced it. If a live sub-folder's index listed the page, remove that
-entry (a one-line pointer to the History page may stand in where the trail matters). The move
-itself breaks nothing: Confluence links carry the page id and survive it.
+root, titled with the tree's name (`Decisions — History`), holding only dropped and
+replaced-whole pages so the live tree shows only what is true today (`BRAIN.md` defines it).
+Create it on first use — a one-line description plus an index — and add the retired page to
+that index with one line naming what replaced it, or saying nothing did. If a live
+sub-folder's index listed the page, remove that entry; on a Decisions group page that entry
+is a rules line, and removing it is part of this batch. The move itself breaks nothing:
+Confluence links carry the page id and survive it.
 
 ## Step 5 — Repair the pointers
 
