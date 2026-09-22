@@ -1,0 +1,48 @@
+{
+  "name": "edea",
+  "interface": {
+    "displayName": "E.D.E.A"
+  },
+  "plugins": [
+    {
+      "name": "edea-linear",
+      "source": {
+        "source": "local",
+        "path": "./plugins/edea-linear"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "edea-confluence",
+      "source": {
+        "source": "local",
+        "path": "./plugins/edea-confluence"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "edea-presentations",
+      "source": {
+        "source": "local",
+        "path": "./plugins/edea-presentations"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "edea-fireflies",
+      "source": {
+        "source": "local",
+        "path": "./plugins/edea-fireflies"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "edea-mortgage-survey",
+      "source": {
+        "source": "local",
+        "path": "./plugins/edea-mortgage-survey"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
