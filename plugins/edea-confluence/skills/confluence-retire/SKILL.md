@@ -30,6 +30,7 @@ Load the page with `getConfluencePage` and check what it actually is:
 | Situation | What to do |
 | --- | --- |
 | A Decision page whose rule changed | Not this skill — `confluence-write` changes it in place: new body, old rule under Rejected, a dated `Changed` line, the group's rules line refreshed. Version history is the record. `BRAIN.md` ("How a decision is kept") has the rule |
+| An idea dropped from a live decision — an option, route or tool | Not this skill — `confluence-write`: one short entry under the owning page's Rejected, and every other mention removed, not tagged |
 | A Decision dropped outright — the rule is gone and nothing replaces it | **Retire** — the path below, with no replacement, and its line removed from the group's rules page |
 | A Spec, Research, Runbook page replaced whole by a newer page | **Supersede** — the main path below |
 | It's simply wrong and you know the fix | Not this skill — use `confluence-write` and correct it |
