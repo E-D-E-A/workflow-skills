@@ -239,6 +239,11 @@ Load it with `getConfluencePage` and work from what's actually there.
   moment; if a decision in it changed, the change lands on the Decision page, not here.
 - **Is it a Decision page whose rule changed?** Change it in place — the flow below. Never
   a new page, never a banner, never a move to History.
+- **Is it an idea the team dropped** — an option, route or tool inside a live decision? One
+  short entry under the owning Decision page's `## Rejected`. Then find every other page that
+  mentions it — search its words, not only its title — and remove each mention, rewriting the
+  sentence to stand without it. Never tag a mention "dropped". `BRAIN.md` ("How a decision
+  is kept") has the rule.
 - **Is it a Decision that no longer exists at all** — the rule is dropped and nothing
   replaces it? That is the one case for `confluence-retire`.
 - **Is it just wrong or stale?** Fix it. A wiki people don't trust is worse than no wiki.
@@ -258,7 +263,8 @@ change is one approval batch holding all of this, shown before → after:
    sentences still hold.
 2. **Move the old rule into `## Rejected`**, dated, with the reason it was dropped:
    `- **Delete files only at case close** (the rule until 2026-09-14) — a lost case left
-   files in place for months.` The paths we rejected are part of what we know.
+   files in place for months.` The paths we rejected are part of what we know. Keep the
+   entry short — what, when and why, not the design of what was dropped.
 3. **Add one dated log line at the bottom** of the page, after `## Related`, newest last:
    `Changed 2026-09-14: a lost case also triggers deletion.` One sentence saying what
    changed; the version diff holds the detail. No version message is needed — the date

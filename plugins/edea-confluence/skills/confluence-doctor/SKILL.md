@@ -47,6 +47,10 @@ The mechanical faults, found with search (`searchConfluenceUsingCql`) and the sp
   is kept") a live Decision page always states today's rule, with the old rule under
   Rejected and a dated `Changed` line at the bottom. A banner means a reader has to work
   out which sentences still hold. Fix: change the page in place with `confluence-write`.
+- **A dropped idea still mentioned** — a page names an idea that a Decision page lists under
+  Rejected, outside that entry: as an example, a side remark, or a "dropped for now" tag.
+  An agent reads the mention as direction. Fix: remove it with `confluence-write`. Meeting
+  notes and finished Research pages are exempt.
 - **A Decision page with no rules line** — every live Decision page has one sentence on its
   group's rules page. Missing means a reader of the group never learns the rule exists.
 - **A rules line with no date or no source** — every line on a rules page carries the date

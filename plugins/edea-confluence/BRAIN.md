@@ -282,6 +282,26 @@ invented.
 **A decision dropped outright** — the rule no longer exists and nothing replaces it — is the
 one case that still goes through `confluence-retire` and History. Its rules line is removed.
 
+**A dropped idea is written down once.** When the team drops an idea that lived inside the
+decisions — an option, a route, a tool, a feature — it gets one short entry in the
+**Rejected** section of the Decision page that owns it: what it was, its dates, and why it
+went. That entry is the only place it stays. Every other mention across the Brain is
+**removed, not tagged**: the examples that used it, side remarks, reasons that leaned on
+it, and open questions only it raised. Each sentence is rewritten to read cleanly without
+it; a note such as "dropped for now" is never added beside a mention. The Rejected entry
+stays short — what the idea was and why it went, not how it was designed. Removing a
+mention changes no decision, so it gets no `Changed` line; the owning page gets its usual
+one. Meeting notes are never edited, and a finished Research page records what was studied
+and stays as it is unless a person says otherwise.
+
+For example, the team drops a fax intake route. The intake Decision page lists it once under
+Rejected, with the date and the reason. The capability page that named "reading a fax" as an
+example loses those words, and the legal question about keeping faxes is deleted from the
+lawyer's list.
+
+Decided 2026-10-02 (Eden): a past reference to an idea we did not choose bloats the Brain, and
+an agent that reads one takes it as direction.
+
 ### The Meeting notes template
 
 Every Meeting notes page uses the same eight sections, in this order, so a reader always knows
@@ -319,6 +339,7 @@ that might now be wrong are the ones downstream of it:
 | --- | --- |
 | Research superseded | The Decisions that cited it — does the choice still hold? |
 | Decision changed in place, or dropped | The Specs it constrained, the Runbooks built on it, and its group's rules line |
+| An idea dropped from a live decision | Every page that mentions it — each mention removed; one entry stays in the owning page's Rejected section |
 | Spec changed | The Runbooks describing that process, and the Linear issues implementing it |
 | Runbook changed | Usually nothing — it is the end of the chain |
 | Meeting notes filed | The rules lines or Decision pages its numbered decisions should have become — proposed, and written only on a person's yes |
