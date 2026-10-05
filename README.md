@@ -31,3 +31,9 @@ This branch holds only hackathon pitch material (videos and docs) and is unrelat
 **[📄 Read the architecture doc](TRACE_Architecture.md)**
 
 High-level architecture for the hackathon build, in Hebrew (right-to-left): scope, context diagram, logical components, main flows, retrieval and agent harness, exposure matrix, risks and decisions, and the 21-hour plan.
+
+## TRACE — Interactive UI Prototype
+
+[Open the prototype source and run instructions](trace-ui/README.md). Vue 3 investigation workspace in Hebrew, with a dark blue interface, a labeled timeline with event intervals, time-window navigation, direct evidence details and a simulated chat assistant.
+
+Run locally: from trace-ui, run npm install and npm run dev, then open http://localhost:5173.
