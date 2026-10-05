@@ -28,6 +28,6 @@ This branch holds only hackathon pitch material (videos and docs) and is unrelat
 
 ## TRACE — Architecture Doc
 
-**[⬇ Download the doc (HTML)](https://github.com/E-D-E-A/workflow-skills/raw/media/one-brain-video/TRACE_Architecture.html)**
+**[📄 Read the architecture doc](TRACE_Architecture.md)**
 
-High-level architecture for the hackathon build, in Hebrew (right-to-left): scope, context diagram, logical components, main flows, retrieval and agent harness, exposure matrix, risks and decisions, and the 21-hour plan. Download it and open it in a browser; the diagram and fonts load from a CDN, so it needs an internet connection.
+High-level architecture for the hackathon build, in Hebrew (right-to-left): scope, context diagram, logical components, main flows, retrieval and agent harness, exposure matrix, risks and decisions, and the 21-hour plan.
