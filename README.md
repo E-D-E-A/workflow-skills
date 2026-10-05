@@ -1,6 +1,6 @@
 # Pitch Videos
 
-This branch holds only pitch videos and is unrelated to the skills on `main`.
+This branch holds only hackathon pitch material (videos and docs) and is unrelated to the skills on `main`.
 
 ## One Brain — Hackathon Pitch Video
 
@@ -25,3 +25,9 @@ This branch holds only pitch videos and is unrelated to the skills on `main`.
 | Video | H.264, 2-pass (~3.4 Mbps) |
 | Audio | AAC 192 kbps, 48 kHz |
 | Size | ~27 MB |
+
+## TRACE — Architecture Doc
+
+**[⬇ Download the doc (HTML)](https://github.com/E-D-E-A/workflow-skills/raw/media/one-brain-video/TRACE_Architecture.html)**
+
+High-level architecture for the hackathon build, in Hebrew (right-to-left): scope, context diagram, logical components, main flows, retrieval and agent harness, exposure matrix, risks and decisions, and the 21-hour plan. Download it and open it in a browser; the diagram and fonts load from a CDN, so it needs an internet connection.
