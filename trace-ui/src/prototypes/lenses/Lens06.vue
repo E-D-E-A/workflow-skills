@@ -1,0 +1,3 @@
+<script setup>
+import LensOverview from './LensOverview.vue';import LensTimeline from './LensTimeline.vue';import EvidenceInspector from './EvidenceInspector.vue';
+</script><template><div class="lens-variant variant-6"><LensOverview mode="line"/><div class="connection-heading">זהות משותפת מקשרת בין ראיות. סדר זמנים לבדו אינו מוכיח קשר.</div><LensTimeline mode="connections"/><EvidenceInspector mode="linked"/></div></template>

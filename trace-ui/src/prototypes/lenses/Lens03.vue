@@ -1,0 +1,3 @@
+<script setup>
+import LensOverview from './LensOverview.vue';import LensTimeline from './LensTimeline.vue';import EvidenceInspector from './EvidenceInspector.vue';
+</script><template><div class="lens-variant variant-3"><LensOverview mode="chapters"/><div class="chapter-bridge"><span>01 · בחירת חלון</span><span>02 · בדיקת פריט</span><span>03 · שאלה עם ראיות</span></div><LensTimeline mode="chapters"/><EvidenceInspector mode="grouped"/></div></template>

@@ -4,7 +4,10 @@ async function start(){
  if(variant==='original'){
   const [{default:App}]=await Promise.all([import('./App.vue'),import('./style.css')]);
   createApp(App).mount('#app');
- }else if(!variant||/^T\d+$/i.test(variant)){
+ }else if(!variant||/^L\d+$/i.test(variant)){
+  const [{default:App}]=await Promise.all([import('./prototypes/lenses/LensStudy.vue'),import('./prototypes/lenses/lenses.css')]);
+  createApp(App).mount('#app');
+ }else if(/^T\d+$/i.test(variant)){
   const [{default:App}]=await Promise.all([import('./prototypes/timelines/TimelineStudy.vue'),import('./prototypes/timelines/timelines.css')]);
   createApp(App).mount('#app');
  }else{

@@ -34,7 +34,7 @@ Source: src/App.vue (interactions and layout), src/data.js (fictional scenario),
 
 ## Six-design exploration
 
-Run `npm run dev` and open http://localhost:5173. The floating bottom bar switches among six structurally different designs; left/right arrow keys also switch unless you are editing a field. Each URL is reload-stable.
+Run `npm run dev` and open http://localhost:5173/?variant=A. The floating bottom bar switches among six structurally different designs; left/right arrow keys also switch unless you are editing a field. Each URL is reload-stable.
 
 | Variant | URL | Direction |
 | --- | --- | --- |
@@ -54,7 +54,7 @@ The comparison bar is development-only. Production builds can open each variant 
 
 ## Ten-timeline exploration
 
-The default page now opens **T1**. These throwaway views answer: **How can an operator scan a dense investigation, discover patterns independently of the assistant, and drill down to evidence?** The chat stays on the right in every view. No timeline has been selected yet.
+The first timeline study starts at **?variant=T1**. These throwaway views answer: **How can an operator scan a dense investigation, discover patterns independently of the assistant, and drill down to evidence?** The chat stays on the right in every view. No timeline has been selected yet.
 
 Run `npm run dev`; switch with the floating 01–10 bar or left/right arrows. The switcher is development-only. Each view is also directly addressable:
 
@@ -89,3 +89,32 @@ A useful evaluation pass:
 Implementation: `src/prototypes/timelines/`. The fixed shell is intentionally shared because the decision is about timeline representation, not chat placement or visual branding. The ten views differ in grouping, geometry, time scale, information hierarchy or investigation operation. Screenshots: `artifacts/timeline-T1.png` through `timeline-T10.png`. Browser review exercised all ten primary drill-downs, source evidence, chat citations, observation capture, wraparound switching and laptop-width overflow. Production build and direct production URLs were checked.
 
 The prior six layout designs remain at `?variant=A` through `?variant=F`; the original remains at `?variant=original`. Captured on `media/one-brain-video`; no implementation issue was supplied. Verdict pending operator review.
+
+## Eight dark-mode refinements of the selected time lens
+
+**Decision from operator review:** use T7's structure: a full-investigation interval overview, a magnified timeline with individual records grouped by system, raw data and metadata below, and chat on the right. The user requested eight visual/interaction refinements, all dark, using the local Apple Design skill. The eight-count and fixed overall structure are explicit user requirements for this round.
+
+The default route now opens **L1**. Run `npm run dev`, then use the floating design selector or the left/right arrows. Each refinement is directly addressable:
+
+| Key | Link | What changes |
+| --- | --- | --- |
+| L1 — Focus | http://localhost:5173/?variant=L1 | Quiet, mostly borderless timeline; side-by-side source and metadata |
+| L2 — Signals | http://localhost:5173/?variant=L2 | Volume overview, outlined anomaly symbols, metadata above full-width raw data |
+| L3 — Chapters | http://localhost:5173/?variant=L3 | Explicit interval blocks, grouped source lanes, grouped metadata rows |
+| L4 — Precision | http://localhost:5173/?variant=L4 | Time scrubber, detailed ruler and shared cursor, raw-first inspector |
+| L5 — Review | http://localhost:5173/?variant=L5 | Larger system labels, inline unusual-event captions and reading-oriented evidence |
+| L6 — Connections | http://localhost:5173/?variant=L6 | Shared-message highlighting, related-evidence attachment controls and link shelf |
+| L7 — Instruments | http://localhost:5173/?variant=L7 | Separate source panels and property-list metadata |
+| L8 — Workspace | http://localhost:5173/?variant=L8 | Open black canvas, floating selection controls and a broad evidence drawer |
+
+The question is now **which interval, point, anomaly, metadata and tagging treatments make the chosen layout easiest to operate?** No visual winner has been chosen. The 24,429-record fixture is unchanged. Separate composition components use common evidence and interaction primitives so comparing designs does not change the data or behavior.
+
+Every overview interval is clickable and opens its complete 15-minute window (30 minutes in Chapters). The initial incident lens spans five minutes; zoom and pan are available as buttons, with a range scrubber in Precision. Every visible record has its own 28px hit target; colliding points are staggered vertically rather than silently dropped. Duration records retain horizontal intervals. The selected time is aligned across source lanes. Larger windows can therefore make the lanes taller; this remains a throwaway interaction study, not a production-scale renderer.
+
+Suspicious items use a symbol/shape plus a warm semantic highlight. The inspector explains that the marker comes from the simulated record's severity, not a verified agent conclusion. Missing sensor-file coverage is distinct from source activity. Selecting an item reveals raw data and 12 metadata fields: record/source/entity IDs, severity, timestamp and offset, end/duration, evidence type, time certainty, message ID, separate ingestion time (not supplied), simulated source reference, and simulation status. Missing original payloads are explicitly labeled normalized demo records rather than invented source payloads.
+
+Attach evidence with the visible `@` action or Shift-click on a point. The chat supports multiple removable evidence chips, typed `@EV-...` lookup, a separate mention picker, Ctrl/Cmd+Enter to send, and clickable citations that restore the time window and clear conflicting filters. Attaching evidence does not send a message. Chat answers are prepared demo text. No backend, persistence or live anomaly detector was added.
+
+Design implementation follows the supplied Apple Design references: near-black opaque content surfaces, elevated neutral layers, restrained floating glass controls, a monochrome Lucide icon family, system/Inter fallback fonts (no bundled SF fonts), and reduced-motion, reduced-transparency and increased-contrast treatments. A permanently dark treatment follows the explicit user preference. These are Apple-inspired web prototypes, not native Apple components or an accessibility certification.
+
+Source: `src/prototypes/lenses/`. Screenshots: `artifacts/lens-L1.png` through `lens-L8.png`. Browser review covered all eight evidence inspectors, attachment/removal, multi-evidence sending, typed mentions, citations after filtering, full overview intervals, copyable JSON, time scrubbing and laptop-width overflow. Earlier `?variant=T1..T10`, `A..F`, and `original` links remain available. Prototype state is displayed through the development switcher's info control and logged on design changes. Captured on the existing non-main `media/one-brain-video` branch; no implementation issue was supplied.
