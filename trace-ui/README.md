@@ -71,7 +71,7 @@ Run `npm run dev`; switch with the floating 01–10 bar or left/right arrows. Th
 | T9 — Small multiples | http://localhost:5173/?variant=T9 | Do patterns change together, including in quieter sources? |
 | T10 — Window comparison | http://localhost:5173/?variant=T10 | How does the incident differ from another five-minute window? |
 
-The shared deterministic fixture contains **24,429 simulated records over 16 hours** (08:00–24:00), five sources, multiple targets, routine traffic variation, the existing 102-second incident, an unrelated archive-error burst, a sensor-quality interval, and a missing sensor-file interval. This is an interaction study with thousands of records, **not a benchmark for hundreds of thousands or millions**.
+The shared deterministic fixture contains **21,015 simulated records over 16 hours** (08:00–24:00), five sources, multiple targets, routine traffic variation, the existing 102-second incident, an unrelated archive-error burst, a sensor-quality interval, and a missing sensor-file interval. This is an interaction study with thousands of records, **not a benchmark for hundreds of thousands or millions**.
 
 All variants support filtered evidence inspection. Overview bins count record starts; detail windows include overlapping duration records. Click an aggregate to page through its underlying records, then open an event and its raw source. Use the incident/30-minute/day presets, zoom, pan or the time slider in T1–T6 and T9. T7 has its own five-minute lens, T8 has correlation-group selection, and T10 has its own reference-window selector. These independent controls are explicit in the UI.
 
@@ -107,7 +107,7 @@ The default route now opens **L1**. Run `npm run dev`, then use the floating des
 | L7 — Instruments | http://localhost:5173/?variant=L7 | Separate source panels and property-list metadata |
 | L8 — Workspace | http://localhost:5173/?variant=L8 | Open black canvas, floating selection controls and a broad evidence drawer |
 
-The question is now **which interval, point, anomaly, metadata and tagging treatments make the chosen layout easiest to operate?** No visual winner has been chosen. The 24,429-record fixture is unchanged. Separate composition components use common evidence and interaction primitives so comparing designs does not change the data or behavior.
+The question is now **which interval, point, anomaly, metadata and tagging treatments make the chosen layout easiest to operate?** No visual winner has been chosen. The variants share the same fixture; the latest irregular-data revision is described below. Separate composition components use common evidence and interaction primitives so comparing designs does not change the data or behavior.
 
 Every overview interval is clickable and opens its complete 15-minute window (30 minutes in Chapters). The initial incident lens spans five minutes; zoom and pan are available as buttons, with a range scrubber in Precision. Every visible record has its own 28px hit target; colliding points are staggered vertically rather than silently dropped. Duration records retain horizontal intervals. The selected time is aligned across source lanes. Larger windows can therefore make the lanes taller; this remains a throwaway interaction study, not a production-scale renderer.
 
@@ -118,3 +118,11 @@ Attach evidence with the visible `@` action or Shift-click on a point. The chat 
 Design implementation follows the supplied Apple Design references: near-black opaque content surfaces, elevated neutral layers, restrained floating glass controls, a monochrome Lucide icon family, system/Inter fallback fonts (no bundled SF fonts), and reduced-motion, reduced-transparency and increased-contrast treatments. A permanently dark treatment follows the explicit user preference. These are Apple-inspired web prototypes, not native Apple components or an accessibility certification.
 
 Source: `src/prototypes/lenses/`. Screenshots: `artifacts/lens-L1.png` through `lens-L8.png`. Browser review covered all eight evidence inspectors, attachment/removal, multi-evidence sending, typed mentions, citations after filtering, full overview intervals, copyable JSON, time scrubbing and laptop-width overflow. Earlier `?variant=T1..T10`, `A..F`, and `original` links remain available. Prototype state is displayed through the development switcher's info control and logged on design changes. Captured on the existing non-main `media/one-brain-video` branch; no implementation issue was supplied.
+
+### Timeline clarity and irregular data pass
+
+All eight L variants now use continuous source timelines with direction arrows, a shared major/minor ruler, aligned time gridlines, a selected-time needle and a labeled link to the overview window. Events retain their real horizontal position. Overlapping hit targets move vertically and keep a stem back to their source timeline; height is only for separation, not an event metric. Duration bars reserve their occupied horizontal space.
+
+The current shared fixture has **21,015 simulated records**. Each source has independent, seeded activity episodes, uneven inter-arrival times, quiet stretches and local bursts. Operator records occur in sessions; voice records have variable durations and overlaps. Record types and payload fields vary by source, including request latency, queue depth, channel, signal quality, workstation, message IDs and transcript text. Archive retries also use irregular timing. This is plausible illustrative traffic, not measured operational data.
+
+Browser inspection confirmed unique IDs, nonuniform gaps in all five sources, the unchanged EV-106 → EV-111 102-second interval, the 146-second EV-107 outage, and the missing sensor-file interval. All eight views opened and retained evidence/tagging behavior without browser errors or desktop/laptop horizontal overflow. The L screenshots were refreshed; screenshots from earlier design rounds retain their historical fixture.

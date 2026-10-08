@@ -7,28 +7,74 @@ export const clock=t=>{const x=Math.max(0,Math.floor(t))+8*3600;return [Math.flo
 export const duration=s=>s>=3600?(s/3600).toFixed(s%3600?1:0)+' שעות':s>=60?(s/60).toFixed(s%60?1:0)+' דק׳':s+' שנ׳';
 export const coverageGap={start:INCIDENT+600,end:INCIDENT+780,source:'sensor'};
 const targets=['T-041','T-208','T-312','T-509'];
-const labels={messages:'עדכון עקיבה',sensor:'בדיקת קליטה תקינה',services:'בדיקת שירות תקינה',operator:'בחירת מטרה',voice:'דיווח מצב'};
-const steps={messages:4,sensor:12,services:8,operator:37,voice:113};
+// Seeded irregular traffic: independent activity episodes, quiet periods and local bursts.
+// Reproducible for comparisons; illustrative behavior, not a model of a real installation.
+let seed=4102026;
+function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}
+const pick=items=>items[Math.floor(random()*items.length)];
+const timestamp=t=>'2026-10-05T'+clock(t)+'+03:00';
+const kinds={
+ messages:[['TRACK_UPDATE','עדכון מיקום מטרה'],['IFF_REPLY','תשובת IFF נקלטה'],['TRACK_ASSOCIATED','שיוך הודעה לעקיבה'],['QUALITY_UPDATE','עדכון איכות עקיבה']],
+ sensor:[['HEALTH_SAMPLE','דגימת תקינות'],['SCAN_COMPLETE','מחזור סריקה הושלם'],['CHANNEL_STATUS','דיווח מצב ערוץ'],['SIGNAL_QUALITY','מדידת איכות קליטה']],
+ services:[['REQUEST_COMPLETE','בקשה עובדה'],['QUEUE_SAMPLE','דגימת תור עיבוד'],['CACHE_REFRESH','עדכון מטמון'],['HEALTH_CHECK','בדיקת זמינות שירות']],
+ operator:[['TRACK_SELECTED','בחירת מטרה'],['DETAILS_OPENED','פתיחת פרטי מטרה'],['FILTER_CHANGED','שינוי מסנן תצוגה'],['NOTE_ADDED','הוספת הערת מפעיל']],
+ voice:[['RADIO_UPDATE','עדכון בקשר'],['READBACK','אישור קבלת דיווח'],['HANDOVER','העברת תמונת מצב'],['CLARIFICATION','בקשת הבהרה']]
+};
+const means={messages:4.8,sensor:16,services:9,operator:39,voice:135};
 const records=[];
 for(const s of sources){
- for(let t=7,i=0;t<DURATION;t+=steps[s.id],i++){
-  const target=targets[(i+sources.indexOf(s))%4];
-  const phase=Math.floor(t/900)%6;
-  if((s.id==='messages'||s.id==='sensor')&&i%(phase+3)===0)continue;
-  if(s.id==='operator'&&Math.floor(t/1200)%3===1&&i%3===0)continue;
+ let t=random()*80,phaseEnd=0,pace=1,burst=0,sessionTarget=pick(targets),sessionEnd=0;
+ for(let i=0;t<DURATION;i++){
+  if(t>=phaseEnd){phaseEnd=t+90+random()*1600;pace=random()<.18?3+random()*6:.35+random()*1.9}
+  if(t>=sessionEnd){sessionTarget=pick(targets);sessionEnd=t+15+random()*180}
+  if(!burst&&random()<.045)burst=2+Math.floor(random()*6);
+  const gap=burst?(.3+random()*2.7):-Math.log(Math.max(.0001,1-random()))*means[s.id]*pace;
+  if(burst)burst--;
+  t=Math.round((t+Math.max(1,gap)));
+  if(t>=DURATION)break;
+  const target=s.id==='operator'?sessionTarget:pick(targets);
   if(s.id==='sensor'&&t>=coverageGap.start&&t<coverageGap.end)continue;
   if(s.id==='operator'&&target==='T-041'&&t>=INCIDENT&&t<INCIDENT+102)continue;
   if(s.id==='services'&&t>=INCIDENT+1&&t<INCIDENT+147)continue;
   const id='SIM-'+s.id+'-'+i;
-  records.push({id,t,source:s.id,target,title:labels[s.id],severity:'normal',
-   ...(s.id==='voice'?{end:Math.min(DURATION,t+8+i%17),soft:true}:{}),
-   detail:'רשומת רקע מסומלצת לבדיקת עומס וקריאות. מזהה המטרה מאפשר הצלבה בין המקורות.',
-   raw:{event_id:id,system:s.id,target,timestamp:clock(t),kind:'simulated_background'}});
+  let [kind,title]=pick(kinds[s.id]);
+  let severity='normal',end,detail,raw;
+  if(s.id==='messages'){
+   const quality=Math.round(70+random()*29);
+   raw={event_id:id,timestamp:timestamp(t),source:'iff_messages',type:kind,track_id:target,message_id:'MSG-BG-'+i,sequence:i,quality,latency_ms:Math.round(4+random()*37)};
+   detail='הודעת '+kind+' עבור '+target+'; איכות עקיבה '+quality+'%. נתון רקע מסומלץ.';
+  }else if(s.id==='sensor'){
+   const degraded=t>=INCIDENT+7200&&t<INCIDENT+7290;
+   if(degraded){title='דגימת איכות קליטה נמוכה';severity='warning'}
+   raw={event_id:id,timestamp:timestamp(t),sensor_id:'SENSOR-A',channel:pick(['CH-1','CH-2','CH-4']),type:kind,track_id:target,quality:degraded?'degraded':'nominal',snr_db:Math.round((degraded?8:19)+random()*12),scan_ms:Math.round(720+random()*340)};
+   detail='דגימת ערוץ '+raw.channel+'; יחס אות לרעש '+raw.snr_db+' dB. מדידה מסומלצת.';
+  }else if(s.id==='services'){
+   const latency=Math.round(8+Math.pow(random(),3)*420);
+   const delayed=random()<.004;
+   if(delayed){title='עיבוד בקשה התעכב';severity='warning'}
+   if(kind==='CACHE_REFRESH'&&random()<.4)end=t+2+Math.floor(random()*19);
+   raw={event_id:id,timestamp:timestamp(t),service:pick(['alert-service','track-store','archive-worker']),type:kind,request_id:'REQ-'+i,track_id:target,elapsed_ms:delayed?800+Math.floor(random()*950):latency,queue_depth:Math.floor(Math.pow(random(),2)*23),status:delayed?'SLOW_REQUEST':'OK'};
+   detail='שירות '+raw.service+'; זמן עיבוד '+raw.elapsed_ms+'ms, '+raw.queue_depth+' פריטים בתור. רשומה מסומלצת.';
+  }else if(s.id==='operator'){
+   raw={event_id:id,timestamp:timestamp(t),workstation:pick(['OP-01','OP-02']),user_id:'SIM-OPERATOR',type:kind,track_id:target,panel:pick(['track-details','map','event-inbox'])};
+   detail='פעולת '+kind+' בעמדה '+raw.workstation+' עבור '+target+'. פעולה מסומלצת.';
+  }else{
+   end=t+3+Math.floor(Math.pow(random(),1.5)*32);
+   const text=pick(['מבקש עדכון על המטרה.','קיבלתי, ממשיכים לעקוב.','התמונה עודכנה, מעביר לעמדה השנייה.','חזור על המזהה, הקליטה הייתה מקוטעת.','המטרה בבדיקה, אעדכן כשיהיה שינוי.']);
+   raw={event_id:id,timestamp:timestamp(t),channel:pick(['RADIO-A','RADIO-B']),type:kind,speaker:pick(['OP-01','OP-02','SUPERVISOR']),track_id:target,text,recorded_at:null,time_basis:'attributed_from_transcript',duration_seconds:end-t};
+   detail='״'+text+'״ תמלול מדומה; זמן מיוחס לפי התוכן, ודאות בינונית.';
+  }
+  if(end)end=Math.min(end,DURATION);
+  records.push({id,t,source:s.id,target,title,severity,detail,raw,...(end?{end}:{}),...(s.id==='voice'?{soft:true}:{})});
  }
 }
 const offset=INCIDENT-120;
 for(const e of original.filter(e=>!e.derived))records.push({...e,t:e.t+offset,...(e.end?{end:e.end+offset}:{}),anchor:true});
-for(let i=0;i<80;i++)records.push({id:'ARCH-'+i,t:INCIDENT+2400+i*2,source:'services',target:'ARCHIVE',severity:'warning',title:'ניסיון ארכוב חוזר',detail:'מקבץ שגיאות בשירות הארכוב. אין מזהה הודעה משותף לתרחיש ההתרעה.',raw:{service:'archive',retry:i}});
+let retryTime=INCIDENT+2400;
+for(let i=0;i<80;i++){
+ retryTime+=Math.max(1,Math.round(-Math.log(Math.max(.001,1-random()))*2.1));
+ records.push({id:'ARCH-'+i,t:retryTime,source:'services',target:'ARCHIVE',severity:'warning',title:pick(['ניסיון ארכוב חוזר','הכתיבה לארכיון התעכבה','פריט הוחזר לתור הארכוב']),detail:'מקבץ שגיאות מסומלץ בשירות הארכוב. אין מזהה הודעה משותף לתרחיש ההתרעה.',raw:{event_id:'ARCH-'+i,timestamp:timestamp(retryTime),service:'archive-worker',retry:i,backoff_ms:Math.round(200+random()*2600),status:'RETRY_PENDING'}});
+}
 records.push({id:'SENSOR-QUALITY',t:INCIDENT+7200,end:INCIDENT+7290,source:'sensor',target:'SENSOR-A',severity:'warning',title:'איכות קליטה נמוכה',detail:'ירידה מדומה באיכות הקליטה למשך 90 שניות; אין קשר מוכח לשירות ההתרעות.'});
 export const recordsAll=records.sort((a,b)=>a.t-b.t||a.id.localeCompare(b.id));
 export const stateSpans=[
