@@ -31,3 +31,22 @@ node scripts/check-ui.mjs
 The browser check requires the dev server at port 5173 and installed Microsoft Edge. It uses an isolated browser context, verifies search/filtering, evidence navigation, approval persistence, timeline focus, chat fallback and narrow-screen overflow. Screenshots are written to artifacts/.
 
 Source: src/App.vue (interactions and layout), src/data.js (fictional scenario), src/style.css (design tokens and responsive styles).
+
+## Six-design exploration
+
+Run `npm run dev` and open http://localhost:5173. The floating bottom bar switches among six structurally different designs; left/right arrow keys also switch unless you are editing a field. Each URL is reload-stable.
+
+| Variant | URL | Direction |
+| --- | --- | --- |
+| A — Quiet | http://localhost:5173/?variant=A | Light editorial sequence, generous space, optional assistant |
+| B — Playback | http://localhost:5173/?variant=B | Dark single-moment stage with chapters and playback controls |
+| C — Connections | http://localhost:5173/?variant=C | System/evidence relationship canvas with a detail drawer |
+| D — Notebook | http://localhost:5173/?variant=D | Warm document layout with source footnotes and temporary notes |
+| E — Studio | http://localhost:5173/?variant=E | Light blue source timeline, movable time window and side assistant |
+| F — Conversation | http://localhost:5173/?variant=F | Charcoal conversation-first workspace with on-demand evidence |
+
+The previous prototype remains at http://localhost:5173/?variant=original.
+
+These are throwaway Vue components in `src/prototypes/`, built to answer: **Which layout and information hierarchy make a shared investigation feel light and readable?** No design has been selected yet. The six intentionally prioritize different interactions; they are not six complete production applications. They share the fictional scenario and prepared assistant answers. The variants store state only in memory; a reload clears it. State is visible through the switcher's info control and logged when switching variants.
+
+The comparison bar is development-only. Production builds can open each variant by its URL but hide the comparison controls. Desktop screenshots are in `artifacts/design-A.png` through `design-F.png`. The existing `scripts/check-ui.mjs` remains targeted at the original prototype.

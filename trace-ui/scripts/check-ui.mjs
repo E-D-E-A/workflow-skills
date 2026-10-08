@@ -4,7 +4,7 @@ const browser=await chromium.launch({channel:'msedge',headless:true});
 try {
 const page=await browser.newPage({viewport:{width:1512,height:1100},deviceScaleFactor:1});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
-await page.goto('http://127.0.0.1:5173',{waitUntil:'networkidle'});
+await page.goto('http://127.0.0.1:5173/?variant=original',{waitUntil:'networkidle'});
 const chat=await page.locator('.chat-panel').boundingBox(), timeline=await page.locator('.timeline-panel').boundingBox();
 assert.ok(chat.x>timeline.x,'Chat should be on the right');
 assert.equal(await page.locator('.event-list,.event-row').count(),0);
