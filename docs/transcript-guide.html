@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Working with EDEA Transcript — E.D.E.A</title>
+<style>
+  /* Dark only, on purpose — the palette does not follow the OS or a theme toggle. */
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --ground: #0E1116;
+    --raised: #161B23;
+    --ink: #E8ECF1;
+    --ink-soft: #BAC3CE;
+    --muted: #8B96A3;
+    --rule: #232A33;
+    --rule-strong: #364049;
+    --eng: #7CA0F5;
+    --biz: #E0A356;
+    --biz-soft: #2A1F0F;
+    --warn-bg: #241B0B;
+    --warn-ink: #E5BE7C;
+    --warn-rule: #4A3818;
+
+    --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --measure: 62ch;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px 88px; }
+
+  .masthead { padding: 60px 0 32px; border-bottom: 1px solid var(--rule); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 16px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 42px); line-height: 1.06; letter-spacing: -0.028em;
+    font-weight: 680; margin: 0 0 14px; text-wrap: balance;
+  }
+  .standfirst { font-size: 18px; line-height: 1.5; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 880px; margin: 0 auto; padding: 11px 28px;
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+  }
+  nav a {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    text-decoration: none; padding: 2px 0; border-bottom: 1.5px solid transparent;
+  }
+  nav a:hover { color: var(--ink); border-bottom-color: var(--rule-strong); }
+  nav a:focus-visible { outline: 2px solid var(--eng); outline-offset: 3px; }
+
+  section { padding: 46px 0 6px; }
+  section + section { border-top: 1px solid var(--rule); }
+
+  h2 {
+    font-size: 24px; line-height: 1.18; letter-spacing: -0.02em;
+    font-weight: 660; margin: 0 0 6px; text-wrap: balance;
+  }
+  .sec-note { color: var(--muted); font-size: 15px; margin: 0 0 26px; max-width: var(--measure); }
+  h3 { font-size: 16px; font-weight: 640; letter-spacing: -0.008em; margin: 28px 0 8px; }
+  p { max-width: var(--measure); margin: 0 0 12px; }
+  ul { max-width: var(--measure); margin: 0 0 12px; padding-left: 19px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 620; }
+  a { color: var(--eng); text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--mono); font-size: 0.875em;
+    background: var(--raised); border: 1px solid var(--rule);
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
+
+  .rule-box {
+    background: var(--raised); border: 1px solid var(--rule-strong);
+    border-radius: 3px; padding: 20px 22px; margin: 0 0 30px; max-width: var(--measure);
+  }
+  .rule-box p { margin: 0; font-size: 17px; line-height: 1.5; }
+  .rule-box .k { font-weight: 660; }
+  .rule-box .eng-k { color: var(--eng); }
+  .rule-box .biz-k { color: var(--biz); }
+
+  .t-scroll { overflow-x: auto; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 400px; }
+  th {
+    text-align: left; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+    font-weight: 500; padding: 0 14px 8px 0; border-bottom: 1px solid var(--rule-strong);
+  }
+  td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; color: var(--ink-soft); }
+  td:first-child { color: var(--ink); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  .dim { color: var(--muted); }
+  .lbl { font-family: var(--mono); font-size: 13px; }
+
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; max-width: none; }
+  ol.steps > li {
+    counter-increment: s; display: grid; grid-template-columns: 30px 1fr;
+    gap: 0 14px; padding: 15px 0; border-top: 1px solid var(--rule); margin: 0;
+  }
+  ol.steps > li:first-child { border-top: none; padding-top: 2px; }
+  ol.steps > li::before {
+    content: counter(s, decimal-leading-zero);
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    padding-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  ol.steps h3 { margin: 0 0 4px; font-size: 15.5px; }
+  ol.steps p, ol.steps ul { margin-bottom: 6px; }
+  ol.steps p:last-child, ol.steps ul:last-child { margin-bottom: 0; }
+  ol.steps ul { padding-left: 17px; }
+
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--raised); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 15px 17px; overflow-x: auto; margin: 0 0 16px; max-width: var(--measure);
+  }
+  pre code { background: none; border: none; padding: 0; white-space: pre; font-size: inherit; }
+
+  .notice {
+    background: var(--warn-bg); border: 1px solid var(--warn-rule);
+    border-radius: 3px; padding: 16px 18px; margin: 22px 0 4px; max-width: var(--measure);
+  }
+  .notice-head {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--warn-ink); margin: 0 0 7px; font-weight: 600;
+  }
+  .notice p { color: var(--warn-ink); margin: 0; font-size: 14.5px; }
+  .notice ul { color: var(--warn-ink); font-size: 14.5px; margin: 6px 0 0; max-width: none; }
+  .notice code {
+    background: color-mix(in srgb, var(--warn-ink) 10%, transparent);
+    border-color: var(--warn-rule); color: inherit;
+  }
+
+  footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13.5px;
+  }
+  footer p { max-width: var(--measure); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: 60px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#what">What it is</a>
+    <a href="#connect">Getting connected</a>
+    <a href="#names">Names</a>
+    <a href="#filing">Filing a meeting</a>
+    <a href="#pages">The two pages</a>
+    <a href="#check">The Brain check</a>
+    <a href="#skills">Skills</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">E.D.E.A · Internal handbook</p>
+    <h1>Working with EDEA Transcript</h1>
+    <p class="standfirst">How a recorded meeting becomes two pages in the Brain, and how Claude finds what the meeting changes in pages we already have.</p>
+  </header>
+
+  <section id="what">
+    <h2>What it is</h2>
+    <p class="sec-note">EDEA Transcript is our own meeting transcriber. This plugin files its meetings into the Brain.</p>
+    <p>EDEA Transcript records online calls and room meetings, and takes phone recordings by upload. Each meeting gets a transcript where every line has a speaker and a time. You name unknown voices on its review screen. The web app doesn't file anything — filing happens in Claude.</p>
+    <p>The plugin does two things with a meeting:</p>
+    <ul>
+      <li><strong>File it</strong> — a notes page in the house template, plus the full transcript on a child page, in the right space's <code>Meetings</code> tree.</li>
+      <li><strong>Check the Brain against it</strong> — read the whole conversation, find what it decided or changed, and propose edits to the pages it makes out of date. Nothing is changed without your yes.</li>
+    </ul>
+  </section>
+
+  <section id="connect">
+    <h2>Getting connected</h2>
+    <p class="sec-note">Once per person. No credentials or addresses live in the repo.</p>
+    <pre><code>/plugin marketplace add E-D-E-A/workflow-skills
+/plugin install edea-confluence@edea
+/plugin install edea-transcript@edea</code></pre>
+    <ul>
+      <li><strong>The EDEA Transcript connector</strong> is how Claude reads meetings. It isn't in the plugin, because the repo is public. An admin adds it for the whole team in Claude's organization settings; a developer can add it by its address in Claude Code. The first use asks you to sign in with your staff Google account.</li>
+      <li><strong>Atlassian's connector</strong> comes with <code>edea-confluence</code>. The transcript skills build on its rules, so it must be installed too.</li>
+    </ul>
+  </section>
+
+  <section id="names">
+    <h2>Names</h2>
+    <p class="sec-note">The transcript names people correctly. The notes page still names nobody.</p>
+
+    <div class="rule-box">
+      <p><span class="k">Every name has a source:</span> your own microphone, a voice profile, or a person. The system never guesses. But the <span class="k biz-k">notes page body names nobody</span> — that house rule stays.</p>
+    </div>
+
+    <ul>
+      <li><strong>Unnamed voice?</strong> Claude stops and asks. Name it on the review screen, where you can listen to a clip, or type the name in chat. If nobody knows, it stays "Unnamed voice 1".</li>
+      <li><strong>The transcript page</strong> shows every line's speaker. That is its job.</li>
+      <li><strong>The notes page</strong> lists participants once, in the details table, and phrases the rest as the room: "the team agreed", "one view was…".</li>
+      <li><strong>Task owners</strong> come from you at filing time, never from who spoke.</li>
+    </ul>
+  </section>
+
+  <section id="filing">
+    <h2>Filing a meeting</h2>
+    <p class="sec-note">Say it your way — "file my last meeting", "add yesterday's call to the Brain" — or paste the meeting's link.</p>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Claude finds the meeting</h3>
+        <p>From the link, or from the recent meetings list. If more than one fits, it asks. A meeting still processing can't be filed yet.</p>
+      </div></li>
+      <li><div>
+        <h3>Reads all of it</h3>
+        <p>The whole transcript, first line to last, before writing a word.</p>
+      </div></li>
+      <li><div>
+        <h3>Settles the names</h3>
+        <p>Any unnamed voice is named first.</p>
+      </div></li>
+      <li><div>
+        <h3>Asks three questions</h3>
+        <ul>
+          <li><strong>Which space?</strong></li>
+          <li><strong>Hebrew or English?</strong> — for the notes page. The transcript keeps the words as spoken.</li>
+          <li><strong>Task owners?</strong> — name them, or leave them unowned.</li>
+        </ul>
+      </div></li>
+      <li><div>
+        <h3>Shows the drafts, files on your yes</h3>
+        <p>The notes page in full; the transcript as its outline and first lines, with the rest on request. Notes page first, then the transcript as its child. The meeting is marked filed in the web app, with links to both pages.</p>
+      </div></li>
+      <li><div>
+        <h3>Checks the Brain</h3>
+        <p>Then it moves straight to the Brain check below. You can skip it.</p>
+      </div></li>
+    </ol>
+  </section>
+
+  <section id="pages">
+    <h2>The two pages</h2>
+    <p class="sec-note">Both sit in the space's <code>Meetings</code> tree.</p>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Page</th><th>Holds</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">Notes</span></td><td>The eight-section Meeting notes template: details · summary · main points · decisions · open questions · action items · next steps · related. Titled <code>YYYY-MM-DD — subject</code>. Links back to the meeting in the web app, where the audio is.</td></tr>
+          <tr><td><span class="lbl">Transcript</span></td><td>Every line, in order: <code>[00:03:12] Speaker: words</code>. Nothing cut or reworded. A very long meeting is split into parts by time.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Neither page is ever rewritten later. Meeting notes are records. Wrong wording in the transcript is fixed on the Confluence page.</p>
+  </section>
+
+  <section id="check">
+    <h2>The Brain check</h2>
+    <p class="sec-note">A meeting often changes something the Brain already says. This finds it.</p>
+
+    <div class="rule-box">
+      <p><span class="k">Claude proposes; you decide.</span> Every edit is shown <span class="k">before → after</span> and waits for your yes. You can say "that was not a decision", and that is final.</p>
+    </div>
+
+    <ol class="steps">
+      <li><div>
+        <h3>Reads the conversation, not just the summary</h3>
+        <p>Every point that settles, changes or drops something — a rule, a number, a date, a tool, a scope. Side remarks and the last five minutes count. When a subject comes back later in the meeting, the last word wins.</p>
+      </div></li>
+      <li><div>
+        <h3>Marks each point settled or discussed</h3>
+        <p>Settled means the room arrived at it. One person proposing it is discussed.</p>
+      </div></li>
+      <li><div>
+        <h3>Finds what the Brain says</h3>
+        <p>Decision rules pages first, then a search by subject in Hebrew and English.</p>
+      </div></li>
+      <li><div>
+        <h3>Shows one report</h3>
+        <p>For each point: the quote and its time, the page sentence it touches, and the proposed edit with anything it ripples to.</p>
+      </div></li>
+    </ol>
+
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>The meeting…</th><th>Claude proposes</th></tr></thead>
+        <tbody>
+          <tr><td>Changed a rule</td><td>The Decision page edited in place, old rule under Rejected, a dated <code>Changed</code> line</td></tr>
+          <tr><td>Dropped an idea</td><td>One Rejected entry, and every other mention removed</td></tr>
+          <tr><td>Decided something new</td><td>A rules line, or a Decision page when something was rejected</td></tr>
+          <tr><td>Made a Spec or Runbook wrong</td><td>That page edited, before → after</td></tr>
+          <tr><td>Only discussed it</td><td>A flag and a suggested open question — no edit</td></tr>
+          <tr><td>Disagrees with Research</td><td>A flag — no edit unless you ask</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">
+      <p class="notice-head">Safety checks on every proposal</p>
+      <ul>
+        <li>If the page changed after the meeting, Claude flags it instead — an old meeting never rolls the Brain back.</li>
+        <li>If the edit rests on one number or name the transcriber heard, Claude asks you to confirm it first.</li>
+        <li>If guests were in the room, or the subject belongs to people who weren't, Claude says so.</li>
+      </ul>
+    </div>
+    <p>Run it alone on a meeting you filed earlier: "what does last Tuesday's meeting change in the Brain?"</p>
+  </section>
+
+  <section id="skills">
+    <h2>The skills</h2>
+    <p class="sec-note">What the plugin installs.</p>
+    <div class="t-scroll">
+      <table>
+        <thead><tr><th>Skill</th><th>Job</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbl">transcript-file</span></td><td>Files a meeting: reads all of it, settles names, asks space, language and owners, writes the nameless notes and the transcript page, files both on your yes, then starts the Brain check.</td></tr>
+          <tr><td><span class="lbl">transcript-brain-check</span></td><td>Finds what a meeting changes in the Brain and proposes each edit before → after. Writes only what you approve.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="font-size:14.5px">Both lean on <code>TRANSCRIPT.md</code>, the shared reference inside the plugin, and on the <code>edea-confluence</code> rules rather than their own copy.</p>
+  </section>
+
+  <footer>
+    <p>The skills tell Claude how to work; this page tells people. If they ever disagree, the skill is what's actually running — fix the page.</p>
+  </footer>
+
+</div>
+</body>
+</html>

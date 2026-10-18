@@ -43,6 +43,14 @@
         "path": "./plugins/edea-mortgage-survey"
       },
       "category": "Productivity"
+    },
+    {
+      "name": "edea-transcript",
+      "source": {
+        "source": "local",
+        "path": "./plugins/edea-transcript"
+      },
+      "category": "Productivity"
     }
   ]
 }
