@@ -1,6 +1,13 @@
 import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
+
 export default defineConfig({
   plugins: [vue()],
-  test: { environment: 'happy-dom', include: ['test/unit/**/*.test.ts'], server: { deps: { inline: ['vuetify'] } } },
+  test: {
+    environment: 'happy-dom',
+    include: ['test/unit/**/*.test.ts'],
+    server: {
+      deps: { inline: ['vuetify'] },
+    },
+  },
 });

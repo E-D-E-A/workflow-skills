@@ -71,7 +71,10 @@ const hasNoInterfaces = computed(() => {
   return isCollectionEmpty;
 });
 const interfaceRows = computed(() => {
-  const displayRows = interfaces.value.map(createInterfaceRow);
+  const displayRows = interfaces.value.map(externalInterface => {
+    const displayRow = createInterfaceRow(externalInterface);
+    return displayRow;
+  });
   return displayRows;
 });
 
@@ -100,24 +103,29 @@ function dispatchHostEvent(eventName: string, eventDetail: unknown) {
   const hostEvent = new CustomEvent(eventName, { detail: eventDetail, bubbles: true, composed: true });
   hostElement?.dispatchEvent(hostEvent);
 }
+
 function reportDiagnostic(code: string, message: string) {
   const diagnostic = { type: 'external-interfaces:diagnostic', code, message };
   dispatchHostEvent('mfe-event', diagnostic);
 }
+
 function emitDataState(state: 'LOADING' | 'READY' | 'ERROR') {
   const stateChange = { type: 'external-interfaces:data-state', state };
   dispatchHostEvent('mfe-event', stateChange);
 }
+
 function showLoadingError(code: string, message: string) {
   errorMessage.value = message;
   isLoading.value = false;
   reportDiagnostic(code, message);
   emitDataState('ERROR');
 }
+
 function handleInterfaceInteraction(eventName: string, externalInterface: { id: number; connectionStatus: Status }) {
   const interaction = { interfaceId: externalInterface.id, connectionStatus: externalInterface.connectionStatus };
   dispatchHostEvent(eventName, interaction);
 }
+
 function retryLoading() {
   void loadInterfaces();
 }
@@ -141,7 +149,9 @@ function cleanupInterfaces() {
 }
 
 function applyStatusUpdate(update: NormalizedStatusUpdate) {
-  if (isUnmounted) return;
+  if (isUnmounted) {
+    return;
+  }
   const { id: interfaceId, connectionStatus } = update;
   const isWaitingForMetadata = hasInitialMetadata === false;
   if (isWaitingForMetadata) {
@@ -152,27 +162,30 @@ function applyStatusUpdate(update: NormalizedStatusUpdate) {
     const hasMatchingId = externalInterface.id === interfaceId;
     return hasMatchingId;
   });
-  if (matchingInterface) matchingInterface.connectionStatus = connectionStatus;
+  if (matchingInterface) {
+    matchingInterface.connectionStatus = connectionStatus;
+  }
 }
 
 function ensureStatusSubscription(inputs: ReturnType<typeof parseInputs>) {
-  let subscriptionSucceeded = stopStatusSubscription !== undefined;
-  const needsSubscription = subscriptionSucceeded === false;
-  if (needsSubscription) {
-    try {
-      const subscriptionOptions = {
-        websocket: inputs.websocket,
-        topic: inputs.config.topic,
-        normalizeMessage: inputs.normalizeMessage,
-        onStatusUpdate: applyStatusUpdate,
-        onDiagnostic: reportDiagnostic,
-      };
-      stopStatusSubscription = subscribeToInterfaceStatuses(subscriptionOptions);
-      subscriptionSucceeded = true;
-    } catch {
-      showLoadingError('SUBSCRIBE_FAILED', 'Unable to subscribe to interface updates.');
-    }
+  const alreadySubscribed = stopStatusSubscription !== undefined;
+  if (alreadySubscribed) {
+    return alreadySubscribed;
   }
+
+  const subscriptionOptions = {
+    websocket: inputs.websocket,
+    topic: inputs.config.topic,
+    normalizeMessage: inputs.normalizeMessage,
+    onStatusUpdate: applyStatusUpdate,
+    onDiagnostic: reportDiagnostic,
+  };
+  try {
+    stopStatusSubscription = subscribeToInterfaceStatuses(subscriptionOptions);
+  } catch {
+    showLoadingError('SUBSCRIBE_FAILED', 'Unable to subscribe to interface updates.');
+  }
+  const subscriptionSucceeded = stopStatusSubscription !== undefined;
   return subscriptionSucceeded;
 }
 
@@ -180,7 +193,9 @@ function applyInitialInterfaces(fetchedInterfaces: InterfaceMetadata[]) {
   for (const externalInterface of fetchedInterfaces) {
     const bufferedStatus = pendingStatusUpdates.get(externalInterface.id);
     const hasBufferedStatus = bufferedStatus !== undefined;
-    if (hasBufferedStatus) externalInterface.connectionStatus = bufferedStatus;
+    if (hasBufferedStatus) {
+      externalInterface.connectionStatus = bufferedStatus;
+    }
   }
   interfaces.value = fetchedInterfaces;
   hasInitialMetadata = true;
@@ -191,30 +206,44 @@ function applyInitialInterfaces(fetchedInterfaces: InterfaceMetadata[]) {
 async function loadInterfaces() {
   const inputs = mountedInputs;
   const cannotStartLoad = inputs === undefined || isUnmounted || isLoading.value;
-  if (cannotStartLoad) return;
+  if (cannotStartLoad) {
+    return;
+  }
 
   errorMessage.value = '';
   isLoading.value = true;
   emitDataState('LOADING');
   const subscriptionSucceeded = ensureStatusSubscription(inputs);
   const subscriptionFailed = subscriptionSucceeded === false;
-  if (subscriptionFailed) return;
+  if (subscriptionFailed) {
+    return;
+  }
 
   try {
     const fetchedInterfaces = await fetchInterfaceMetadata(inputs.config);
-    if (isUnmounted) return;
+    if (isUnmounted) {
+      return;
+    }
     applyInitialInterfaces(fetchedInterfaces);
   } catch {
     const shouldReportFailure = isUnmounted === false;
-    if (shouldReportFailure) showLoadingError('METADATA_FAILED', 'Unable to load interfaces.');
+    if (shouldReportFailure) {
+      showLoadingError('METADATA_FAILED', 'Unable to load interfaces.');
+    }
   } finally {
     const isStillMounted = isUnmounted === false;
-    if (isStillMounted) isLoading.value = false;
+    if (isStillMounted) {
+      isLoading.value = false;
+    }
   }
 }
 
-onMounted(initializeInterfaces);
-onBeforeUnmount(cleanupInterfaces);
+onMounted(() => {
+  initializeInterfaces();
+});
+onBeforeUnmount(() => {
+  cleanupInterfaces();
+});
 </script>
 
 <style scoped>

@@ -83,6 +83,16 @@ input names, schema names and property names in the registry aligned.
   expressions before returning them or testing them in conditions.
 - Split loading into named operations that each have one responsibility. Keep the
   coordinating function short and cleanup beside the resources it owns.
+- Use explicit callback bodies for array operations and lifecycle hooks. For example:
+
+  ```ts
+  const displayRows = interfaces.value.map(externalInterface => {
+    const displayRow = createInterfaceRow(externalInterface);
+    return displayRow;
+  });
+  ```
+
+- Keep the original live normalizer/manager references when passing host properties.
 - Avoid nested calls and long operation chains. Fluent schema declarations and test
   assertions can retain their normal API syntax.
 - Extract a plain helper when it improves navigation or is reused. A new service,

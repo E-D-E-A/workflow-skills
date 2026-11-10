@@ -2,7 +2,6 @@
      injection key, and createRuntimeMfeRegistry(MfeRegistry, envResolver) setup.
      Replace the example inject key with the host's actual key/type. -->
 
-
 <template>
   <!-- ONE host instance: no v-for here. -->
   <generic-module-federation-host
@@ -10,13 +9,20 @@
     :loading-timeout-duration="15000"
     @mfe-event="onMfeEvent"
   >
-    <template #loading><span role="status">Loading external interfaces module…</span></template>
-    <template #error><span role="alert">External interfaces module is unavailable.</span></template>
+    <template #loading>
+      <span role="status">Loading external interfaces module…</span>
+    </template>
+    <template #error>
+      <span role="alert">External interfaces module is unavailable.</span>
+    </template>
   </generic-module-federation-host>
 </template>
 
 <script setup lang="ts">
 import { inject } from 'vue';
 const runtimeMfeRegistry = inject<any>('REPLACE_WITH_HOST_RUNTIME_REGISTRY_KEY');
-function onMfeEvent(event: unknown) { console.debug('External interfaces:', event); }
+
+function onMfeEvent(event: unknown) {
+  console.debug('External interfaces:', event);
+}
 </script>

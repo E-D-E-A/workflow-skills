@@ -7,7 +7,11 @@ afterEach(() => {
 });
 
 it('rejects invalid metadata', async () => {
-  vi.stubGlobal('fetch', vi.fn(async () => new Response('{}')));
+  const fetcher = vi.fn(async () => {
+    const invalidResponse = new Response('{}');
+    return invalidResponse;
+  });
+  vi.stubGlobal('fetch', fetcher);
   const configuration = configSchema.parse({ apiBaseUrl: '/api' });
   const pendingMetadata = fetchInterfaceMetadata(configuration);
   await expect(pendingMetadata).rejects.toThrow();
@@ -28,7 +32,10 @@ it('preserves the manager receiver and ignores callbacks after cleanup', () => {
   }
   const websocket = new Manager();
   const unsubscribeSpy = vi.spyOn(websocket, 'unsubscribe');
-  const normalizeMessage = vi.fn(() => ({ id: 1, connectionStatus: null }));
+  const normalizeMessage = vi.fn(() => {
+    const statusUpdate = { id: 1, connectionStatus: null };
+    return statusUpdate;
+  });
   const onStatusUpdate = vi.fn();
   const subscriptionOptions = {
     websocket, topic: 'status', normalizeMessage, onStatusUpdate, onDiagnostic: vi.fn(),

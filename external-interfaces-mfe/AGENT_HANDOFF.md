@@ -57,7 +57,9 @@ See TROUBLESHOOTING.md for focused checks. No additional service architecture is
 
 Keep template, script, styles in that order. Use meaningful names, assign returned
 expressions to named variables, and name logical conditions before testing them.
-Avoid excessive chaining. Template rows have prepared labels, colors and conditions.
+Use explicit callback bodies for map/find and lifecycle hooks; assign callback
+results before returning them. Avoid excessive chaining and multiple operations on
+one line. Template rows have prepared labels, colors and conditions.
 loadInterfaces coordinates the data helpers and local state updates. The component
 owns one subscription for its mounted lifetime. The returned cleanup function
 unsubscribes once and ignores queued callbacks; the component ignores late fetches.

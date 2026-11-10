@@ -10,31 +10,73 @@ class MockCommManager implements HostWebsocket {
   subscriptions = 0;
   unsubscriptions = 0;
   closes = 0;
+
   subscribe(topic: string, listener: MessageListener) {
-    if (this.handlers.has(topic)) throw new Error('Only one consumer per topic');
+    const topicIsOccupied = this.handlers.has(topic);
+    if (topicIsOccupied) {
+      const subscriptionError = new Error('Only one consumer per topic');
+      throw subscriptionError;
+    }
     this.handlers.set(topic, listener);
     this.subscriptions++;
   }
-  unsubscribe(topic: string) { this.handlers.delete(topic); this.unsubscriptions++; }
-  close() { this.closes++; }
-  emit(raw: unknown) { this.handlers.get('interface-communication-x')?.(raw); }
+
+  unsubscribe(topic: string) {
+    this.handlers.delete(topic);
+    this.unsubscriptions++;
+  }
+
+  close() {
+    this.closes++;
+  }
+
+  emit(rawMessage: unknown) {
+    const listener = this.handlers.get('interface-communication-x');
+    listener?.(rawMessage);
+  }
 }
+
 const websocket = new MockCommManager();
 const events: { name: string; detail: any }[] = [];
 const hostVuetify = Vuetify.createVuetify();
-Vue.createApp({ render: () => Vue.h('div', {
-  class: ['host-navbar', `v-theme--${hostVuetify.theme.global.name.value}`],
-}, [Vue.h('div', { id: 'remote-slot' })]) }).use(hostVuetify).mount('#app');
+const hostApplication = Vue.createApp({
+  render() {
+    const themeName = hostVuetify.theme.global.name.value;
+    const navbarClasses = ['host-navbar', `v-theme--${themeName}`];
+    const remoteSlot = Vue.h('div', { id: 'remote-slot' });
+    const navbar = Vue.h('div', { class: navbarClasses }, [remoteSlot]);
+    return navbar;
+  },
+});
+hostApplication.use(hostVuetify);
+hostApplication.mount('#app');
 
-// This directly exercises the same enhanced/runtime 2.6.0 family as the private
-// generic host. It cannot verify that inaccessible package's own prop/event bridge.
+// This exercises enhanced/runtime 2.6.0. The private generic host's own
+// property/event bridge still needs verification inside the internal repo.
 const runtime = createInstance({
   name: 'GenericHostRuntimeHarness',
-  remotes: [{ name: 'ExternalInterfaces', entry: 'http://127.0.0.1:4173/remoteEntry.var.js',
-    type: 'var', entryGlobalName: 'ExternalInterfaces', shareScope: 'default' }],
+  remotes: [{
+    name: 'ExternalInterfaces',
+    entry: 'http://127.0.0.1:4173/remoteEntry.var.js',
+    type: 'var',
+    entryGlobalName: 'ExternalInterfaces',
+    shareScope: 'default',
+  }],
   shared: {
-    vue: { version: Vue.version, lib: () => Vue, shareConfig: { singleton: true, requiredVersion: '3.5.29' } },
-    vuetify: { version: Vuetify.version, lib: () => Vuetify, shareConfig: { singleton: true, requiredVersion: '4.0.7' } },
+    vue: {
+      version: Vue.version,
+      lib: () => {
+        return Vue;
+      },
+      shareConfig: { singleton: true, requiredVersion: '3.5.29' },
+    },
+    vuetify: {
+      version: Vuetify.version,
+      lib: () => {
+        return Vuetify;
+      },
+      shareConfig: { singleton: true, requiredVersion: '4.0.7' },
+    },
   },
 });
 
@@ -42,59 +84,128 @@ let element: ExternalInterfacesElement | undefined;
 const baseConfig = { apiBaseUrl: '/api', interfacesPath: '/interfaces-x' };
 let currentConfig = baseConfig;
 let currentNormalizer = normalizeMessage;
-function phase(value: string) { document.querySelector('#phase')!.textContent = value; }
+
+function setLoadingPhase(phase: string) {
+  const phaseElement = document.querySelector('#phase')!;
+  phaseElement.textContent = phase;
+}
+
+function mountRemoteElement() {
+  element = document.createElement('cust-external-interfaces') as ExternalInterfacesElement;
+  const serializedConfig = JSON.stringify(currentConfig);
+  const elementProperties = { config: serializedConfig, websocket, normalizeMessage: currentNormalizer };
+  Object.assign(element, elementProperties);
+
+  const eventNames = ['mfe-event', 'componentClick', 'componentDoubleClick', 'componentRightClick'];
+  for (const eventName of eventNames) {
+    element.addEventListener(eventName, event => {
+      const eventDetail = (event as CustomEvent).detail;
+      const recordedEvent = { name: eventName, detail: eventDetail };
+      events.push(recordedEvent);
+    });
+  }
+  const remoteSlot = document.querySelector('#remote-slot')!;
+  remoteSlot.replaceChildren(element);
+}
+
 async function mount(options: { beforeDefinition?: boolean } = {}) {
-  phase('LOADING');
+  setLoadingPhase('LOADING');
+  const mountBeforeDefinition = options.beforeDefinition === true;
   try {
-    const make = () => {
-      element = document.createElement('cust-external-interfaces') as ExternalInterfacesElement;
-      Object.assign(element, { config: JSON.stringify(currentConfig), websocket, normalizeMessage: currentNormalizer });
-      for (const name of ['mfe-event', 'componentClick', 'componentDoubleClick', 'componentRightClick']) {
-        element.addEventListener(name, event => events.push({ name, detail: (event as CustomEvent).detail }));
-      }
-      document.querySelector('#remote-slot')!.replaceChildren(element);
-    };
-    if (options.beforeDefinition) make();
+    if (mountBeforeDefinition) {
+      mountRemoteElement();
+    }
     await runtime.loadRemote('ExternalInterfaces/register');
     await customElements.whenDefined('cust-external-interfaces');
-    if (!options.beforeDefinition) make();
-    phase('READY');
+    const mountAfterDefinition = mountBeforeDefinition === false;
+    if (mountAfterDefinition) {
+      mountRemoteElement();
+    }
+    setLoadingPhase('READY');
   } catch (error) {
-    phase('ERROR');
-    events.push({ name: 'loader-error', detail: String(error) });
+    setLoadingPhase('ERROR');
+    const errorMessage = String(error);
+    const loaderError = { name: 'loader-error', detail: errorMessage };
+    events.push(loaderError);
   }
 }
+
 async function unmount() {
-  element?.remove(); element = undefined;
+  element?.remove();
+  element = undefined;
   await Promise.resolve();
 }
-async function remountWithConfig(value: Record<string, unknown>) {
+
+async function remountWithConfig(configuration: Record<string, unknown>) {
   await unmount();
-  currentConfig = { ...baseConfig, ...value };
+  currentConfig = { ...baseConfig, ...configuration };
   await mount();
 }
+
 async function remountWithNormalizer(normalizer: NormalizeMessage) {
   await unmount();
   currentNormalizer = normalizer;
   await mount();
 }
-function theme(name: 'light' | 'dark') { hostVuetify.theme.change(name); }
-window.__harness = { websocket, events, mount, unmount, remountWithConfig, remountWithNormalizer, theme,
+
+function theme(themeName: 'light' | 'dark') {
+  hostVuetify.theme.change(themeName);
+}
+
+function identity() {
+  const usesOriginalManager = element?.websocket === websocket;
+  return usesOriginalManager;
+}
+
+window.__harness = {
+  websocket,
+  events,
+  mount,
+  unmount,
+  remountWithConfig,
+  remountWithNormalizer,
+  theme,
+  identity,
   baselineSocketCount: window.__socketCount,
-  identity: () => element?.websocket === websocket };
-document.querySelector('#emit')!.addEventListener('click', () => websocket.emit({ id: 1, communicationStatus: 7 }));
-document.querySelector('#unmount')!.addEventListener('click', () => { void unmount(); });
-document.querySelector('#mount')!.addEventListener('click', () => { void mount(); });
-document.querySelector('#theme')!.addEventListener('click', () => {
-  theme(hostVuetify.theme.global.name.value === 'light' ? 'dark' : 'light');
+};
+
+const emitButton = document.querySelector('#emit')!;
+emitButton.addEventListener('click', () => {
+  const statusMessage = { id: 1, communicationStatus: 7 };
+  websocket.emit(statusMessage);
 });
-void mount({ beforeDefinition: new URLSearchParams(location.search).has('preupgrade') });
+const unmountButton = document.querySelector('#unmount')!;
+unmountButton.addEventListener('click', () => {
+  void unmount();
+});
+const mountButton = document.querySelector('#mount')!;
+mountButton.addEventListener('click', () => {
+  void mount();
+});
+const themeButton = document.querySelector('#theme')!;
+themeButton.addEventListener('click', () => {
+  const isLightTheme = hostVuetify.theme.global.name.value === 'light';
+  const nextTheme = isLightTheme ? 'dark' : 'light';
+  theme(nextTheme);
+});
+
+const searchParameters = new URLSearchParams(location.search);
+const beforeDefinition = searchParameters.has('preupgrade');
+void mount({ beforeDefinition });
 
 declare global {
   interface Window {
-    __harness: { websocket: MockCommManager; events: typeof events; mount: typeof mount;
-      unmount: typeof unmount; remountWithConfig: typeof remountWithConfig; remountWithNormalizer: typeof remountWithNormalizer;
-      theme: typeof theme; identity: () => boolean; baselineSocketCount: number };
+    __harness: {
+      websocket: MockCommManager;
+      events: typeof events;
+      mount: typeof mount;
+      unmount: typeof unmount;
+      remountWithConfig: typeof remountWithConfig;
+      remountWithNormalizer: typeof remountWithNormalizer;
+      theme: typeof theme;
+      identity: typeof identity;
+      baselineSocketCount: number;
+    };
     __socketCount: number;
   }
 }

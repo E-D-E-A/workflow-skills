@@ -21,7 +21,9 @@ export function subscribeToInterfaceStatuses(options: StatusSubscriptionOptions)
 
   function handleMessage(rawMessage: unknown) {
     const shouldIgnoreMessage = isActive === false;
-    if (shouldIgnoreMessage) return;
+    if (shouldIgnoreMessage) {
+      return;
+    }
 
     let normalizedMessage: unknown;
     try {
@@ -31,7 +33,9 @@ export function subscribeToInterfaceStatuses(options: StatusSubscriptionOptions)
       return;
     }
     const isIrrelevantMessage = normalizedMessage === null;
-    if (isIrrelevantMessage) return;
+    if (isIrrelevantMessage) {
+      return;
+    }
 
     const validationResult = normalizedUpdateSchema.safeParse(normalizedMessage);
     const isInvalidUpdate = validationResult.success === false;
@@ -47,7 +51,9 @@ export function subscribeToInterfaceStatuses(options: StatusSubscriptionOptions)
 
   function unsubscribe() {
     const alreadyStopped = isActive === false;
-    if (alreadyStopped) return;
+    if (alreadyStopped) {
+      return;
+    }
     isActive = false;
     try {
       websocket.unsubscribe(topic);

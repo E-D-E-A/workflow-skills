@@ -9,17 +9,20 @@ export const ExternalInterfacesElement = defineCustomElement(ExternalInterfaces,
   configureApp(application) {
     const vuetify = createVuetify({ theme: false });
     application.use(vuetify);
-    application.onUnmount(() => { vuetify.unmount(); });
+    application.onUnmount(() => {
+      vuetify.unmount();
+    });
   },
 });
 export type ExternalInterfacesElement = InstanceType<typeof ExternalInterfacesElement>;
+
 export function registerExternalInterfaces() {
   const existingElement = customElements.get(WRAPPER_ELEMENT_NAME);
+  const registeredElement = existingElement ?? ExternalInterfacesElement;
   const needsRegistration = existingElement === undefined;
   if (needsRegistration) {
-    customElements.define(WRAPPER_ELEMENT_NAME, ExternalInterfacesElement);
+    customElements.define(WRAPPER_ELEMENT_NAME, registeredElement);
   }
-  const registeredElement = customElements.get(WRAPPER_ELEMENT_NAME)!;
   return registeredElement;
 }
 registerExternalInterfaces();

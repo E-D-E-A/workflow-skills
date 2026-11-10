@@ -6,15 +6,19 @@ import { federation } from '@module-federation/vite';
 
 export default defineConfig({
   plugins: [
-    vue({ template: { compilerOptions: {
-      isCustomElement(tagName) {
-        const hasCustomElementPrefix = tagName.startsWith('cust-');
-        const registeredWrapperNames = ['cust-external-interfaces'];
-        const isRegisteredWrapper = registeredWrapperNames.includes(tagName);
-        const isRemoteElement = hasCustomElementPrefix || isRegisteredWrapper;
-        return isRemoteElement;
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement(tagName) {
+            const hasCustomElementPrefix = tagName.startsWith('cust-');
+            const registeredWrapperNames = ['cust-external-interfaces'];
+            const isRegisteredWrapper = registeredWrapperNames.includes(tagName);
+            const isRemoteElement = hasCustomElementPrefix || isRegisteredWrapper;
+            return isRemoteElement;
+          },
+        },
       },
-    } } }),
+    }),
     federation({
       name: 'HostVueVite', // Keep your EXISTING host name if it differs.
       hostInitInjectLocation: 'html',
