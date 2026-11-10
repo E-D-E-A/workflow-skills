@@ -51,3 +51,11 @@ under the same tag. Fully reload the host page after rebuilding the remote.
 For the next agent, provide the failing boundary, error code, installed versions,
 resolved entry URL, a fabricated metadata row and raw message plus normalized output.
 The original repo does not need to be exported to diagnose those contracts.
+
+## Where to change data handling
+
+`src/externalInterfacesData.ts` owns the REST request, timeout, response validation,
+socket subscription, normalizer invocation, update validation and unsubscribe.
+`src/ExternalInterfaces.vue` owns rendering, local state, buffering early updates
+and mount/unmount coordination. The data helper uses the original manager and
+returns cleanup; it never opens or closes the shared WebSocket connection.

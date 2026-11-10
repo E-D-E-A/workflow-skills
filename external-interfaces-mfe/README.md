@@ -8,7 +8,8 @@ The component owns the list and renders the loop. No router, store or new socket
 
 | File | Responsibility |
 | --- | --- |
-| `src/ExternalInterfaces.vue` | Fetch, subscribe, update local state, cleanup, render |
+| `src/ExternalInterfaces.vue` | Local state, lifecycle coordination and rendering |
+| `src/externalInterfacesData.ts` | REST fetch/timeout/validation and socket subscription/normalization/cleanup |
 | `src/contracts.ts` | Types and Zod validation |
 | `src/register.ts` | Vue's built-in custom element wrapper and local Vuetify setup |
 | `src/entry.ts` | Async standalone bootstrap |
@@ -56,7 +57,7 @@ IDs are safe integers; statuses are finite numbers or null. Unknown IDs are igno
 Optional config: `credentials` (default same-origin), `requestTimeoutMs` (15000),
 `statusLabels` and `statusColors` maps. Unknown statuses display their number;
 null displays Unknown. The endpoint and authentication integration are left for
-your repo. Adapt the fetch call in the component if a host HTTP client is required.
+your repo. Adapt the fetch call in externalInterfacesData.ts if a host HTTP client is required.
 
 ## Federation integration
 
@@ -85,9 +86,11 @@ here; the host examples are integration sketches.
 
 ## Lifecycle and theme
 
-The named loadInterfaces function coordinates subscribeToStatusUpdates,
-fetchInterfaceMetadata and applyInitialInterfaces. These ordinary functions stay
-in the component so lifecycle ownership is visible.
+The named loadInterfaces function coordinates subscription setup, metadata loading
+and applying the result. externalInterfacesData.ts contains two plain functions:
+fetchInterfaceMetadata handles REST and its timeout; subscribeToInterfaceStatuses
+normalizes/validates messages and returns an unsubscribe function. The component
+keeps the list, early-update buffer, request controller and lifecycle coordination.
 
 onMounted validates and captures inputs once, then fetches and subscribes.
 onBeforeUnmount aborts the pending request and unsubscribes. Functions and variables
@@ -134,7 +137,7 @@ The harness provides mock data/CommManager. It is not the production host.
 
 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) and [AGENT_HANDOFF.md](AGENT_HANDOFF.md).
 
-Verified after simplification: typecheck, production build, 12 component/input unit tests,
+Verified after simplification: typecheck, production build, 15 unit tests,
 and 6 real-browser federation tests pass. The private generic-host integration still
 needs verification inside your repo.
 

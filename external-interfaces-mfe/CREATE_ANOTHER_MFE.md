@@ -14,7 +14,7 @@ included harness tests the public runtime, not that package's property/event bri
 | `src/entry.ts`, `index.html` | Keep the async bootstrap; update the page title |
 | `package.json`, lockfile, `tsconfig.json` | Keep host-compatible versions; change the package name |
 | `examples/host/registry.ts` and host Vite example | Adapt the entry key, URL, tag and feature properties |
-| Component and `src/contracts.ts` | Replace with the new feature's UI, inputs and validation |
+| Component, `src/contracts.ts`, `src/externalInterfacesData.ts` | Replace with the new feature's UI, inputs and validation |
 
 Do not copy the interface REST request, status buffer, normalizer or WebSocket
 dependency into a feature that does not need them. Do not import this remote into

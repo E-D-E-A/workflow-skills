@@ -29,7 +29,7 @@ src/ExternalInterfaces.vue and src/register.ts. Keep it simple.
 4. Ensure toElementProps forwards config, websocket and normalizeMessage as properties.
    Verify import-time registration matches the loader's expose convention.
 5. Replace the navbar list with ONE host definition. The navbar itself is not a subscriber.
-6. Set the real endpoint/auth in config or adapt the component's fetch call. The user
+6. Set the real endpoint/auth in config or adapt the fetch call in src/externalInterfacesData.ts. The user
    deferred the exact route. /api/interfaces-x is only a placeholder.
 7. Use actual business status labels/colors; numeric codes have no invented meaning.
 8. Run npm run check, then the private-host integration checks in test/INTERNAL_HOST_INTEGRATION.md.
@@ -38,8 +38,9 @@ src/ExternalInterfaces.vue and src/register.ts. Keep it simple.
 
 The earlier controller, API abstraction and custom HTMLElement class were removed.
 Vue's defineCustomElement owns the wrapper. onMounted captures the config, manager
-and normalizer once; onBeforeUnmount aborts and unsubscribes. All helper functions
-are directly in script setup. There is no watcher or enclosing startInterfacesLoad.
+and normalizer once; onBeforeUnmount aborts and unsubscribes. REST and socket operations live in externalInterfacesData.ts as plain functions.
+The component keeps local state, buffering and lifecycle coordination. There is no
+watcher or enclosing startInterfacesLoad.
 Metadata Retry reuses the initial inputs and existing subscription. Later prop
 assignments do not reconfigure the mounted component; remount to load new inputs.
 There is no separate reload() element API; remount to explicitly refresh membership.
@@ -54,8 +55,9 @@ See TROUBLESHOOTING.md for focused checks. No additional service architecture is
 Keep template, script, styles in that order. Use meaningful names, assign returned
 expressions to named variables, and name logical conditions before testing them.
 Avoid excessive chaining. Template rows have prepared labels, colors and conditions.
-loadInterfaces coordinates small component-level functions. The component owns one
-subscription for its mounted lifetime; an unmounted flag rejects late callbacks.
+loadInterfaces coordinates the data helpers and local state updates. The component
+owns one subscription for its mounted lifetime. The returned cleanup function
+unsubscribes once and ignores queued callbacks; the component ignores late fetches.
 Keep the captured manager for cleanup even if the host later assigns a new prop.
 
 register.ts stays limited to custom-element and Vuetify bootstrap. Follow
