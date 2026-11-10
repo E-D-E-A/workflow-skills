@@ -4,6 +4,13 @@ One custom element fetches the interfaces array and subscribes once using the
 host's existing CommManager. A host-provided normalizer returns the status update.
 The component owns the list and renders the loop. No router, store or new socket.
 
+## Visual walkthrough
+
+Open [walkthrough.html](walkthrough.html) in a browser for a visual architecture map,
+13 guided code steps, a timing simulator, and embedded source files. It works offline
+without installing dependencies. The simulator is an educational model, not the
+production remote. The embedded code is a snapshot; refresh it after source changes.
+
 ## Read these files
 
 | File | Responsibility |
