@@ -1,0 +1,4 @@
+[
+  { "id": 1, "connectionStatus": 0, "displayName": "Orders", "groupName": "ERP", "type": "mock" },
+  { "id": 2, "connectionStatus": null, "displayName": "Inventory", "groupName": null, "type": "mock" }
+]

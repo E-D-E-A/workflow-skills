@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>External interfaces — federation integration harness</title>
+    <style>
+      body { margin: 0; font-family: system-ui, sans-serif; background: #f7f8fa; color: #182230; }
+      main { max-width: 960px; margin: 56px auto; padding: 0 24px; }
+      h1 { font-size: 26px; margin-bottom: 12px; }
+      p { line-height: 1.6; }
+      .host-navbar { margin: 32px 0; padding: 20px; border: 1px solid #dbe0e7; border-radius: 12px;
+        background: rgb(var(--v-theme-surface)); color: rgb(var(--v-theme-on-surface)); min-height: 80px; }
+      .controls { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0; }
+      .controls button { cursor: pointer; padding: 8px 12px; background: white; border: 1px solid #c6ced9; border-radius: 6px; }
+      #phase { font-family: monospace; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>External interfaces</h1>
+      <p>A real federation remote inside a Vue host. The host owns the mock CommManager;
+        the remote owns the collection and uses its own Vuetify instance.</p>
+      <div id="app"></div>
+      <div class="controls">
+        <button id="emit">Send Orders status 7</button>
+        <button id="unmount">Unmount</button>
+        <button id="mount">Mount</button>
+        <button id="theme">Toggle host theme</button>
+      </div>
+      <p>Federation loader: <strong id="phase">LOADING</strong></p>
+      <p>This is an integration harness. Numeric status values and the endpoint are examples.</p>
+    </main>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

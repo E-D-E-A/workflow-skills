@@ -1,0 +1,36 @@
+{
+  "name": "external-interfaces-mfe",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "^20.19.0 || >=22.12.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:browser": "playwright test",
+    "harness": "vite --config test/host/vite.config.ts --host 127.0.0.1",
+    "build:harness": "vite build --config test/host/vite.config.ts",
+    "preview:harness": "vite preview --config test/host/vite.config.ts --host 127.0.0.1",
+    "check": "npm run typecheck && npm test && npm run build && npm run test:browser"
+  },
+  "dependencies": {
+    "vue": "3.5.29",
+    "vuetify": "4.0.7",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@module-federation/enhanced": "2.6.0",
+    "@module-federation/vite": "1.18.2",
+    "@playwright/test": "1.58.2",
+    "@types/node": "24.10.1",
+    "@vitejs/plugin-vue": "6.0.2",
+    "typescript": "5.9.3",
+    "vite": "7.3.1",
+    "vitest": "3.2.4",
+    "vue-tsc": "3.1.5"
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+dist-host/
+test-results/
+playwright-report/
+__mf__virtual/
+.env.local
