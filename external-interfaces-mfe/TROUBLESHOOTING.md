@@ -15,7 +15,9 @@ Check these boundaries in order; change the smallest failing one.
 | NORMALIZER_FAILED | Host normalizer threw; inspect its client-specific input handling |
 | INVALID_UPDATE | Return { id, connectionStatus } or null, synchronously; no string IDs or Promises |
 | Status never updates | Exact topic, registered callback, normalizer output and matching metadata ID |
-| Repeated fetch/subscription | Host recreates normalizer/manager references or changes config |
+| Repeated fetch/subscription | Check host remounts/changed keys or multiple elements; ordinary prop changes do not reload this MFE |
+| New config or normalizer is ignored | Inputs are captured on mount; supply them before mounting and remount to change them |
+| Metadata failed but topic is still subscribed | Expected: Retry reuses that subscription; unmount releases it |
 | Unsubscribe failure | Inspect UNSUBSCRIBE_FAILED diagnostic and host manager cleanup; never close the connection |
 | Host READY but view errors | Code loading and metadata loading are separate stages |
 | Wrong theme | Light DOM must sit beneath active host .v-theme--... ancestor; inspect inherited --v-theme-surface |

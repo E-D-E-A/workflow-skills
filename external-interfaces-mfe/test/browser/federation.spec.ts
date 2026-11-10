@@ -57,7 +57,7 @@ test('preserves functions and objects assigned before custom-element registratio
 test('supports another host envelope and rejects malformed normalizer output', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('[data-interface-id]')).toHaveCount(2);
-  await page.evaluate(() => window.__harness.setNormalizer(raw => {
+  await page.evaluate(() => window.__harness.remountWithNormalizer(raw => {
     const message = raw as { channelId: number; state: number | null };
     return { id: message.channelId, connectionStatus: message.state };
   }));
@@ -70,7 +70,7 @@ test('supports another host envelope and rejects malformed normalizer output', a
   expect(await page.evaluate(() => window.__harness.events.some(e => e.detail.code === 'INVALID_UPDATE'))).toBe(true);
 });
 
-test('inherits host theme variables and cleans up after configuration errors', async ({ page }) => {
+test('inherits host theme variables and applies new configuration on remount', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('[data-interface-id]')).toHaveCount(2);
   const color = () => page.locator('.external-interfaces').evaluate(el => getComputedStyle(el).getPropertyValue('--v-theme-surface').trim());
@@ -78,10 +78,10 @@ test('inherits host theme variables and cleans up after configuration errors', a
   expect(light).not.toBe('');
   await page.evaluate(() => window.__harness.theme('dark'));
   await expect.poll(color).not.toBe(light);
-  await page.evaluate(() => window.__harness.setConfig({ apiBaseUrl: '' }));
+  await page.evaluate(() => window.__harness.remountWithConfig({ apiBaseUrl: '' }));
   await expect(page.getByRole('alert')).toContainText('configuration is invalid');
   expect(await page.evaluate(() => window.__harness.websocket.handlers.size)).toBe(0);
-  await page.evaluate(() => window.__harness.setConfig({ apiBaseUrl: '/api' }));
+  await page.evaluate(() => window.__harness.remountWithConfig({ apiBaseUrl: '/api' }));
   await expect(page.locator('[data-interface-id]')).toHaveCount(2);
 });
 
@@ -90,10 +90,11 @@ test('shows metadata failure independently of federation READY, and can retry', 
   await page.goto('/');
   await expect(page.locator('#phase')).toHaveText('READY');
   await expect(page.getByRole('alert')).toContainText('Unable to load interfaces');
-  expect(await page.evaluate(() => window.__harness.websocket.handlers.size)).toBe(0);
+  expect(await page.evaluate(() => window.__harness.websocket.handlers.size)).toBe(1);
   await page.route('**/api/interfaces-x', route => route.fulfill({ json: metadata }));
   await page.getByRole('button', { name: 'Retry' }).click();
   await expect(page.locator('[data-interface-id]')).toHaveCount(2);
+  expect(await page.evaluate(() => window.__harness.websocket.subscriptions)).toBe(1);
 });
 
 test('reports a remote entry load failure', async ({ page }) => {

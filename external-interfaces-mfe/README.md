@@ -34,7 +34,8 @@ Object.assign(element, {
 
 Only config is serialized. The other two values MUST be JavaScript properties.
 With Vue bindings, use `.prop` if the generic host otherwise writes attributes.
-Keep the manager and normalizer references stable across host re-renders.
+Set all three properties before mounting. They are captured once per mount; remount
+the element to load different config, a different manager or a different normalizer.
 
 ```ts
 interface HostWebsocket {
@@ -88,13 +89,21 @@ The named loadInterfaces function coordinates subscribeToStatusUpdates,
 fetchInterfaceMetadata and applyInitialInterfaces. These ordinary functions stay
 in the component so lifecycle ownership is visible.
 
-The Vue watcher starts one request/subscription and cleans both up when props change
-or the component unmounts. It keeps the original manager as the method receiver.
-Messages received during the initial GET are buffered so REST cannot overwrite them.
-Cleanup ignores late responses/callbacks and never closes the host connection.
-Subscribe failures never unsubscribe somebody else's topic. Only one collection
-may own a given manager/topic. Metadata failures release it; Retry starts again.
-Membership changes require remount/refresh; status messages do not create new rows.
+onMounted validates and captures inputs once, then fetches and subscribes.
+onBeforeUnmount aborts the pending request and unsubscribes. Functions and variables
+sit directly in script setup, which already provides per-component state; there is
+no watcher or enclosing load-session function.
+
+Messages received before successful metadata loading are buffered so REST cannot
+overwrite them. Cleanup ignores late responses/callbacks and never closes the host
+connection. Subscribe failures never unsubscribe somebody else's topic. Only one
+collection may own a given manager/topic.
+
+A metadata failure keeps the existing topic subscription. Retry repeats only the
+REST request using the original configuration; it does not add another subscription.
+Buffered statuses survive the retry. If the subscription itself failed, Retry can
+attempt to acquire it again. Config/service changes and membership refreshes require
+remounting the MFE. Status messages do not create new rows.
 
 Vue handles custom-element property upgrades and DOM disconnect/reconnect. The
 remote installs its own Vuetify instance with theme generation disabled. Light DOM

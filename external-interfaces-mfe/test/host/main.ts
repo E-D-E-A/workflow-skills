@@ -40,13 +40,15 @@ const runtime = createInstance({
 
 let element: ExternalInterfacesElement | undefined;
 const baseConfig = { apiBaseUrl: '/api', interfacesPath: '/interfaces-x' };
+let currentConfig = baseConfig;
+let currentNormalizer = normalizeMessage;
 function phase(value: string) { document.querySelector('#phase')!.textContent = value; }
 async function mount(options: { beforeDefinition?: boolean } = {}) {
   phase('LOADING');
   try {
     const make = () => {
       element = document.createElement('cust-external-interfaces') as ExternalInterfacesElement;
-      Object.assign(element, { config: JSON.stringify(baseConfig), websocket, normalizeMessage });
+      Object.assign(element, { config: JSON.stringify(currentConfig), websocket, normalizeMessage: currentNormalizer });
       for (const name of ['mfe-event', 'componentClick', 'componentDoubleClick', 'componentRightClick']) {
         element.addEventListener(name, event => events.push({ name, detail: (event as CustomEvent).detail }));
       }
@@ -66,12 +68,18 @@ async function unmount() {
   element?.remove(); element = undefined;
   await Promise.resolve();
 }
-function setConfig(value: Record<string, unknown>) {
-  if (element) element.config = JSON.stringify({ ...baseConfig, ...value });
+async function remountWithConfig(value: Record<string, unknown>) {
+  await unmount();
+  currentConfig = { ...baseConfig, ...value };
+  await mount();
 }
-function setNormalizer(value: NormalizeMessage) { if (element) element.normalizeMessage = value; }
+async function remountWithNormalizer(normalizer: NormalizeMessage) {
+  await unmount();
+  currentNormalizer = normalizer;
+  await mount();
+}
 function theme(name: 'light' | 'dark') { hostVuetify.theme.change(name); }
-window.__harness = { websocket, events, mount, unmount, setConfig, setNormalizer, theme,
+window.__harness = { websocket, events, mount, unmount, remountWithConfig, remountWithNormalizer, theme,
   baselineSocketCount: window.__socketCount,
   identity: () => element?.websocket === websocket };
 document.querySelector('#emit')!.addEventListener('click', () => websocket.emit({ id: 1, communicationStatus: 7 }));
@@ -85,7 +93,7 @@ void mount({ beforeDefinition: new URLSearchParams(location.search).has('preupgr
 declare global {
   interface Window {
     __harness: { websocket: MockCommManager; events: typeof events; mount: typeof mount;
-      unmount: typeof unmount; setConfig: typeof setConfig; setNormalizer: typeof setNormalizer;
+      unmount: typeof unmount; remountWithConfig: typeof remountWithConfig; remountWithNormalizer: typeof remountWithNormalizer;
       theme: typeof theme; identity: () => boolean; baselineSocketCount: number };
     __socketCount: number;
   }

@@ -15,7 +15,9 @@ Inside the internal repo, repeat the following with the actual generic host:
 7. Unmount during a pending GET: request aborts, unsubscribe occurs once, no socket
    closes. Remount successfully with a fresh request and subscription.
 8. Block the remote entry to test host error/timeout slots. Return REST 503 to test
-   the separate remote error and Retry behavior.
+   the separate remote error and Retry behavior: Retry reuses the subscription.
+9. Assign new config/services after mount and verify no reload or subscription
+   change. Remount with those inputs and verify they apply to the new instance.
 
 Use the real built remote, not a direct import of the Vue component. The private
 loader's eventMap schema and export convention must be checked against local code.

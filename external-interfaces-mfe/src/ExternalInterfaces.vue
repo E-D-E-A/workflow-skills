@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, shallowRef, useHost, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useHost } from 'vue';
 import { VBtn, VChip, VProgressCircular } from 'vuetify/components';
 import {
   interfacesSchema,
@@ -55,7 +55,14 @@ const interfaces = ref<InterfaceMetadata[]>([]);
 const configuration = shallowRef<RemoteConfig>();
 const isLoading = ref(false);
 const errorMessage = ref('');
-const reloadCount = ref(0);
+// Captured once on mount; later property changes require remounting the MFE.
+let mountedInputs: ReturnType<typeof parseInputs> | undefined;
+let isUnmounted = false;
+let hasTopicSubscription = false;
+let hasInitialMetadata = false;
+let abortController: AbortController | undefined;
+let requestTimeout: ReturnType<typeof setTimeout> | undefined;
+const pendingStatusUpdates = new Map<number, Status>();
 
 const hasLoadingError = computed(() => {
   const hasErrorMessage = errorMessage.value.length > 0;
@@ -114,166 +121,152 @@ function handleInterfaceInteraction(eventName: string, externalInterface: { id: 
   dispatchHostEvent(eventName, interaction);
 }
 function retryLoading() {
-  const nextReloadCount = reloadCount.value + 1;
-  reloadCount.value = nextReloadCount;
-}
-function getLoadDependencies() {
-  const dependencies = [props.config, props.websocket, props.normalizeMessage, reloadCount.value];
-  return dependencies;
+  void loadInterfaces();
 }
 
-// Each watcher invocation owns its request, subscription and cleanup independently.
-function startInterfacesLoad(
-  _currentDependencies: unknown,
-  _previousDependencies: unknown,
-  registerCleanup: (cleanup: () => void) => void,
-) {
-  interfaces.value = [];
-  errorMessage.value = '';
-  isLoading.value = false;
-
-  let validatedInputs: ReturnType<typeof parseInputs>;
+function initializeInterfaces() {
   try {
-    validatedInputs = parseInputs(props.config, props.websocket, props.normalizeMessage);
+    mountedInputs = parseInputs(props.config, props.websocket, props.normalizeMessage);
+    configuration.value = mountedInputs.config;
   } catch {
     showLoadingError('INVALID_PROPS', 'External interfaces configuration is invalid.');
     return;
   }
+  void loadInterfaces();
+}
 
-  const { config: currentConfiguration, websocket, normalizeMessage } = validatedInputs;
-  configuration.value = currentConfiguration;
-  isLoading.value = true;
-  emitDataState('LOADING');
-  const abortController = new AbortController();
-  const pendingStatusUpdates = new Map<number, Status>();
-  let isCurrentLoadActive = true;
-  let hasTopicSubscription = false;
-  let requestTimeout: ReturnType<typeof setTimeout> | undefined;
-
-  function cleanupSubscriptionAndRequest() {
-    isCurrentLoadActive = false;
-    abortController.abort();
-    clearTimeout(requestTimeout);
-    pendingStatusUpdates.clear();
-    if (hasTopicSubscription) {
-      hasTopicSubscription = false;
-      try {
-        websocket.unsubscribe(currentConfiguration.topic);
-      } catch {
-        reportDiagnostic('UNSUBSCRIBE_FAILED', 'Unable to remove the topic subscription.');
-      }
-    }
-  }
-  registerCleanup(cleanupSubscriptionAndRequest);
-
-  function handleStatusMessage(rawMessage: unknown) {
-    const shouldIgnoreMessage = isCurrentLoadActive === false;
-    if (shouldIgnoreMessage) return;
-
-    let normalizedMessage: unknown;
+function cleanupSubscriptionAndRequest() {
+  isUnmounted = true;
+  abortController?.abort();
+  clearTimeout(requestTimeout);
+  pendingStatusUpdates.clear();
+  const inputs = mountedInputs;
+  const shouldUnsubscribe = hasTopicSubscription && inputs !== undefined;
+  if (shouldUnsubscribe) {
+    hasTopicSubscription = false;
     try {
-      normalizedMessage = normalizeMessage(rawMessage);
+      inputs.websocket.unsubscribe(inputs.config.topic);
     } catch {
-      reportDiagnostic('NORMALIZER_FAILED', 'The host normalizer threw an error.');
-      return;
+      reportDiagnostic('UNSUBSCRIBE_FAILED', 'Unable to remove the topic subscription.');
     }
-    const isIrrelevantMessage = normalizedMessage === null;
-    if (isIrrelevantMessage) return;
-
-    const validationResult = normalizedUpdateSchema.safeParse(normalizedMessage);
-    const isInvalidUpdate = validationResult.success === false;
-    if (isInvalidUpdate) {
-      reportDiagnostic('INVALID_UPDATE', 'Expected { id, connectionStatus } or null.');
-      return;
-    }
-    const { id: interfaceId, connectionStatus } = validationResult.data;
-    // Remember the latest update until the initial REST metadata arrives.
-    const isWaitingForMetadata = isLoading.value;
-    if (isWaitingForMetadata) {
-      pendingStatusUpdates.set(interfaceId, connectionStatus);
-      return;
-    }
-    const matchingInterface = interfaces.value.find(externalInterface => {
-      const hasMatchingId = externalInterface.id === interfaceId;
-      return hasMatchingId;
-    });
-    if (matchingInterface) matchingInterface.connectionStatus = connectionStatus;
   }
+}
 
-  function subscribeToStatusUpdates() {
-    let subscriptionSucceeded = false;
+function handleStatusMessage(rawMessage: unknown) {
+  const inputs = mountedInputs;
+  const shouldIgnoreMessage = isUnmounted || inputs === undefined;
+  if (shouldIgnoreMessage) return;
+
+  let normalizedMessage: unknown;
+  try {
+    normalizedMessage = inputs.normalizeMessage(rawMessage);
+  } catch {
+    reportDiagnostic('NORMALIZER_FAILED', 'The host normalizer threw an error.');
+    return;
+  }
+  const isIrrelevantMessage = normalizedMessage === null;
+  if (isIrrelevantMessage) return;
+
+  const validationResult = normalizedUpdateSchema.safeParse(normalizedMessage);
+  const isInvalidUpdate = validationResult.success === false;
+  if (isInvalidUpdate) {
+    reportDiagnostic('INVALID_UPDATE', 'Expected { id, connectionStatus } or null.');
+    return;
+  }
+  const { id: interfaceId, connectionStatus } = validationResult.data;
+  const isWaitingForMetadata = hasInitialMetadata === false;
+  if (isWaitingForMetadata) {
+    pendingStatusUpdates.set(interfaceId, connectionStatus);
+    return;
+  }
+  const matchingInterface = interfaces.value.find(externalInterface => {
+    const hasMatchingId = externalInterface.id === interfaceId;
+    return hasMatchingId;
+  });
+  if (matchingInterface) matchingInterface.connectionStatus = connectionStatus;
+}
+
+function subscribeToStatusUpdates(inputs: ReturnType<typeof parseInputs>) {
+  let subscriptionSucceeded = hasTopicSubscription;
+  const needsSubscription = hasTopicSubscription === false;
+  if (needsSubscription) {
     try {
-      // Preserve the manager as the method receiver; it may rely on private fields.
-      websocket.subscribe(currentConfiguration.topic, handleStatusMessage);
+      inputs.websocket.subscribe(inputs.config.topic, handleStatusMessage);
       hasTopicSubscription = true;
       subscriptionSucceeded = true;
     } catch {
       showLoadingError('SUBSCRIBE_FAILED', 'Unable to subscribe to interface updates.');
-      cleanupSubscriptionAndRequest(); // Never unsubscribe a topic we failed to acquire.
-    }
-    return subscriptionSucceeded;
-  }
-
-  async function fetchInterfaceMetadata() {
-    const apiBaseUrl = currentConfiguration.apiBaseUrl.replace(/\/$/, '');
-    const interfacesPath = currentConfiguration.interfacesPath.replace(/^\//, '');
-    const requestUrl = `${apiBaseUrl}/${interfacesPath}`;
-    const requestOptions = { signal: abortController.signal, credentials: currentConfiguration.credentials };
-    const response = await fetch(requestUrl, requestOptions);
-    const requestFailed = response.ok === false;
-    if (requestFailed) {
-      const requestError = new Error(`HTTP ${response.status}`);
-      throw requestError;
-    }
-    const responseBody = await response.json();
-    const validatedInterfaces = interfacesSchema.parse(responseBody);
-    return validatedInterfaces;
-  }
-
-  function applyInitialInterfaces(fetchedInterfaces: InterfaceMetadata[]) {
-    for (const externalInterface of fetchedInterfaces) {
-      const bufferedStatus = pendingStatusUpdates.get(externalInterface.id);
-      const hasBufferedStatus = bufferedStatus !== undefined;
-      if (hasBufferedStatus) externalInterface.connectionStatus = bufferedStatus;
-    }
-    interfaces.value = fetchedInterfaces;
-    pendingStatusUpdates.clear();
-    emitDataState('READY');
-  }
-
-  function handleMetadataFailure() {
-    const requestTimedOut = abortController.signal.aborted;
-    const failureMessage = requestTimedOut ? 'Loading interfaces timed out.' : 'Unable to load interfaces.';
-    showLoadingError('METADATA_FAILED', failureMessage);
-    cleanupSubscriptionAndRequest();
-  }
-
-  async function loadInterfaces() {
-    const subscriptionSucceeded = subscribeToStatusUpdates();
-    const subscriptionFailed = subscriptionSucceeded === false;
-    if (subscriptionFailed) return;
-
-    requestTimeout = setTimeout(() => { abortController.abort(); }, currentConfiguration.requestTimeoutMs);
-    try {
-      const fetchedInterfaces = await fetchInterfaceMetadata();
-      const shouldDiscardResponse = isCurrentLoadActive === false;
-      if (shouldDiscardResponse) return;
-      const requestTimedOut = abortController.signal.aborted;
-      if (requestTimedOut) {
-        handleMetadataFailure();
-        return;
-      }
-      applyInitialInterfaces(fetchedInterfaces);
-    } catch {
-      if (isCurrentLoadActive) handleMetadataFailure();
-    } finally {
-      clearTimeout(requestTimeout);
-      if (isCurrentLoadActive) isLoading.value = false;
     }
   }
-  void loadInterfaces();
+  return subscriptionSucceeded;
 }
-watch(getLoadDependencies, startInterfacesLoad, { immediate: true });
+
+async function fetchInterfaceMetadata(currentConfiguration: RemoteConfig, requestSignal: AbortSignal) {
+  const apiBaseUrl = currentConfiguration.apiBaseUrl.replace(/\/$/, '');
+  const interfacesPath = currentConfiguration.interfacesPath.replace(/^\//, '');
+  const requestUrl = `${apiBaseUrl}/${interfacesPath}`;
+  const requestOptions = { signal: requestSignal, credentials: currentConfiguration.credentials };
+  const response = await fetch(requestUrl, requestOptions);
+  const requestFailed = response.ok === false;
+  if (requestFailed) {
+    const requestError = new Error(`HTTP ${response.status}`);
+    throw requestError;
+  }
+  const responseBody = await response.json();
+  const validatedInterfaces = interfacesSchema.parse(responseBody);
+  return validatedInterfaces;
+}
+
+function applyInitialInterfaces(fetchedInterfaces: InterfaceMetadata[]) {
+  for (const externalInterface of fetchedInterfaces) {
+    const bufferedStatus = pendingStatusUpdates.get(externalInterface.id);
+    const hasBufferedStatus = bufferedStatus !== undefined;
+    if (hasBufferedStatus) externalInterface.connectionStatus = bufferedStatus;
+  }
+  interfaces.value = fetchedInterfaces;
+  hasInitialMetadata = true;
+  pendingStatusUpdates.clear();
+  emitDataState('READY');
+}
+
+function handleMetadataFailure(requestSignal: AbortSignal) {
+  const requestTimedOut = requestSignal.aborted;
+  const failureMessage = requestTimedOut ? 'Loading interfaces timed out.' : 'Unable to load interfaces.';
+  showLoadingError('METADATA_FAILED', failureMessage);
+}
+
+async function loadInterfaces() {
+  const inputs = mountedInputs;
+  const cannotStartLoad = inputs === undefined || isUnmounted || isLoading.value;
+  if (cannotStartLoad) return;
+
+  errorMessage.value = '';
+  isLoading.value = true;
+  emitDataState('LOADING');
+  const subscriptionSucceeded = subscribeToStatusUpdates(inputs);
+  const subscriptionFailed = subscriptionSucceeded === false;
+  if (subscriptionFailed) return;
+
+  abortController = new AbortController();
+  const requestSignal = abortController.signal;
+  requestTimeout = setTimeout(() => { abortController?.abort(); }, inputs.config.requestTimeoutMs);
+  try {
+    const fetchedInterfaces = await fetchInterfaceMetadata(inputs.config, requestSignal);
+    if (isUnmounted) return;
+    const requestTimedOut = requestSignal.aborted;
+    if (requestTimedOut) handleMetadataFailure(requestSignal);
+    else applyInitialInterfaces(fetchedInterfaces);
+  } catch {
+    const shouldReportFailure = isUnmounted === false;
+    if (shouldReportFailure) handleMetadataFailure(requestSignal);
+  } finally {
+    clearTimeout(requestTimeout);
+    isLoading.value = false;
+  }
+}
+
+onMounted(initializeInterfaces);
+onBeforeUnmount(cleanupSubscriptionAndRequest);
 </script>
 
 <style scoped>

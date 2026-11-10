@@ -37,8 +37,11 @@ src/ExternalInterfaces.vue and src/register.ts. Keep it simple.
 ## Structure and limits
 
 The earlier controller, API abstraction and custom HTMLElement class were removed.
-Vue's defineCustomElement owns the wrapper; a watcher owns the component lifecycle.
-Retry increments a local counter. Prop changes clean up and restart the collection.
+Vue's defineCustomElement owns the wrapper. onMounted captures the config, manager
+and normalizer once; onBeforeUnmount aborts and unsubscribes. All helper functions
+are directly in script setup. There is no watcher or enclosing startInterfacesLoad.
+Metadata Retry reuses the initial inputs and existing subscription. Later prop
+assignments do not reconfigure the mounted component; remount to load new inputs.
 There is no separate reload() element API; remount to explicitly refresh membership.
 
 Tests and the host harness are development-only. Do not copy their mock manager or
@@ -51,8 +54,9 @@ See TROUBLESHOOTING.md for focused checks. No additional service architecture is
 Keep template, script, styles in that order. Use meaningful names, assign returned
 expressions to named variables, and name logical conditions before testing them.
 Avoid excessive chaining. Template rows have prepared labels, colors and conditions.
-loadInterfaces coordinates small local functions; request and subscription state
-stay together in each watcher invocation to prevent stale loads from affecting new ones.
+loadInterfaces coordinates small component-level functions. The component owns one
+subscription for its mounted lifetime; an unmounted flag rejects late callbacks.
+Keep the captured manager for cleanup even if the host later assigns a new prop.
 
 register.ts stays limited to custom-element and Vuetify bootstrap. Follow
 CREATE_ANOTHER_MFE.md to copy that pattern. The host socket/normalizer and interface

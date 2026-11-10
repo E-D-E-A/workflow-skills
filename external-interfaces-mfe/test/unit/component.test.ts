@@ -14,7 +14,8 @@ function response(data: unknown = metadata) {
   return metadataResponse;
 }
 const flush = async () => { await new Promise(resolve => setTimeout(resolve, 0)); await nextTick(); };
-function mount(fetcher = vi.fn(async () => response()), subscribeFails = false) {
+function mount(fetcher = vi.fn(async () => response()), subscribeFails = false,
+  normalizer = (rawMessage: unknown) => rawMessage) {
   vi.stubGlobal('fetch', fetcher);
   let callback: MessageListener = () => {};
   const websocket = {
@@ -23,7 +24,7 @@ function mount(fetcher = vi.fn(async () => response()), subscribeFails = false) 
   };
   const element = document.createElement('cust-external-interfaces') as ExternalInterfacesElement;
   Object.assign(element, { config: JSON.stringify({ apiBaseUrl: '/api' }), websocket,
-    normalizeMessage: (rawMessage: unknown) => rawMessage });
+    normalizeMessage: normalizer });
   if (subscribeFails) websocket.subscribe.mockImplementation(() => { throw new Error('occupied'); });
   document.body.append(element);
   const fixture = { element, websocket, fetcher, emit: (rawMessage: unknown) => { callback(rawMessage); } };
@@ -32,42 +33,36 @@ function mount(fetcher = vi.fn(async () => response()), subscribeFails = false) 
 afterEach(async () => { document.body.replaceChildren(); await flush(); vi.unstubAllGlobals(); });
 
 describe('collection component', () => {
-  it('discards the old response after configuration changes while a new request is pending', async () => {
-    const requestResolvers: Array<(response: Response) => void> = [];
+  it('captures inputs once and ignores later property assignments', async () => {
+    let resolveRequest!: (response: Response) => void;
     const fetcher = vi.fn(() => {
-      const pendingRequest = new Promise<Response>(resolveRequest => {
-        requestResolvers.push(resolveRequest);
-      });
+      const pendingRequest = new Promise<Response>(resolve => { resolveRequest = resolve; });
       return pendingRequest;
     });
     const fixture = mount(fetcher);
     await flush();
-    const nextConfiguration = JSON.stringify({ apiBaseUrl: '/replacement-api' });
-    fixture.element.config = nextConfiguration;
+    const replacementWebsocket = { subscribe: vi.fn(), unsubscribe: vi.fn() };
+    fixture.element.config = JSON.stringify({ apiBaseUrl: '/replacement-api' });
+    fixture.element.websocket = replacementWebsocket;
+    fixture.element.normalizeMessage = () => null;
     await flush();
-
-    const staleResponse = response();
-    requestResolvers[0](staleResponse);
-    await flush();
-    expect(fixture.element.textContent).toContain('Loading interfaces');
-    expect(fixture.element.querySelector('[data-interface-id]')).toBeNull();
-
-    const freshMetadata = [{ ...metadata[0], connectionStatus: 7 }];
-    const freshResponse = response(freshMetadata);
-    requestResolvers[1](freshResponse);
+    fixture.emit({ id: 1, connectionStatus: 7 });
+    resolveRequest(response());
     await flush();
     expect(fixture.element.textContent).toContain('Status 7');
+    expect(fixture.fetcher).toHaveBeenCalledTimes(1);
+    expect(replacementWebsocket.subscribe).not.toHaveBeenCalled();
+    fixture.element.remove();
+    await flush();
     expect(fixture.websocket.unsubscribe).toHaveBeenCalledTimes(1);
-    expect(fixture.websocket.subscribe).toHaveBeenCalledTimes(2);
+    expect(replacementWebsocket.unsubscribe).not.toHaveBeenCalled();
   });
 
   it('continues receiving updates after a normalizer throws', async () => {
-    const fixture = mount();
-    await flush();
     const normalizer = vi.fn();
     normalizer.mockImplementationOnce(() => { throw new Error('Invalid client envelope'); });
     normalizer.mockReturnValue({ id: 1, connectionStatus: 8 });
-    fixture.element.normalizeMessage = normalizer;
+    const fixture = mount(undefined, false, normalizer);
     await flush();
     fixture.emit({});
     fixture.emit({});
@@ -113,14 +108,16 @@ describe('collection component', () => {
     fixture.element.remove(); await flush();
     expect(fixture.websocket.unsubscribe).not.toHaveBeenCalled();
   });
-  it('cleans up after invalid metadata and retries with one new subscription', async () => {
+  it('retries invalid metadata using the existing subscription', async () => {
     const fixture = mount(vi.fn().mockResolvedValueOnce(response({ invalid: true })).mockResolvedValue(response()));
     await flush();
     expect(fixture.element.textContent).toContain('Unable to load');
-    expect(fixture.websocket.unsubscribe).toHaveBeenCalledTimes(1);
+    expect(fixture.websocket.unsubscribe).not.toHaveBeenCalled();
+    fixture.emit({ id: 1, connectionStatus: 9 });
     (fixture.element.querySelector('.v-btn') as HTMLButtonElement).click(); await flush();
     expect(fixture.element.querySelectorAll('[data-interface-id]')).toHaveLength(2);
-    expect(fixture.websocket.subscribe).toHaveBeenCalledTimes(2);
+    expect(fixture.websocket.subscribe).toHaveBeenCalledTimes(1);
+    expect(fixture.element.textContent).toContain('Status 9');
   });
 });
 

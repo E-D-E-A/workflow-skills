@@ -56,7 +56,10 @@ theme should choose that deliberately; this setup is specific to this Vue/Vuetif
 
 Keep serializable configuration in the JSON `config` property. Pass any live host
 services/functions as separate JavaScript properties. Validate only the capabilities
-the feature actually needs. The current `websocket` and `normalizeMessage` properties
+the feature actually needs. This feature captures config and live properties once in onMounted. Supply them
+before mounting; remount to change them. Another feature that needs live config
+updates can deliberately implement that behavior. The current `websocket` and
+`normalizeMessage` properties
 are external-interfaces requirements, not mandatory MFE inputs.
 
 Use the host's existing registry and `toElementProps` convention. Preserve service
