@@ -80,12 +80,3 @@ export function parseInputs(config: unknown, websocket: unknown, normalizeMessag
   };
 }
 
-export type DataPhase = 'LOADING' | 'READY' | 'ERROR';
-export type DiagnosticCode = 'INVALID_PROPS' | 'SUBSCRIBE_FAILED' | 'UNSUBSCRIBE_FAILED' |
-  'NORMALIZER_FAILED' | 'INVALID_UPDATE' | 'METADATA_FAILED';
-export interface Diagnostic { code: DiagnosticCode; message: string }
-export interface Snapshot {
-  phase: DataPhase;
-  interfaces: readonly InterfaceMetadata[];
-  error: string | null;
-}

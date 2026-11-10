@@ -1,44 +1,108 @@
-# ExternalInterfaces federation remote
+# External interfaces MFE
 
-One Vue custom element renders the complete external interfaces collection inside
-the host navbar. It fetches metadata once and subscribes once using the host's live
-CommManager. A host-supplied normalizer translates messages; the remote owns all
-displayed state. No additional WebSocket connection or global application store.
+One custom element fetches the interfaces array and subscribes once using the
+host's existing CommManager. A host-provided normalizer returns the status update.
+The component owns the list and renders the loop. No router, store or new socket.
 
-**Start with [GUIDE.md](GUIDE.md) for integration, [AGENT_HANDOFF.md](AGENT_HANDOFF.md)
-for the receiving agent, and [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for diagnosis.**
+## Read these files
 
-## What is included
-
-| Location | Purpose |
+| File | Responsibility |
 | --- | --- |
-| `vite.config.ts`, `federation.constants.ts` | Pinned Vite federation setup and naming invariants |
-| `src/register.ts`, `src/element.ts` | Exposed registration module and custom element property/lifecycle bridge |
-| `src/contracts.ts` | Zod config, dependency, REST, and normalizer-output validation |
-| `src/controller.ts`, `src/api.ts` | One subscription, one collection request, local state, cleanup and race handling |
-| `src/ExternalInterfaces.vue` | Vuetify navbar UI; the loop is here |
-| `examples/host/` | Registry, normalizer, environment and Vue host sketches |
-| `test/unit/` | Component logic and validation tests |
-| `test/host/`, `test/browser/` | Executable two-origin federation harness and browser tests |
-| `test/INTERNAL_HOST_INTEGRATION.md` | Additional test sketch for the private generic host |
+| `src/ExternalInterfaces.vue` | Fetch, subscribe, update local state, cleanup, render |
+| `src/contracts.ts` | Types and Zod validation |
+| `src/register.ts` | Vue's built-in custom element wrapper and local Vuetify setup |
+| `src/entry.ts` | Async standalone bootstrap |
+| `vite.config.ts`, `federation.constants.ts` | Federation build and shared versions |
+| `examples/host/` | Registry, normalizer and navbar integration examples |
 
-## Versions
+Tests and `test/host/` are verification tools; they are not part of the remote's
+application architecture. Start with the Vue component, then the registration file.
 
-| Dependency | Version |
+## Host properties
+
+```ts
+Object.assign(element, {
+  config: JSON.stringify({
+    apiBaseUrl: '/api',
+    interfacesPath: '/interfaces-x', // Replace with your actual endpoint.
+    topic: 'interface-communication-x',
+  }),
+  websocket: existingCommManager,
+  normalizeMessage: yourNormalizer,
+});
+```
+
+Only config is serialized. The other two values MUST be JavaScript properties.
+With Vue bindings, use `.prop` if the generic host otherwise writes attributes.
+Keep the manager and normalizer references stable across host re-renders.
+
+```ts
+interface HostWebsocket {
+  subscribe(topic: string, callback: (raw: unknown) => void): void;
+  unsubscribe(topic: string): void;
+}
+type NormalizeMessage = (raw: unknown) => {
+  id: number;
+  connectionStatus: number | null;
+} | null;
+```
+
+The normalizer is synchronous; null means ignore. It understands the client's raw
+message structure and returns a value. The component applies that value itself.
+REST returns `[{ id, connectionStatus, displayName, groupName, type }, ...]`.
+IDs are safe integers; statuses are finite numbers or null. Unknown IDs are ignored.
+
+Optional config: `credentials` (default same-origin), `requestTimeoutMs` (15000),
+`statusLabels` and `statusColors` maps. Unknown statuses display their number;
+null displays Unknown. The endpoint and authentication integration are left for
+your repo. Adapt the fetch call in the component if a host HTTP client is required.
+
+## Federation integration
+
+Use Vite 7.3.1, federation/vite 1.18.2, enhanced 2.6.0, Vue 3.5.29 and Vuetify 4.0.7.
+Vue and Vuetify root imports are shared singletons. Vuetify components are bundled.
+
+| Setting | Value |
 | --- | --- |
-| Vite | 7.3.1 |
-| `@module-federation/vite` | 1.18.2 |
-| `@module-federation/enhanced` (integration harness) | 2.6.0 |
-| Vue | 3.5.29 |
-| Vuetify | 4.0.7 |
-| Zod | 3.25.76 |
-| Private host package, supplied by your repo | `@gf/generic-module-federation-host` 1.0.1 |
+| Remote name / host remote key / entryGlobalName | `ExternalInterfaces` |
+| Import prefix | `ExternalInterfaces/register` |
+| Exposed module | `./register` |
+| Custom element | `cust-external-interfaces` |
+| Type / share scope | `var` / `default` |
+| Host entry URL | `.../remoteEntry.var.js` |
 
-Use Node 20.19+ in the Node 20 line, or Node 22.12+. The dependency engine
-constraint also accepts newer supported Node versions. A lockfile is included.
-The private package is not a dependency of this portable project and was not available here.
+`varFilename` generates the classic-script wrapper your host needs. It loads the
+adjacent ESM entry; publish the ENTIRE dist directory. Set `MFE_PUBLIC_BASE` to the
+production asset directory URL with a trailing slash before building.
 
-## Run checks
+Importing the exposed module registers the tag. It also exports a registration
+function and constructor. Verify this convention against the private loader.
+Use your existing generic-host registration, createRuntimeMfeRegistry helper and
+injection key. Render one generic-host instance in the navbar, without a v-for.
+The private package's exports, eventMap syntax and registry types cannot be verified
+here; the host examples are integration sketches.
+
+## Lifecycle and theme
+
+The Vue watcher starts one request/subscription and cleans both up when props change
+or the component unmounts. It keeps the original manager as the method receiver.
+Messages received during the initial GET are buffered so REST cannot overwrite them.
+Cleanup ignores late responses/callbacks and never closes the host connection.
+Subscribe failures never unsubscribe somebody else's topic. Only one collection
+may own a given manager/topic. Metadata failures release it; Retry starts again.
+Membership changes require remount/refresh; status messages do not create new rows.
+
+Vue handles custom-element property upgrades and DOM disconnect/reconnect. The
+remote installs its own Vuetify instance with theme generation disabled. Light DOM
+inherits the navbar's active Vuetify CSS variables, including theme changes. Mount
+beneath the host's theme ancestor; do not add a full-page VApp inside the navbar.
+
+Native `componentClick`, `componentDoubleClick`, `componentRightClick` events carry
+`{ interfaceId, connectionStatus }` in event.detail. `mfe-event` carries data-state
+or diagnostic objects. The private host's federation READY means code loaded; the
+remote's REST load has its own state. The read-only remote emits no update:config.
+
+## Run
 
 ```sh
 npm ci
@@ -46,68 +110,17 @@ npx playwright install chromium
 npm run check
 ```
 
-If an existing Chromium executable is preferred:
+Use Node 20.19+ (Node 20) or 22.12+. To use installed Chromium, set
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`.
+`check` runs type checking, unit tests, a production build and browser tests.
+The browser tests exercise real federation loading, UI and cleanup on two origins.
 
-```sh
-PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run check
-```
+For manual viewing: build with `npm run build` and `npm run build:harness`, then run
+`npm run preview` and `npm run preview:harness` in two terminals. Open localhost:4174.
+The harness provides mock data/CommManager. It is not the production host.
 
-`check` runs type checking, unit tests, the production remote build, and browser
-tests. Playwright builds a production host harness and starts both preview servers.
-Use ports 4173 and 4174. Stop unrelated servers on those ports first.
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) and [AGENT_HANDOFF.md](AGENT_HANDOFF.md).
 
-## View the working example
-
-```sh
-npm run build
-npm run build:harness
-```
-
-In two terminals:
-
-```sh
-npm run preview
-```
-
-```sh
-npm run preview:harness
-```
-
-Open `http://127.0.0.1:4174`. The harness has static mock REST data and a mock
-CommManager with the same one-subscriber-per-topic constraint. Its controls send a
-message, unmount/remount the remote, and change the host theme. The remote is loaded
-from `http://127.0.0.1:4173/remoteEntry.var.js` through enhanced/runtime 2.6.0.
-These mocks are test infrastructure, not a replacement production transport.
-
-## Properties supplied by the host
-
-```ts
-element.config = JSON.stringify({
-  apiBaseUrl: '/api',
-  interfacesPath: '/interfaces-x', // Replace with your internal route.
-  topic: 'interface-communication-x',
-});
-element.websocket = existingCommManager;
-element.normalizeMessage = raw => {
-  // Client-specific validation and extraction happen here.
-  // Return { id: number, connectionStatus: number | null }, or null to ignore.
-};
-```
-
-Only `config` is JSON. The WebSocket instance and normalizer are live JavaScript
-properties. See `examples/host/normalizer.ts` for a complete normalizer.
-The old per-interface `interfaceId` prop is intentionally absent.
-
-## Integration work left for the internal repo
-
-- Set the exact REST path, API base URL, and authentication requirements.
-- Wire the host's existing manager and actual message normalizer as properties.
-- Check the private registry field names, injection key, registration/export
-  convention and event forwarding against the installed package's types/source.
-- Set the production remote public base URL and serve the entire `dist` directory.
-- Supply domain status labels/colors if known. The defaults show numeric codes
-  neutrally and label `null` as `Unknown`; they do not invent status semantics.
-
-The executable harness verifies the public federation/runtime and custom element
-boundary. It does not claim to verify the inaccessible private generic host.
-See [VALIDATION.md](VALIDATION.md) for the actual verification results.
+Verified after simplification: typecheck, production build, 10 component/input unit tests,
+and 6 real-browser federation tests pass. The private generic-host integration still
+needs verification inside your repo.

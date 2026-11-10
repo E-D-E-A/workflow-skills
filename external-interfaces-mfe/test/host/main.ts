@@ -2,7 +2,7 @@ import * as Vue from 'vue';
 import * as Vuetify from 'vuetify';
 import { createInstance } from '@module-federation/enhanced/runtime';
 import type { HostWebsocket, MessageListener, NormalizeMessage } from '../../src/contracts';
-import type { ExternalInterfacesElement } from '../../src/element';
+import type { ExternalInterfacesElement } from '../../src/register';
 import { normalizeMessage } from '../../examples/host/normalizer';
 
 class MockCommManager implements HostWebsocket {
