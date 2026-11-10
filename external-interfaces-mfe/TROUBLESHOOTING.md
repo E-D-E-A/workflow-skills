@@ -54,8 +54,12 @@ The original repo does not need to be exported to diagnose those contracts.
 
 ## Where to change data handling
 
-`src/externalInterfacesData.ts` owns the REST request, timeout, response validation,
+`src/externalInterfacesData.ts` owns the REST request, response validation,
 socket subscription, normalizer invocation, update validation and unsubscribe.
 `src/ExternalInterfaces.vue` owns rendering, local state, buffering early updates
 and mount/unmount coordination. The data helper uses the original manager and
 returns cleanup; it never opens or closes the shared WebSocket connection.
+
+REST has no custom timeout or cancellation. After unmount, pending requests finish
+normally and their results/errors are ignored. Host federation loading timeouts
+apply to loading the remote code, not to this REST request.

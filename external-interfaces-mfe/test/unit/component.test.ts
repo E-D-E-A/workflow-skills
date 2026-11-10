@@ -89,15 +89,24 @@ describe('collection component', () => {
     resolve(response()); await flush();
     expect(fixture.element.querySelector('[data-interface-id="1"]')?.textContent).toContain('Unknown');
   });
-  it('aborts on unmount, unsubscribes once, and ignores late requests/callbacks', async () => {
-    let resolve!: (response: Response) => void;
-    const fixture = mount(vi.fn(() => new Promise<Response>(done => { resolve = done; })));
+  it.each(['success', 'failure'])('unsubscribes once and ignores late request %s and callbacks', async outcome => {
+    let resolveRequest!: (response: Response) => void;
+    let rejectRequest!: (error: Error) => void;
+    const pendingResponse = new Promise<Response>((resolve, reject) => {
+      resolveRequest = resolve;
+      rejectRequest = reject;
+    });
+    const fixture = mount(vi.fn(() => pendingResponse));
     await flush();
-    const signal = (vi.mocked(fetch).mock.calls[0][1] as RequestInit).signal!;
+    const onMfeEvent = vi.fn();
+    fixture.element.addEventListener('mfe-event', onMfeEvent);
     fixture.element.remove(); await flush();
-    expect(signal.aborted).toBe(true);
     expect(fixture.websocket.unsubscribe).toHaveBeenCalledExactlyOnceWith('interface-communication-x');
-    resolve(response()); fixture.emit({ id: 1, connectionStatus: 5 }); await flush();
+    const requestSucceeded = outcome === 'success';
+    if (requestSucceeded) resolveRequest(response());
+    else rejectRequest(new Error('Network failure'));
+    fixture.emit({ id: 1, connectionStatus: 5 }); await flush();
+    expect(onMfeEvent).not.toHaveBeenCalled();
     expect(fixture.element.querySelector('[data-interface-id]')).toBeNull();
   });
   it('does not unsubscribe another owner when subscribing fails', async () => {

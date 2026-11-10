@@ -3,35 +3,14 @@ import { configSchema, type MessageListener } from '../../src/contracts';
 import { fetchInterfaceMetadata, subscribeToInterfaceStatuses } from '../../src/externalInterfacesData';
 
 afterEach(() => {
-  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
-it('rejects a late REST response after timeout and clears the timer', async () => {
-  vi.useFakeTimers();
-  let resolveRequest!: (response: Response) => void;
-  const pendingResponse = new Promise<Response>(resolve => { resolveRequest = resolve; });
-  vi.stubGlobal('fetch', vi.fn(() => pendingResponse));
-  const configuration = configSchema.parse({ apiBaseUrl: '/api', requestTimeoutMs: 10 });
-  const requestController = new AbortController();
-  const pendingMetadata = fetchInterfaceMetadata(configuration, requestController);
-  const rejectionAssertion = expect(pendingMetadata).rejects.toThrow();
-  await vi.advanceTimersByTimeAsync(10);
-  expect(requestController.signal.aborted).toBe(true);
-  resolveRequest(new Response('[]'));
-  await rejectionAssertion;
-  expect(vi.getTimerCount()).toBe(0);
-});
-
-it('clears the request timer when metadata validation fails', async () => {
-  vi.useFakeTimers();
+it('rejects invalid metadata', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => new Response('{}')));
   const configuration = configSchema.parse({ apiBaseUrl: '/api' });
-  const requestController = new AbortController();
-  const pendingMetadata = fetchInterfaceMetadata(configuration, requestController);
+  const pendingMetadata = fetchInterfaceMetadata(configuration);
   await expect(pendingMetadata).rejects.toThrow();
-  expect(vi.getTimerCount()).toBe(0);
-  expect(requestController.signal.aborted).toBe(false);
 });
 
 it('preserves the manager receiver and ignores callbacks after cleanup', () => {

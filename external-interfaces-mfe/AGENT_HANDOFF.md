@@ -13,7 +13,7 @@ src/ExternalInterfaces.vue and src/register.ts. Keep it simple.
 - Config is JSON; manager and normalizer are live JS properties.
 - Local component state only. No router, store, per-row subscriptions or new socket.
 - Remote creates its own Vuetify instance. Light DOM inherits host theme variables.
-- Keep Zod validation, exact manager identity, early-message buffering, abort and
+- Keep Zod validation, exact manager identity, early-message buffering, the unmount guard and
   unsubscribe cleanup. These guards prevent specific lifecycle bugs.
 
 ## Integration points
@@ -38,7 +38,10 @@ src/ExternalInterfaces.vue and src/register.ts. Keep it simple.
 
 The earlier controller, API abstraction and custom HTMLElement class were removed.
 Vue's defineCustomElement owns the wrapper. onMounted captures the config, manager
-and normalizer once; onBeforeUnmount aborts and unsubscribes. REST and socket operations live in externalInterfacesData.ts as plain functions.
+and normalizer once; onBeforeUnmount unsubscribes and marks the instance unmounted.
+Pending REST requests continue; late results and errors are ignored. There is no
+AbortController, signal or custom request timeout, by user decision. REST and socket
+operations live in externalInterfacesData.ts as plain functions.
 The component keeps local state, buffering and lifecycle coordination. There is no
 watcher or enclosing startInterfacesLoad.
 Metadata Retry reuses the initial inputs and existing subscription. Later prop

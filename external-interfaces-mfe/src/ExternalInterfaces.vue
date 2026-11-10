@@ -60,7 +60,6 @@ let mountedInputs: ReturnType<typeof parseInputs> | undefined;
 let isUnmounted = false;
 let stopStatusSubscription: (() => void) | undefined;
 let hasInitialMetadata = false;
-let abortController: AbortController | undefined;
 const pendingStatusUpdates = new Map<number, Status>();
 
 const hasLoadingError = computed(() => {
@@ -134,9 +133,8 @@ function initializeInterfaces() {
   void loadInterfaces();
 }
 
-function cleanupSubscriptionAndRequest() {
+function cleanupInterfaces() {
   isUnmounted = true;
-  abortController?.abort();
   stopStatusSubscription?.();
   stopStatusSubscription = undefined;
   pendingStatusUpdates.clear();
@@ -190,12 +188,6 @@ function applyInitialInterfaces(fetchedInterfaces: InterfaceMetadata[]) {
   emitDataState('READY');
 }
 
-function handleMetadataFailure(requestSignal: AbortSignal) {
-  const requestTimedOut = requestSignal.aborted;
-  const failureMessage = requestTimedOut ? 'Loading interfaces timed out.' : 'Unable to load interfaces.';
-  showLoadingError('METADATA_FAILED', failureMessage);
-}
-
 async function loadInterfaces() {
   const inputs = mountedInputs;
   const cannotStartLoad = inputs === undefined || isUnmounted || isLoading.value;
@@ -208,22 +200,21 @@ async function loadInterfaces() {
   const subscriptionFailed = subscriptionSucceeded === false;
   if (subscriptionFailed) return;
 
-  abortController = new AbortController();
-  const requestSignal = abortController.signal;
   try {
-    const fetchedInterfaces = await fetchInterfaceMetadata(inputs.config, abortController);
+    const fetchedInterfaces = await fetchInterfaceMetadata(inputs.config);
     if (isUnmounted) return;
     applyInitialInterfaces(fetchedInterfaces);
   } catch {
     const shouldReportFailure = isUnmounted === false;
-    if (shouldReportFailure) handleMetadataFailure(requestSignal);
+    if (shouldReportFailure) showLoadingError('METADATA_FAILED', 'Unable to load interfaces.');
   } finally {
-    isLoading.value = false;
+    const isStillMounted = isUnmounted === false;
+    if (isStillMounted) isLoading.value = false;
   }
 }
 
 onMounted(initializeInterfaces);
-onBeforeUnmount(cleanupSubscriptionAndRequest);
+onBeforeUnmount(cleanupInterfaces);
 </script>
 
 <style scoped>

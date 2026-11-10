@@ -9,7 +9,7 @@ The component owns the list and renders the loop. No router, store or new socket
 | File | Responsibility |
 | --- | --- |
 | `src/ExternalInterfaces.vue` | Local state, lifecycle coordination and rendering |
-| `src/externalInterfacesData.ts` | REST fetch/timeout/validation and socket subscription/normalization/cleanup |
+| `src/externalInterfacesData.ts` | REST fetch/validation and socket subscription/normalization/cleanup |
 | `src/contracts.ts` | Types and Zod validation |
 | `src/register.ts` | Vue's built-in custom element wrapper and local Vuetify setup |
 | `src/entry.ts` | Async standalone bootstrap |
@@ -54,7 +54,7 @@ message structure and returns a value. The component applies that value itself.
 REST returns `[{ id, connectionStatus, displayName, groupName, type }, ...]`.
 IDs are safe integers; statuses are finite numbers or null. Unknown IDs are ignored.
 
-Optional config: `credentials` (default same-origin), `requestTimeoutMs` (15000),
+Optional config: `credentials` (default same-origin),
 `statusLabels` and `statusColors` maps. Unknown statuses display their number;
 null displays Unknown. The endpoint and authentication integration are left for
 your repo. Adapt the fetch call in externalInterfacesData.ts if a host HTTP client is required.
@@ -88,12 +88,14 @@ here; the host examples are integration sketches.
 
 The named loadInterfaces function coordinates subscription setup, metadata loading
 and applying the result. externalInterfacesData.ts contains two plain functions:
-fetchInterfaceMetadata handles REST and its timeout; subscribeToInterfaceStatuses
+fetchInterfaceMetadata fetches and validates REST metadata; subscribeToInterfaceStatuses
 normalizes/validates messages and returns an unsubscribe function. The component
-keeps the list, early-update buffer, request controller and lifecycle coordination.
+keeps the list, early-update buffer and lifecycle coordination.
 
 onMounted validates and captures inputs once, then fetches and subscribes.
-onBeforeUnmount aborts the pending request and unsubscribes. Functions and variables
+onBeforeUnmount unsubscribes and marks the component as unmounted. A pending REST
+request continues, but its result or error is ignored. There is no custom request
+timeout; loading waits for the request to succeed or fail. Functions and variables
 sit directly in script setup, which already provides per-component state; there is
 no watcher or enclosing load-session function.
 

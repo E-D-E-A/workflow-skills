@@ -84,7 +84,6 @@ export const configSchema = z.object({
     'Expected an API path under apiBaseUrl'),
   topic: z.string().min(1).default('interface-communication-x'),
   credentials: z.enum(['omit', 'same-origin', 'include']).default('same-origin'),
-  requestTimeoutMs: z.number().int().positive().max(120000).default(15000),
   statusLabels: z.record(z.string()).default({}),
   statusColors: z.record(z.enum(['success', 'warning', 'error', 'info', 'primary', 'secondary'])).default({}),
 });

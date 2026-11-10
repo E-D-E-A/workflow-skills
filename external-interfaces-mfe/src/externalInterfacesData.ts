@@ -58,25 +58,18 @@ export function subscribeToInterfaceStatuses(options: StatusSubscriptionOptions)
   return unsubscribe;
 }
 
-export async function fetchInterfaceMetadata(configuration: RemoteConfig, requestController: AbortController) {
+export async function fetchInterfaceMetadata(configuration: RemoteConfig) {
   const apiBaseUrl = configuration.apiBaseUrl.replace(/\/$/, '');
   const interfacesPath = configuration.interfacesPath.replace(/^\//, '');
   const requestUrl = `${apiBaseUrl}/${interfacesPath}`;
-  const requestOptions = { signal: requestController.signal, credentials: configuration.credentials };
-  const requestTimeout = setTimeout(() => { requestController.abort(); }, configuration.requestTimeoutMs);
-
-  try {
-    const response = await fetch(requestUrl, requestOptions);
-    const requestFailed = response.ok === false;
-    if (requestFailed) {
-      const requestError = new Error(`HTTP ${response.status}`);
-      throw requestError;
-    }
-    const responseBody = await response.json();
-    requestController.signal.throwIfAborted();
-    const validatedInterfaces = interfacesSchema.parse(responseBody);
-    return validatedInterfaces;
-  } finally {
-    clearTimeout(requestTimeout);
+  const requestOptions = { credentials: configuration.credentials };
+  const response = await fetch(requestUrl, requestOptions);
+  const requestFailed = response.ok === false;
+  if (requestFailed) {
+    const requestError = new Error(`HTTP ${response.status}`);
+    throw requestError;
   }
+  const responseBody = await response.json();
+  const validatedInterfaces = interfacesSchema.parse(responseBody);
+  return validatedInterfaces;
 }

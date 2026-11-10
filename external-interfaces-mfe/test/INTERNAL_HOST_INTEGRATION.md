@@ -12,8 +12,9 @@ Inside the internal repo, repeat the following with the actual generic host:
 5. Deliver a raw message through that callback. Assert the normalizer runs and only
    the matching row changes. Also send a message during a delayed GET.
 6. Verify click forwarding and theme inheritance through the actual navbar.
-7. Unmount during a pending GET: request aborts, unsubscribe occurs once, no socket
-   closes. Remount successfully with a fresh request and subscription.
+7. Unmount during a pending GET: unsubscribe occurs once, no socket closes. The GET
+   continues; resolving or rejecting it must not update UI or emit data-state events.
+   Remount successfully with a fresh request and subscription.
 8. Block the remote entry to test host error/timeout slots. Return REST 503 to test
    the separate remote error and Retry behavior: Retry reuses the subscription.
 9. Assign new config/services after mount and verify no reload or subscription
