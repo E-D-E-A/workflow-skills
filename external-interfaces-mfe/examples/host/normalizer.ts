@@ -1,12 +1,24 @@
-import type { NormalizeMessage } from '../../src/contracts';
+import type { NormalizeMessage, NormalizedStatusUpdate, Status } from '../../src/contracts';
 
-/** Example for the originally described host payload. Replace ONLY this adapter
- * for a different envelope/field naming. The remote never reads these raw keys. */
-export const normalizeMessage: NormalizeMessage = (raw: unknown) => {
-  if (raw === null || typeof raw !== 'object') return null;
-  const message = raw as Record<string, unknown>;
-  if (typeof message.id !== 'number' || !Number.isSafeInteger(message.id)) return null;
-  if (message.communicationStatus !== null &&
-    (typeof message.communicationStatus !== 'number' || !Number.isFinite(message.communicationStatus))) return null;
-  return { id: message.id, connectionStatus: message.communicationStatus as number | null };
+/** Replace this adapter for a different client envelope or field naming. */
+export const normalizeMessage: NormalizeMessage = (rawMessage: unknown) => {
+  let normalizedUpdate: NormalizedStatusUpdate | null = null;
+  const isObject = rawMessage !== null && typeof rawMessage === 'object';
+  if (isObject) {
+    const message = rawMessage as Record<string, unknown>;
+    const interfaceId = message.id;
+    const communicationStatus = message.communicationStatus;
+    const isNumericId = typeof interfaceId === 'number';
+    const isSafeIntegerId = Number.isSafeInteger(interfaceId);
+    const hasValidId = isNumericId && isSafeIntegerId;
+    const isNullStatus = communicationStatus === null;
+    const isNumericStatus = typeof communicationStatus === 'number';
+    const isFiniteStatus = Number.isFinite(communicationStatus);
+    const hasValidStatus = isNullStatus || (isNumericStatus && isFiniteStatus);
+    const isValidMessage = hasValidId && hasValidStatus;
+    if (isValidMessage) {
+      normalizedUpdate = { id: interfaceId as number, connectionStatus: communicationStatus as Status };
+    }
+  }
+  return normalizedUpdate;
 };

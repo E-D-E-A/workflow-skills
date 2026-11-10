@@ -5,7 +5,7 @@ import type { HostWebsocket, NormalizeMessage, RemoteConfigInput } from '../../s
  * Capture the original CommManager once; never put it in serializable config.
  */
 export function createMfeRegistry(websocket: HostWebsocket, normalizeMessage: NormalizeMessage) {
-  return {
+  const registry = {
     ExternalInterfaces: {
       federation: {
         type: 'var' as const,
@@ -28,13 +28,16 @@ export function createMfeRegistry(websocket: HostWebsocket, normalizeMessage: No
         } satisfies RemoteConfigInput,
         // eventMap is intentionally omitted: its mapping syntax is internal.
         toElementProps(config: Record<string, unknown>) {
-          return {
-            config: JSON.stringify(config),
+          const serializedConfig = JSON.stringify(config);
+          const elementProperties = {
+            config: serializedConfig,
             websocket,        // JavaScript property, same original object
             normalizeMessage, // JavaScript property, function reference
           };
+          return elementProperties;
         },
       },
     },
   };
+  return registry;
 }

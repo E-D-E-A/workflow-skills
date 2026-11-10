@@ -45,3 +45,16 @@ Tests and the host harness are development-only. Do not copy their mock manager 
 fixture API into production. The public federation boundary is tested; the private
 host, real endpoint/auth and production deployment need verification in the repo.
 See TROUBLESHOOTING.md for focused checks. No additional service architecture is needed.
+
+## Readability and future remotes
+
+Keep template, script, styles in that order. Use meaningful names, assign returned
+expressions to named variables, and name logical conditions before testing them.
+Avoid excessive chaining. Template rows have prepared labels, colors and conditions.
+loadInterfaces coordinates small local functions; request and subscription state
+stay together in each watcher invocation to prevent stale loads from affecting new ones.
+
+register.ts stays limited to custom-element and Vuetify bootstrap. Follow
+CREATE_ANOTHER_MFE.md to copy that pattern. The host socket/normalizer and interface
+metadata are feature-specific, not requirements for every remote. Verify the private
+host integration before treating this package as an organization-wide template.

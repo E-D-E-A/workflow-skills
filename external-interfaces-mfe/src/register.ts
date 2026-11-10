@@ -6,18 +6,21 @@ import { WRAPPER_ELEMENT_NAME } from '../federation.constants';
 
 export const ExternalInterfacesElement = defineCustomElement(ExternalInterfaces, {
   shadowRoot: false, // Inherit the navbar's Vuetify theme CSS variables.
-  configureApp(app) {
+  configureApp(application) {
     const vuetify = createVuetify({ theme: false });
-    app.use(vuetify);
-    app.onUnmount(() => vuetify.unmount());
+    application.use(vuetify);
+    application.onUnmount(() => { vuetify.unmount(); });
   },
 });
 export type ExternalInterfacesElement = InstanceType<typeof ExternalInterfacesElement>;
 export function registerExternalInterfaces() {
-  if (!customElements.get(WRAPPER_ELEMENT_NAME)) {
+  const existingElement = customElements.get(WRAPPER_ELEMENT_NAME);
+  const needsRegistration = existingElement === undefined;
+  if (needsRegistration) {
     customElements.define(WRAPPER_ELEMENT_NAME, ExternalInterfacesElement);
   }
-  return customElements.get(WRAPPER_ELEMENT_NAME)!;
+  const registeredElement = customElements.get(WRAPPER_ELEMENT_NAME)!;
+  return registeredElement;
 }
 registerExternalInterfaces();
 export default ExternalInterfacesElement;

@@ -84,6 +84,10 @@ here; the host examples are integration sketches.
 
 ## Lifecycle and theme
 
+The named loadInterfaces function coordinates subscribeToStatusUpdates,
+fetchInterfaceMetadata and applyInitialInterfaces. These ordinary functions stay
+in the component so lifecycle ownership is visible.
+
 The Vue watcher starts one request/subscription and cleans both up when props change
 or the component unmounts. It keeps the original manager as the method receiver.
 Messages received during the initial GET are buffered so REST cannot overwrite them.
@@ -121,6 +125,9 @@ The harness provides mock data/CommManager. It is not the production host.
 
 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) and [AGENT_HANDOFF.md](AGENT_HANDOFF.md).
 
-Verified after simplification: typecheck, production build, 10 component/input unit tests,
+Verified after simplification: typecheck, production build, 12 component/input unit tests,
 and 6 real-browser federation tests pass. The private generic-host integration still
 needs verification inside your repo.
+
+For another remote, follow [CREATE_ANOTHER_MFE.md](CREATE_ANOTHER_MFE.md).
+It identifies reusable bootstrap files and feature-specific logic to replace.
