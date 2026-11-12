@@ -11,6 +11,11 @@ walkthrough with code snippets. It covers host inputs, mount, subscribe/fetch,
 updates, rendering and cleanup. It works offline without dependencies. Snippets
 are shortened excerpts; refresh them after source changes.
 
+For the architecture and interview explanation, open
+[federation-explainer.html](federation-explainer.html). It demonstrates runtime code
+loading, shared dependencies, separate releases, failure boundaries and the data
+flow through an offline interactive model, with practice questions.
+
 ## Read these files
 
 | File | Responsibility |
