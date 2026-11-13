@@ -16,8 +16,8 @@ the Hebrew right-to-left recipe, and the Meeting notes template.
 
 Before every write — a page, a name saved with `name_voice`, the filing record — show exactly
 what will be written and wait for an explicit yes. The notes page is shown in full. The
-transcript page is shown as its shape — title, parent, line count, speakers, time span and its
-first ten lines — with the full body on request, because it is copied, not written. The
+transcript page is shown as its shape — title, parent, line count, speakers, time span, every
+cut and its first ten lines — with the full body on request, because it is copied, not written. The
 request approves the goal, not the writes, and silence is not a yes. If the session runs
 unattended, park on the question.
 
@@ -71,7 +71,10 @@ what it is and linking back to the notes page, then every line in order:
 [00:03:12] <Speaker>: <the words as spoken>
 ```
 
-Nothing is cut, merged or reworded. A Hebrew transcript uses the Hebrew recipe from
+Nothing is merged or reworded, and nothing is cut on your own judgment. The one exception is a
+personal part the person filing asks to leave out — whole lines, or a few words inside one
+line. A marker with its time takes its place and says a personal part was left out, so the gap
+stays visible. A Hebrew transcript uses the Hebrew recipe from
 `confluence-write`, line by line. If Confluence rejects the page as too large, split it into
 consecutive parts by time — `… — Transcript (1 of 3)`, each a child of the notes page — and say
 so.

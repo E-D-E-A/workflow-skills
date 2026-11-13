@@ -5,7 +5,8 @@
 // through one shared hourly quota and throttles bursts. A personal API token is
 // metered per person and takes parallel reads without complaint. Use this for
 // any bulk or parallel read, and whenever the connector answers 429. Writes stay
-// on the connector, where every page is shown for approval first.
+// on the connector, where every page is shown for approval first. BRAIN.md names
+// the one exception.
 //
 // Setup, once per person, in the shell profile:
 //   export ATLASSIAN_SITE="first-edea-team.atlassian.net"
