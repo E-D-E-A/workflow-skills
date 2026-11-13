@@ -210,6 +210,11 @@
       <li><strong>The EDEA Transcript connector</strong> is how Claude reads meetings. It isn't in the plugin, because the repo is public. An admin adds it for the whole team in Claude's organization settings; a developer can add it by its address in Claude Code. The first use asks you to sign in with your staff Google account.</li>
       <li><strong>Atlassian's connector</strong> comes with <code>edea-confluence</code>. The transcript skills build on its rules, so it must be installed too.</li>
     </ul>
+
+    <div class="notice">
+      <p class="notice-head">Not finished: the EDEA Transcript connector</p>
+      <p>It isn't built yet. Until it is, a developer files meetings: Claude reads the meeting from the app's storage, then publishes the pages with the plugin's <code>scripts/filing.mjs</code> and the developer's own Atlassian API token. You still see every page and say yes before anything is written.</p>
+    </div>
   </section>
 
   <section id="names">

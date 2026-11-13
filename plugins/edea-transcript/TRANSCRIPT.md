@@ -25,8 +25,9 @@ Two connectors, each signed in to once per person:
   `edea-confluence`, and both skills here build on that plugin's rules. If `edea-confluence`
   isn't installed, stop and ask the user to install it (`/plugin install edea-confluence@edea`).
 
-If the EDEA Transcript connector's tools aren't available, say so and stop. Never rebuild a
-meeting from memory or from a pasted fragment.
+If the EDEA Transcript connector's tools aren't available, say so and stop — unless a developer
+files the meeting by the path in "Until the connector exists" below. Never rebuild a meeting
+from memory or from a pasted fragment.
 
 ## The connector's tools
 
@@ -40,6 +41,30 @@ meeting from memory or from a pasted fragment.
 
 A meeting's status is one of `recording`, `uploading`, `processing`, `ready`, `filed` or
 `failed`. Only a `ready` or `filed` meeting has a transcript to read.
+
+## Until the connector exists
+
+The EDEA Transcript connector isn't built yet. Until it is, a developer files meetings this way:
+
+- **Read the meeting with wrangler**, from a checkout of the app's repo: its `transcript.json`
+  (every line with its start time, voice and words) from R2, and the meeting and its voice
+  names from D1. Everything in "Read all of it" and "Names" below still applies.
+- **Publish the pages with `scripts/filing.mjs`** at the root of this plugin, through the
+  Confluence REST API with the person's own API token — the same three variables as
+  `edea-confluence`'s `scripts/brain.mjs`. A full transcript page is 95–380 KB, too big to
+  pass through the Confluence connector.
+
+| Command | What it does |
+| --- | --- |
+| `build-notes` | Turns the notes draft, written in a small line markup, into a right-to-left page body |
+| `build-transcript` | Builds the transcript page from `transcript.json` and a voice → name file; with a cuts file, it replaces the parts the person chose to cut with a marker |
+| `create-page` | Creates one page; refuses when the space already has a page with that title |
+| `patch-page` | Makes exact text replacements, each matching once; without `--apply` it only writes the new body to a file; `--apply` refuses if the page changed since then |
+
+The usage and the markup are in the script's header. The scripts don't replace the yes: the
+build commands only write local files, and `create-page` and `patch-page` run only after the
+person said yes to exactly what they write. `name_voice` and `record_filing` have no stand-in:
+voices are named on the review screen, and the page links go to the person in chat.
 
 ## Finding a meeting
 
