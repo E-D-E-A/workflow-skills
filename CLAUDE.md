@@ -5,8 +5,8 @@ house conventions for the tools we run on, so everyone works the same way withou
 remember the rules.
 
 The marketplace is named `edea`. There is **one plugin per tool** — `edea-linear`,
-`edea-confluence`, `edea-presentations` and `edea-fireflies` today, others later. Nothing
-else is published.
+`edea-confluence`, `edea-presentations`, `edea-fireflies` and `edea-transcript` today,
+others later. Nothing else is published.
 A tool doesn't have to mean an MCP connector: `edea-presentations` wraps NotebookLM, which
 has no MCP server, so its skills drive a CLI instead and the plugin ships no `.mcp.json`.
 
@@ -277,12 +277,15 @@ Once per person:
 /plugin install edea-confluence@edea
 /plugin install edea-presentations@edea
 /plugin install edea-fireflies@edea
+/plugin install edea-transcript@edea
 ```
 
 Linear, Confluence and Fireflies each prompt for a sign-in the first time they're used. Presentations
 needs a one-time CLI install and Google sign-in per machine instead — the steps live in the
-plugin's `NOTEBOOKLM.md` and in `docs/presentations-guide.html`. No credentials live in
-this repo.
+plugin's `NOTEBOOKLM.md` and in `docs/presentations-guide.html`. Transcript's connector isn't
+shipped, because this repo is public and carries no backend address: an admin adds it once for
+the team, or a developer adds it by its address in Claude Code, and each person then signs in
+with their staff Google account. No credentials live in this repo.
 
 Then `/plugin` → Marketplaces → enable auto-update. Without that, people silently drift
 onto different skill versions.

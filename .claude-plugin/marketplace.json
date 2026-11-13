@@ -34,6 +34,12 @@
       "source": "./plugins/edea-mortgage-survey",
       "description": "Create and edit mortgage-survey questionnaires from chat: propose, review the diff, apply, simulate respondent paths.",
       "category": "productivity"
+    },
+    {
+      "name": "edea-transcript",
+      "source": "./plugins/edea-transcript",
+      "description": "EDEA Transcript recordings: meetings filed into the Confluence Brain as nameless notes plus a full transcript, and the Brain edits a meeting's decisions call for, proposed for a yes.",
+      "category": "productivity"
     }
   ]
 }

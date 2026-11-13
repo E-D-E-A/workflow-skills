@@ -318,13 +318,16 @@ After the opening line and `Topics:`:
 4. **Decisions** — numbered. A decision that matters gets its own Decision page too; link it
 5. **Open questions** — raised but not settled
 6. **Action items** — a task list. An owner appears only when a person supplied one — never
-   inferred from a recording, whose speaker labels misattribute
+   inferred from who spoke in a recording
 7. **Next steps** — follow-ups, and the next meeting if one was set
 8. **Related** — per the linking rules below
 
-Participants come from the calendar invite. A page built from a recording carries no people's
-names in its body at all — what was said is reliable, who said it is not. The `fireflies-file`
-skill in the `edea-fireflies` plugin holds the full rules for that path.
+A page built from a recording carries no people's names in its body at all. Participants
+appear once, in the Meeting details table. A meeting recorded with EDEA Transcript, our own
+transcriber, also gets the full transcript — every line with its speaker and time — on a child
+page titled `<notes page title> — Transcript`. The `transcript-file` skill in the
+`edea-transcript` plugin holds the full rules for that path, and its `transcript-brain-check`
+skill proposes the Brain edits a meeting's decisions call for.
 
 ## How knowledge flows between the types
 
@@ -342,7 +345,7 @@ that might now be wrong are the ones downstream of it:
 | An idea dropped from a live decision | Every page that mentions it — each mention removed; one entry stays in the owning page's Rejected section |
 | Spec changed | The Runbooks describing that process, and the Linear issues implementing it |
 | Runbook changed | Usually nothing — it is the end of the chain |
-| Meeting notes filed | The rules lines or Decision pages its numbered decisions should have become — proposed, and written only on a person's yes |
+| Meeting notes filed | The rules lines or Decision pages its numbered decisions should have become, and the Specs and Runbooks they make wrong — proposed, and written only on a person's yes |
 
 Every skill that changes or retires a page walks this table for the type it just touched.
 
