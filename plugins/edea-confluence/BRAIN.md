@@ -70,7 +70,7 @@ rather than remembering numbers, because page and space ids change when things a
 ## Two ways to read, and when to use each
 
 The connector (Atlassian's Rovo MCP server) is the front door for ordinary reads and for
-**every write**, because a write is shown for approval first. But it reads through one
+**every write** (one exception is below), because a write is shown for approval first. But it reads through one
 hourly quota that Atlassian shares across everyone using that server, and it throttles
 bursts: a handful of parallel calls, or one wide search, can return `429 Too Many Requests`
 and then nothing works until the top of the hour.
@@ -111,6 +111,11 @@ export ATLASSIAN_API_TOKEN="…"
 
 Without the variables the script says so and stops; the connector still works. The script
 never writes.
+
+**The one write outside the connector.** A meeting's full transcript page is too big to pass
+through the connector. So the `edea-transcript` plugin can publish a meeting's pages with its
+own script, `scripts/filing.mjs`, on the same three variables. That plugin's `TRANSCRIPT.md`
+says when. The yes still comes first: the person approves exactly what the script writes.
 
 ## Where pages live
 
