@@ -25,7 +25,7 @@ running unattended, park on the question and wait.
 
 ## Step 1 — Is retiring the right move?
 
-Load the page with `getConfluencePage` and check what it actually is:
+Load the page with `getConfluenceContent` and check what it actually is:
 
 | Situation | What to do |
 | --- | --- |
@@ -56,7 +56,7 @@ to go somewhere else or that there's nowhere to go.
 page's exact title, which is why the linking rule exists:
 
 ```
-searchConfluenceUsingCql: type = page AND text ~ "<the exact page title>"
+searchConfluence: type = page AND text ~ "<the exact page title>"
 ```
 
 Search the house space and every venture space — references cross spaces.
@@ -136,8 +136,8 @@ under `Ideas/<Venture>/`.
 
 1. **Ask the user to create the space.** The connector can't — it needs a name matching the
    venture and a key that's the name uppercased, or a sensible short form of it. Wait for it.
-2. **Move the tree.** `updateConfluencePage` with the new `spaceId` and `parentId`, walking the
-   tree from `getConfluencePageDescendants` so nothing is orphaned.
+2. **Move the tree.** `moveConfluenceContent` (through `executeWrite`) with `position: "append"`
+   and the new parent in the target space as `targetId`, walking the tree from `getConfluenceContentDescendants` (through `executeRead`) so nothing is orphaned.
 3. **Drop the prefix.** `Acme — Decisions` becomes `Decisions` — the space carries the
    venture name now. Titles are unique per space, so check the target space doesn't already
    have that title before renaming.

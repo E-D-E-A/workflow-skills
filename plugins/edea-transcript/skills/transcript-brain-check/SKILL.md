@@ -65,7 +65,7 @@ Search title-first, and open a page only when a title clearly matches.
    meeting belongs to, and of the house space.
 2. **Then search by subject** for each point, in both Hebrew and English words, because pages
    may be in either:
-   `searchConfluenceUsingCql: type = page AND text ~ "<subject words>"`.
+   `searchConfluence: type = page AND text ~ "<subject words>"`.
 3. **Open the matches that clearly matter** — the Decision page behind a rules line, the Spec
    or Runbook that states the same fact.
 
