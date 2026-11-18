@@ -64,8 +64,14 @@ skill's job; offer it when the glances keep finding problems.
 ## Getting connected
 
 Every call needs a `cloudId`. Don't hardcode it — call `getAccessibleAtlassianResources` and
-use the id of the E.D.E.A site. Space ids likewise: get them from `getConfluenceSpaces` by key
+use the id of the E.D.E.A site. Space ids likewise: get them from `listConfluenceSpaces` (through `executeRead`) by key
 rather than remembering numbers, because page and space ids change when things are rebuilt.
+
+The connector is Atlassian's v2 MCP server. The common operations are tools of their own
+(`searchConfluence`, `getConfluenceContent`, `createConfluenceContent`,
+`updateConfluenceContent`). The rest run through `executeRead` or `executeWrite` by name —
+the names this plugin uses are listed where they are needed; for anything else, call
+`discover` first and never guess a name.
 
 ## Two ways to read, and when to use each
 
@@ -131,7 +137,7 @@ belongs together no matter who wrote it.
 
 **Linear can't answer this.** Linear is organised by team (Business and Engineering), not by
 venture, so there is no venture Project whose status marks graduation. The record is
-Confluence itself — list the spaces with `getConfluenceSpaces`:
+Confluence itself — list the spaces with `listConfluenceSpaces` (through `executeRead`):
 
 | The venture | Where its pages go |
 | --- | --- |
@@ -405,7 +411,7 @@ Implements: [Onboarding checklist spec](https://…/pages/321/…)
 operator. The only way to find pages pointing at a page is to search for its title:
 
 ```
-searchConfluenceUsingCql: text ~ "Run the weekly review on Thursday, not Monday"
+searchConfluence: text ~ "Run the weekly review on Thursday, not Monday"
 ```
 
 A link written as `[see the review decision]` is invisible to that search. It becomes a hole
@@ -418,10 +424,10 @@ Verified against the live site. Design around these rather than assuming.
 
 | | |
 | --- | --- |
-| Create and update pages | ✅ `createConfluencePage`, `updateConfluencePage` |
-| Move a page — new parent or new space | ✅ `updateConfluencePage` with `parentId` / `spaceId` |
+| Create and update pages | ✅ `createConfluenceContent`, `updateConfluenceContent` |
+| Move a page — new parent or new space | ✅ `moveConfluenceContent` (through `executeWrite`), `position: "append"` under the new parent |
 | Read pages, descendants, spaces | ✅ |
-| Search | ✅ `searchConfluenceUsingCql` |
+| Search | ✅ `searchConfluence` |
 | Comments | ✅ read and write |
 | **Delete anything** | ❌ no tool, no scope |
 | **Create a space** | ❌ no tool |

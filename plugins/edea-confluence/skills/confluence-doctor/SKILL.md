@@ -28,8 +28,8 @@ or "what changed since the last check" — before starting, with the scope you'd
 
 ## Pass 1 — Structure
 
-The mechanical faults, found with search (`searchConfluenceUsingCql`) and the space trees
-(`getConfluencePageDescendants`):
+The mechanical faults, found with search (`searchConfluence`) and the space trees
+(`getConfluenceContentDescendants` (through `executeRead`)):
 
 - **Vague links** — a reference written as loose words ("see the review decision") instead of
   the target's exact title with its URL. These are invisible to every repair pass, which is

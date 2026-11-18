@@ -32,7 +32,7 @@ covered. If the transcript had an unreadable part, you've said so.
 
 Three questions, every time, none with a default:
 
-1. **Which space?** List the live spaces with `getConfluenceSpaces` and recommend the one the
+1. **Which space?** List the live spaces with `listConfluenceSpaces` (through `executeRead`) and recommend the one the
    meeting belongs to; ask when more than one fits. The page goes under that space's
    `Meetings` tree.
 2. **Hebrew or English?** The language the meeting was held in decides nothing.

@@ -40,7 +40,7 @@ it. Done when every voice has a name or the person has said to leave it unnamed.
 
 Three questions, every time, none with a default:
 
-1. **Which space?** List the live spaces with `getConfluenceSpaces` and recommend the one the
+1. **Which space?** List the live spaces with `listConfluenceSpaces` (through `executeRead`) and recommend the one the
    meeting belongs to; ask when more than one fits. Both pages go under that space's
    `Meetings` tree.
 2. **Hebrew or English?** The language the meeting was held in decides nothing. The answer

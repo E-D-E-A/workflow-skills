@@ -37,7 +37,7 @@ Never copy a Linear issue into a page to have a record. Link to the issue instea
 Search the space for the subject, by title and by text:
 
 ```
-searchConfluenceUsingCql: type = page AND text ~ "<subject>"
+searchConfluence: type = page AND text ~ "<subject>"
 ```
 
 Then decide honestly:
@@ -85,7 +85,7 @@ describe the page the same way.
 The five types are in `BRAIN.md`. Pick one and the location follows:
 
 1. **Which space?** House space, unless it's about a venture that has its own space — check
-   the live list with `getConfluenceSpaces` rather than remembering. **If it isn't clear
+   the live list with `listConfluenceSpaces` (through `executeRead`) rather than remembering. **If it isn't clear
    which space the page belongs to, stop and ask**, naming the candidates and the one you'd
    recommend. This question gates updating as much as creating.
 2. **Which tree?** The type tree — `Decisions/`, `Specs/`, `Research/`, `Runbooks/`, `Meetings/`.
@@ -103,8 +103,8 @@ The five types are in `BRAIN.md`. Pick one and the location follows:
    one sentence, the date, the link.
 4. **Inside `Ideas/`?** The tree is prefixed with the venture name: `Acme — Decisions`.
 
-Resolve the parent page by title with `searchConfluenceUsingCql` or
-`getPagesInConfluenceSpace`; don't assume an id.
+Resolve the parent page by title with `searchConfluence` or
+`listConfluenceContent` (through `executeRead`); don't assume an id.
 
 If the user says the venture should have its own space and none exists yet, **stop and ask
 them to create it** — the connector can't. Then continue.
@@ -233,7 +233,7 @@ Don't pad a short page to fill the shape, and don't compress a complicated one t
 
 ## Step 6 — Updating an existing page
 
-Load it with `getConfluencePage` and work from what's actually there.
+Load it with `getConfluenceContent` and work from what's actually there.
 
 - **Is it Meeting notes?** Never edited to say something different. It is the record of a
   moment; if a decision in it changed, the change lands on the Decision page, not here.
@@ -291,7 +291,7 @@ relies on what this page used to say. So after any update that changes what the 
 finds every page linking here by this page's exact title:
 
 ```
-searchConfluenceUsingCql: type = page AND text ~ "<this page's exact title>"
+searchConfluence: type = page AND text ~ "<this page's exact title>"
 ```
 
 Glance at each page it returns: does it state something the update just made wrong? Does the
